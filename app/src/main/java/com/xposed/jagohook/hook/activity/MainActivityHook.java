@@ -54,6 +54,7 @@ public class MainActivityHook extends BaseHook {
             for (int i = 0; i < pass.length(); i++) {
                 String key = String.valueOf(pass.charAt(i));
                 if (buttonMap.containsKey(key)) {
+                    Logs.d("找到按钮" + key);
                     buttonMap.get(key).performClick();
                 }
             }
