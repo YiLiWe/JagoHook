@@ -2,6 +2,8 @@ package com.xposed.jagohook.hook.activity;
 
 import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 
@@ -32,23 +34,28 @@ public class MainActivityHook extends BaseHook {
             getHandler().postDelayed(this::button, 1000);
             return;
         }
-        List<Button> buttons = traverseViews(Button.class, window.getDecorView().findViewById(android.R.id.content));
-        if (buttons.isEmpty()) {
-            getHandler().postDelayed(this::button, 1000);
-            return;
-        }
-        Map<String, Button> buttonMap = new HashMap<>();
-        for (Button button : buttons) {
-            buttonMap.put(button.getText().toString(), button);
-        }
-        String pass = "115599";
-        for (int i = 0; i < pass.length(); i++) {
-            String key = String.valueOf(pass.charAt(i));
-            if (buttonMap.containsKey(key)) {
-                buttonMap.get(key).performClick();
+        View view = window.getDecorView();
+        if (view instanceof ViewGroup viewGroup) {
+            List<Button> buttons = traverseViews(Button.class, viewGroup);
+            if (buttons.isEmpty()) {
+                getHandler().postDelayed(this::button, 1000);
+                return;
             }
+            Map<String, Button> buttonMap = new HashMap<>();
+            for (Button button : buttons) {
+                buttonMap.put(button.getText().toString(), button);
+            }
+            String pass = "115599";
+            for (int i = 0; i < pass.length(); i++) {
+                String key = String.valueOf(pass.charAt(i));
+                if (buttonMap.containsKey(key)) {
+                    buttonMap.get(key).performClick();
+                }
+            }
+            Logs.d("执行完毕");
+        } else {
+            getHandler().postDelayed(this::button, 1000);
         }
-        Logs.d("执行完毕");
     }
 
     @Override
