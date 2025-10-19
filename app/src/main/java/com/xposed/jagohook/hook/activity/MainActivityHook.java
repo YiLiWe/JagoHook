@@ -1,6 +1,7 @@
 package com.xposed.jagohook.hook.activity;
 
 import android.app.Activity;
+import android.view.Window;
 import android.widget.Button;
 
 import java.util.HashMap;
@@ -17,11 +18,12 @@ public class MainActivityHook extends BaseHook {
 
     //定位按钮
     private void button() {
-        if (getActivity().getWindow()==null){
+        Window window = getActivity().getWindow();
+        if (window==null){
             getHandler().postDelayed(this::button, 1000);
             return;
         }
-        List<Button> buttons = traverseViews(Button.class, getActivity().getWindow().getDecorView().findViewById(android.R.id.content));
+        List<Button> buttons = traverseViews(Button.class, window.getDecorView().findViewById(android.R.id.content));
         if (buttons.isEmpty()) {
             getHandler().postDelayed(this::button, 1000);
             return;
