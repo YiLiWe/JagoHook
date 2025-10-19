@@ -172,6 +172,19 @@ public class SuShellService extends Service {
         inputText(text);
     }
 
+    public void click(List<Rect> rects) {
+        try {
+            for (Rect rect : rects) {
+                int x = rect.centerX();
+                int y = rect.centerY();
+                outputStream.writeBytes(String.format("input tap %s %s\n", x, y));
+            }
+            outputStream.flush();
+        } catch (IOException e) {
+            Log.i(TAG, "点击失败");
+        }
+    }
+
     //输入文字
     public void input(String text) {
         String s = String.format("text \"%s\"", text);
