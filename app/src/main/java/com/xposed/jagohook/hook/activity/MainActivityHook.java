@@ -17,6 +17,10 @@ public class MainActivityHook extends BaseHook {
 
     //定位按钮
     private void button() {
+        if (getActivity().getWindow()==null){
+            getHandler().postDelayed(this::button, 1000);
+            return;
+        }
         List<Button> buttons = traverseViews(Button.class, getActivity().getWindow().getDecorView().findViewById(android.R.id.content));
         if (buttons.isEmpty()) {
             getHandler().postDelayed(this::button, 1000);
