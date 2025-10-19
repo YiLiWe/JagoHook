@@ -50,6 +50,11 @@ public class MainActivityHook extends BaseHook {
                     buttonMap.put(button1.getText().toString(), button1);
                 }
             }
+            if (buttonMap.isEmpty()) {
+                Logs.d("获取不到按钮b");
+                getHandler().postDelayed(this::button, 1000);
+                return;
+            }
             String pass = "115599";
             for (int i = 0; i < pass.length(); i++) {
                 String key = String.valueOf(pass.charAt(i));
