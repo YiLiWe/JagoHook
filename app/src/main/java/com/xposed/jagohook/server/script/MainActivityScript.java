@@ -15,6 +15,26 @@ public class MainActivityScript extends BaseScript {
     public void onCreate(SuShellService suShellService, List<SuShellService.UiXmlParser.Node> nodes) {
         Map<String, SuShellService.UiXmlParser.Node> map = NodeScriptUtils.toContentDescMap(nodes);
         inputPassword(suShellService, map);
+        getBalance(suShellService, map);
+    }
+
+    //获取余额
+    public void getBalance(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map) {
+        if (map.containsKey("Aktivitas Terakhir")) {
+            SuShellService.UiXmlParser.Node node = getStartTextNode(map, "Rp");
+            if (node == null) return;
+            String balance = node.getContentDesc();
+            Logs.d("余额：" + balance);
+        }
+    }
+
+    public SuShellService.UiXmlParser.Node getStartTextNode(Map<String, SuShellService.UiXmlParser.Node> map, String text) {
+        for (String key : map.keySet()) {
+            if (key.startsWith(text)) {
+                return map.get(key);
+            }
+        }
+        return null;
     }
 
     //输入密码
@@ -25,7 +45,6 @@ public class MainActivityScript extends BaseScript {
             for (int i = 0; i < pass.length(); i++) {
                 String key = String.valueOf(pass.charAt(i));
                 if (map.containsKey(key)) {
-                    Logs.d("找到按钮" + key);
                     SuShellService.UiXmlParser.Node node = map.get(key);
                     rects.add(node.getBounds());
                 }
