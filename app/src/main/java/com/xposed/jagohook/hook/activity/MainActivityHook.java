@@ -18,8 +18,12 @@ public class MainActivityHook extends BaseHook {
 
     //定位按钮
     private void button() {
+        if (getActivity() == null) {
+            getHandler().postDelayed(this::button, 1000);
+            return;
+        }
         Window window = getActivity().getWindow();
-        if (window==null){
+        if (window == null) {
             getHandler().postDelayed(this::button, 1000);
             return;
         }
