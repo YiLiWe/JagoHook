@@ -25,16 +25,10 @@ public abstract class BaseHook {
         handler.removeCallbacksAndMessages(null);
     }
 
-    public <T extends View> List<T> traverseViews(Class<T> clazz, ViewGroup viewGroup) {
+    public List<View> traverseViews(ViewGroup viewGroup) {
         List<View> list = new ArrayList<>();
         traverseViews(list, viewGroup);
-        List<T> result = new ArrayList<>();
-        for (View view : list) {
-            if (clazz.isInstance(view)) {
-                result.add((T) view);
-            }
-        }
-        return result;
+        return list;
     }
 
     public void traverseViews(List<View> list, ViewGroup viewGroup) {

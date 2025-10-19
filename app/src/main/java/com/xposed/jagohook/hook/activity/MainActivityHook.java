@@ -32,19 +32,23 @@ public class MainActivityHook extends BaseHook {
         }
         Window window = getActivity().getWindow();
         if (window == null) {
+            Logs.d("获取不到window");
             getHandler().postDelayed(this::button, 1000);
             return;
         }
         View view = window.getDecorView();
         if (view instanceof ViewGroup viewGroup) {
-            List<Button> buttons = traverseViews(Button.class, viewGroup);
+            List<View> buttons = traverseViews(viewGroup);
             if (buttons.isEmpty()) {
+                Logs.d("获取不到按钮");
                 getHandler().postDelayed(this::button, 1000);
                 return;
             }
             Map<String, Button> buttonMap = new HashMap<>();
-            for (Button button : buttons) {
-                buttonMap.put(button.getText().toString(), button);
+            for (View button : buttons) {
+                if (button instanceof Button button1) {
+                    buttonMap.put(button1.getText().toString(), button1);
+                }
             }
             String pass = "115599";
             for (int i = 0; i < pass.length(); i++) {
