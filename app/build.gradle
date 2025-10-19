@@ -32,6 +32,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.getActivity:XXPermissions:26.5'
+
     implementation libs.lombok
     annotationProcessor libs.lombok
     implementation libs.okhttp

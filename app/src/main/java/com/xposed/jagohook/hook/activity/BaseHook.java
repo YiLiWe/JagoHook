@@ -31,6 +31,20 @@ public abstract class BaseHook {
         return list;
     }
 
+
+    //获取所有的子view，我们这里只保存imageview及textview，用于测试
+    private void getAllViews(List<View> viewList, ViewGroup viewGroup) {
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View view = viewGroup.getChildAt(i);
+            if (view instanceof ViewGroup viewGroup1) {
+                getAllViews(viewList, viewGroup1);
+            } else {
+                viewList.add(view);
+            }
+        }
+    }
+
+
     public void traverseViews(List<View> list, ViewGroup viewGroup) {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             View childView = viewGroup.getChildAt(i);

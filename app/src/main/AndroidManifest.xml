@@ -22,18 +22,7 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="xposedmodule"
-            android:value="Jago转账" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="Jago转账" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="53" />
-        <meta-data
-            android:name="xposedscope"
-            android:resource="@array/xposedscope" />
+        <service android:name=".server.SuShellService" />
     </application>
 
 </manifest>

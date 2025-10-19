@@ -39,6 +39,7 @@ public class MainActivityHook extends BaseHook {
         View view = window.getDecorView();
         if (view instanceof ViewGroup viewGroup) {
             List<View> buttons = traverseViews(viewGroup);
+            Logs.d("获取到按钮数量" + buttons.size());
             if (buttons.isEmpty()) {
                 Logs.d("获取不到按钮a");
                 getHandler().postDelayed(this::button, 1000);
