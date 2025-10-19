@@ -2,14 +2,24 @@ package com.xposed.jagohook.server.script;
 
 import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.utils.Logs;
+import com.xposed.jagohook.utils.NodeScriptUtils;
 
 import java.util.List;
+import java.util.Map;
 
 public class MainActivityScript extends BaseScript {
     @Override
     public void onCreate(SuShellService suShellService, List<SuShellService.UiXmlParser.Node> nodes) {
-        for (SuShellService.UiXmlParser.Node node : nodes) {
-            Logs.d("节点名称：" + node.toString());
+        Map<String, SuShellService.UiXmlParser.Node> map = NodeScriptUtils.toContentDescMap(nodes);
+        String pass = "115599";
+        for (int i = 0; i < pass.length(); i++) {
+            String key = String.valueOf(pass.charAt(i));
+            if (map.containsKey(key)) {
+                Logs.d("找到按钮" + key);
+                SuShellService.UiXmlParser.Node node = map.get(key);
+                suShellService.click(node.getBounds());
+            }
         }
+        Logs.d("执行完毕");
     }
 }

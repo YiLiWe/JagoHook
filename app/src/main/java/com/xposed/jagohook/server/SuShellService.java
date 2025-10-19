@@ -179,14 +179,12 @@ public class SuShellService extends Service {
     }
 
     private void inputText(String text) {
-        new Thread(() -> {
-            try {
-                outputStream.writeBytes(String.format("input %s\n", text));
-                outputStream.flush();
-            } catch (IOException e) {
-                Log.i(TAG, "点击失败");
-            }
-        }).start();
+        try {
+            outputStream.writeBytes(String.format("input %s\n", text));
+            outputStream.flush();
+        } catch (IOException e) {
+            Log.i(TAG, "点击失败");
+        }
     }
 
     //id.co.bri.brimo.ui.activities.FastMenuActivity
