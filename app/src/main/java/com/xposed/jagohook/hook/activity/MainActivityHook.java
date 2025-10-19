@@ -20,6 +20,7 @@ public class MainActivityHook extends BaseHook {
     @Override
     public void onHook(Activity activity) {
         super.onHook(activity);
+        Logs.d("开始执行");
         getHandler().postDelayed(this::button, 1000);
     }
 
