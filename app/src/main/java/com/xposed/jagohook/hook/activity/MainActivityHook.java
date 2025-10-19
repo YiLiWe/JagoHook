@@ -11,6 +11,7 @@ public class MainActivityHook extends BaseHook {
     //Masukkan PIN kamu
     @Override
     public void onHook(Activity activity) {
+        super.onHook(activity);
         getHandler().postDelayed(this::button, 1000);
     }
 
