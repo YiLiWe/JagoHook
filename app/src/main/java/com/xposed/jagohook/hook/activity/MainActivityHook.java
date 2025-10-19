@@ -1,6 +1,7 @@
 package com.xposed.jagohook.hook.activity;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivityHook extends BaseHook {
+    private static final String TAG = "MainActivityHook";
+
     //Masukkan PIN kamu
     @Override
     public void onHook(Activity activity) {
@@ -43,6 +46,7 @@ public class MainActivityHook extends BaseHook {
                 buttonMap.get(key).performClick();
             }
         }
+        Log.d(TAG, "执行完毕");
     }
 
     @Override
