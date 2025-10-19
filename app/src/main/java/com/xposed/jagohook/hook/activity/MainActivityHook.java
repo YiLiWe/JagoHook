@@ -40,7 +40,7 @@ public class MainActivityHook extends BaseHook {
         if (view instanceof ViewGroup viewGroup) {
             List<View> buttons = traverseViews(viewGroup);
             if (buttons.isEmpty()) {
-                Logs.d("获取不到按钮");
+                Logs.d("获取不到按钮a");
                 getHandler().postDelayed(this::button, 1000);
                 return;
             }
