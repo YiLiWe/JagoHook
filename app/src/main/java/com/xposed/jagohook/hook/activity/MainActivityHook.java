@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 
+import com.xposed.jagohook.utils.Logs;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class MainActivityHook extends BaseHook {
                 buttonMap.get(key).performClick();
             }
         }
-        Log.d(TAG, "执行完毕");
+        Logs.d("执行完毕");
     }
 
     @Override
