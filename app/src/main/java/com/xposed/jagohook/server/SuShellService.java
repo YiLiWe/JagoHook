@@ -194,7 +194,7 @@ public class SuShellService extends Service {
     //返回上一页
     public void back() {
         try {
-            outputStream.writeBytes("input keyevent KEYCODE_HOME\n");
+            outputStream.writeBytes("input keyevent KEYCODE_BACK\n");
             outputStream.flush();
         } catch (IOException e) {
             Log.i(TAG, "点击失败");
