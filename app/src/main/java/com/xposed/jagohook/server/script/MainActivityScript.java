@@ -71,7 +71,7 @@ public class MainActivityScript extends BaseScript {
                     suShellService.click(naf.getBounds());
                 }
             } else {
-                SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
+                SuShellService.UiXmlParser.Node node = map.get("Beranda\n" +
                         "Tab 1 dari 5");
                 suShellService.click(node.getBounds());
             }
