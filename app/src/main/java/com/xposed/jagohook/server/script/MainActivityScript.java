@@ -64,6 +64,7 @@ public class MainActivityScript extends BaseScript {
             }
         } else if (map.containsKey("Scan QRIS")) {
             if (dataStorage.isHome()) {
+                Logs.d("进入账单");
                 //进入账单
                 SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
                 if (naf != null) {
