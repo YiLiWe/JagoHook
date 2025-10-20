@@ -62,7 +62,8 @@ public class MainActivityScript extends BaseScript {
                 Logs.d("点击首页");
                 dataStorage.setHome(true);
             }
-        } else if (map.containsKey("Scan QRIS")) {
+        } else if (map.containsKey("Topup\n" +
+                "e-Wallet")) {
             if (dataStorage.isHome()) {
                 Logs.d("进入账单");
                 //进入账单
