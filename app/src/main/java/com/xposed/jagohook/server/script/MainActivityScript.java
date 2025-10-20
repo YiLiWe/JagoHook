@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivityScript extends BaseScript {
-    private boolean isHome = true;
+    private boolean isHome = false;
 
     @Override
     public void onCreate(SuShellService suShellService, List<SuShellService.UiXmlParser.Node> nodes) {
@@ -57,13 +57,11 @@ public class MainActivityScript extends BaseScript {
                             "Tab 3 dari 5");
                     suShellService.click(node.getBounds());
                 }
-            }
-            else {
+            } else {
+                Logs.d("点击首页");
                 isHome = true;
             }
-        }
-        //转换界面
-        if (map.containsKey("Scan QRIS")) {
+        } else if (map.containsKey("Scan QRIS")) {
             if (isHome) {
                 //进入账单
                 SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
