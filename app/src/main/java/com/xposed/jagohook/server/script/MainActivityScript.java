@@ -27,11 +27,13 @@ public class MainActivityScript extends BaseScript {
     private void getBill(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
         if (map.containsKey("Aktivitas Semua Kantong")) {
             List<SuShellService.UiXmlParser.Node> nodes1 = getStartNodes(nodes, "Transaction Item");
-            if (nodes1.isEmpty()) return;
-            for (SuShellService.UiXmlParser.Node node : nodes1) {
-                Logs.d("节点：" + node.getContentDesc());
+            if (!nodes1.isEmpty()) {
+                for (SuShellService.UiXmlParser.Node node : nodes1) {
+                    Logs.d("节点：" + node.getContentDesc());
+                }
             }
             isHome = false;
+            suShellService.back();
         }
     }
 
@@ -68,7 +70,7 @@ public class MainActivityScript extends BaseScript {
                 if (naf != null) {
                     suShellService.click(naf.getBounds());
                 }
-            }else {
+            } else {
                 SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
                         "Tab 1 dari 5");
                 suShellService.click(node.getBounds());
