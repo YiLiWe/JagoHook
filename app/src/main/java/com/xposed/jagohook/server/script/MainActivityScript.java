@@ -3,6 +3,7 @@ package com.xposed.jagohook.server.script;
 import android.graphics.Rect;
 
 import com.xposed.jagohook.server.SuShellService;
+import com.xposed.jagohook.storage.DataStorage;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.NodeScriptUtils;
 
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivityScript extends BaseScript {
-    private boolean isHome = false;
 
     @Override
     public void onCreate(SuShellService suShellService, List<SuShellService.UiXmlParser.Node> nodes) {
@@ -32,7 +32,7 @@ public class MainActivityScript extends BaseScript {
                     Logs.d("节点：" + node.getContentDesc());
                 }
             }
-            isHome = false;
+            DataStorage.getInstance().setHome(false);
             suShellService.back();
         }
     }
@@ -49,8 +49,9 @@ public class MainActivityScript extends BaseScript {
 
     //首页
     private void homeClick(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
+        DataStorage dataStorage = DataStorage.getInstance();
         if (map.containsKey("Transfer & Bayar")) {
-            if (isHome) {
+            if (dataStorage.isHome()) {
                 if (map.containsKey("Transaksi\n" +
                         "Tab 3 dari 5")) {
                     SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
@@ -59,10 +60,10 @@ public class MainActivityScript extends BaseScript {
                 }
             } else {
                 Logs.d("点击首页");
-                isHome = true;
+                dataStorage.setHome(true);
             }
         } else if (map.containsKey("Scan QRIS")) {
-            if (isHome) {
+            if (dataStorage.isHome()) {
                 //进入账单
                 SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
                 if (naf != null) {
