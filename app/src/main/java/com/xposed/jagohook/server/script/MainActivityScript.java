@@ -17,6 +17,17 @@ public class MainActivityScript extends BaseScript {
         inputPassword(suShellService, map);
         getBalance(suShellService, map);
         clickDialog(suShellService, map);
+        homeClick(suShellService, map);
+    }
+
+    //首页
+    private void homeClick(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map) {
+        if (map.containsKey("Transaksi\n" +
+                "Tab 3 dari 5")) {
+            SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
+                    "Tab 3 dari 5");
+            suShellService.click(node.getBounds());
+        }
     }
 
     //弹窗
@@ -61,7 +72,6 @@ public class MainActivityScript extends BaseScript {
                 }
             }
             suShellService.click(rects);
-            Logs.d("执行完毕");
         }
     }
 }

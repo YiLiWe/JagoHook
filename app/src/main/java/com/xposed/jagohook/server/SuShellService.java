@@ -363,7 +363,9 @@ public class SuShellService extends Service {
                 String packageName = parser.getAttributeValue(null, "package");
                 String resourceId = parser.getAttributeValue(null, "resource-id");
                 String contentDesc = parser.getAttributeValue(null, "content-desc");
+                String naf = parser.getAttributeValue(null, "NAF");
                 Node node = new Node();
+                node.setNaf(naf);
                 node.setClassName(className);
                 node.setText(text);
                 node.setBounds(bounds);
@@ -392,6 +394,7 @@ public class SuShellService extends Service {
             private String resourceId;
             private String index;
             private String contentDesc;
+            private String naf;
 
             public int getBoundsX() {
                 Rect rect = getBounds();
