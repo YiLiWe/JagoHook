@@ -58,7 +58,7 @@ public class MainActivityScript extends BaseScript {
                     suShellService.click(node.getBounds());
                 }
             }
-            if (!isHome) {
+            else {
                 isHome = true;
             }
         }
