@@ -62,10 +62,16 @@ public class MainActivityScript extends BaseScript {
         }
         //转换界面
         if (map.containsKey("Scan QRIS")) {
-            //进入账单
-            SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
-            if (naf != null) {
-                suShellService.click(naf.getBounds());
+            if (isHome) {
+                //进入账单
+                SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
+                if (naf != null) {
+                    suShellService.click(naf.getBounds());
+                }
+            }else {
+                SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
+                        "Tab 1 dari 5");
+                suShellService.click(node.getBounds());
             }
         }
     }
