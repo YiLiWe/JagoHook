@@ -16,6 +16,17 @@ public class MainActivityScript extends BaseScript {
         Map<String, SuShellService.UiXmlParser.Node> map = NodeScriptUtils.toContentDescMap(nodes);
         inputPassword(suShellService, map);
         getBalance(suShellService, map);
+        clickDialog(suShellService, map);
+    }
+
+    //弹窗
+    private void clickDialog(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map) {
+        if (map.containsKey("Sesi berakhir")) {
+            if (map.containsKey("Oke ")) {
+                SuShellService.UiXmlParser.Node Oke = map.get("Oke ");
+                suShellService.click(Oke.getBounds());
+            }
+        }
     }
 
     //获取余额
