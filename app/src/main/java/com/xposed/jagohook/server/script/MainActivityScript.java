@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivityScript extends BaseScript {
+    private boolean isHome = true;
+
     @Override
     public void onCreate(SuShellService suShellService, List<SuShellService.UiXmlParser.Node> nodes) {
         Map<String, SuShellService.UiXmlParser.Node> map = NodeScriptUtils.toContentDescMap(nodes);
@@ -18,16 +20,48 @@ public class MainActivityScript extends BaseScript {
         getBalance(suShellService, map);
         clickDialog(suShellService, map);
         homeClick(suShellService, map, nodes);
+        getBill(suShellService, map, nodes);
+    }
+
+    //获取账单
+    private void getBill(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
+        if (map.containsKey("Aktivitas Semua Kantong")) {
+            List<SuShellService.UiXmlParser.Node> nodes1 = getStartNodes(nodes, "Transaction Item");
+            if (nodes1.isEmpty()) return;
+            for (SuShellService.UiXmlParser.Node node : nodes1) {
+                Logs.d("节点：" + node.getContentDesc());
+            }
+            isHome = false;
+        }
+    }
+
+    private List<SuShellService.UiXmlParser.Node> getStartNodes(List<SuShellService.UiXmlParser.Node> nodes, String text) {
+        List<SuShellService.UiXmlParser.Node> list = new ArrayList<>();
+        for (SuShellService.UiXmlParser.Node node : nodes) {
+            if (node.getContentDesc().startsWith(text)) {
+                list.add(node);
+            }
+        }
+        return list;
     }
 
     //首页
     private void homeClick(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
-        if (map.containsKey("Transaksi\n" +
-                "Tab 3 dari 5")) {
-            SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
-                    "Tab 3 dari 5");
-            suShellService.click(node.getBounds());
-
+        if (map.containsKey("Transfer & Bayar")) {
+            if (isHome) {
+                if (map.containsKey("Transaksi\n" +
+                        "Tab 3 dari 5")) {
+                    SuShellService.UiXmlParser.Node node = map.get("Transaksi\n" +
+                            "Tab 3 dari 5");
+                    suShellService.click(node.getBounds());
+                }
+            }
+            if (!isHome) {
+                isHome = true;
+            }
+        }
+        //转换界面
+        if (map.containsKey("Scan QRIS")) {
             //进入账单
             SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
             if (naf != null) {
