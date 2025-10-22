@@ -190,11 +190,13 @@ public class SuShellService extends Service {
 
     public void click(List<Rect> rects) {
         try {
+            StringBuilder builder = new StringBuilder();
             for (Rect rect : rects) {
                 int x = rect.centerX();
                 int y = rect.centerY();
-                outputStream.writeBytes(String.format("input tap %s %s\n", x, y));
+                builder.append(String.format("input tap %s %s\n", x, y));
             }
+            outputStream.writeBytes(builder.toString());
             outputStream.flush();
         } catch (IOException e) {
             Log.i(TAG, "点击失败");
@@ -241,11 +243,7 @@ public class SuShellService extends Service {
                 if (activity != null) {
                     Log.d(TAG, "当前Activity：" + activity);
                     if (activityScripts.containsKey(activity)) {
-                        if (isOk) {
-                            isOk = false;
-                            activityScripts.get(activity).onCreate(this, nodes);
-                            isOk = true;
-                        }
+                        activityScripts.get(activity).onCreate(this, nodes);
                     }
                 }
             }
