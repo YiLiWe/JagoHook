@@ -200,13 +200,8 @@ public class SuShellService extends Service {
             outputStream.flush();
             Thread.sleep(200);
 
-            // 逐个字符输入（更稳定）
-            for (char c : text.toCharArray()) {
-                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
-                    outputStream.writeBytes(String.format("input text \"%c\"\n", c));
-                    outputStream.flush();
-                }
-            }
+            input(text);
+            Thread.sleep(200);
 
             // 发送回车确认输入
             outputStream.writeBytes("input keyevent KEYCODE_ENTER\n");
