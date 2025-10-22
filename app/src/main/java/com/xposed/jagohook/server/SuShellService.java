@@ -200,8 +200,17 @@ public class SuShellService extends Service {
             outputStream.flush();
             Thread.sleep(200);
 
-            executeSuCommand("input text "+text);
+            // 逐个字符输入（更稳定）
+            for (char c : text.toCharArray()) {
+                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                    outputStream.writeBytes(String.format("input text \"%c\"\n", c));
+                    outputStream.flush();
+                }
+            }
 
+            // 发送回车确认输入
+            outputStream.writeBytes("input keyevent KEYCODE_ENTER\n");
+            outputStream.flush();
             Thread.sleep(500);
         } catch (IOException | InterruptedException e) {
             Log.e(TAG, "稳定输入失败: " + e.getMessage());
