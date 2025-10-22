@@ -37,9 +37,9 @@ public class MainActivityScript extends BaseScript {
                 suShellService.click(node.getBounds());
                 suShellService.input(collectBillResponse.getBank());
             }
-        } else if (collectBillResponse != null && map.containsKey(collectBillResponse.getBank() + "\n" +
+        }
+        if (collectBillResponse != null && map.containsKey(collectBillResponse.getBank() + "\n" +
                 "BI-FAST")) {//选择银行
-
             SuShellService.UiXmlParser.Node node = map.get(collectBillResponse.getBank() + "\n" +
                     "BI-FAST");
             suShellService.click(node.getBounds());
@@ -118,7 +118,7 @@ public class MainActivityScript extends BaseScript {
             if (suShellService.getCollectBillResponse() != null) {//转账
                 SuShellService.UiXmlParser.Node Transfer = map.get("Bank\n" +
                         "Transfer");
-                if (Transfer!=null) {
+                if (Transfer != null) {
                     suShellService.click(Transfer.getBounds());
                 }
             } else if (dataStorage.isHome()) {

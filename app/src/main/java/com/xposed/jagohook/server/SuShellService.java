@@ -159,7 +159,7 @@ public class SuShellService extends Service {
                     while (isRunning) {
                         outputStream.writeBytes("uiautomator dump " + file + "\n"); // 替换为你的命令
                         outputStream.flush();
-                        Thread.sleep(5000); // 5秒间隔
+                        Thread.sleep(2000); // 5秒间隔
                     }
                 } catch (IOException | InterruptedException e) {
                     Log.e(TAG, "Error executing command: " + e.getMessage());
