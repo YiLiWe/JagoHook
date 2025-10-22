@@ -78,7 +78,7 @@ public class SuShellService extends Service {
 
     public void setCollectBillResponse(CollectBillResponse collectBillResponse) {
         this.collectBillResponse = collectBillResponse;
-        if (collectBillResponse!=null){
+        if (collectBillResponse != null) {
             logWindow.print("触发归集");
         }
     }
@@ -264,6 +264,7 @@ public class SuShellService extends Service {
 
     /**
      * 执行 su 命令并返回响应
+     *
      * @param command 需要执行的命令（例如 "whoami"）
      * @return 命令的响应结果，如果失败则返回 null
      */

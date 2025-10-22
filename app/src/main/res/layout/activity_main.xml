@@ -68,5 +68,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="开启服务" />
+
+        <Button
+            android:id="@+id/kill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="彻底关闭" />
     </LinearLayout>
 </LinearLayout>

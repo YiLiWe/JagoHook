@@ -47,7 +47,7 @@ public class CollectRunnable implements Runnable {
                 initData();
                 continue;
             }
-            if (suShellService.getCollectBillResponse() != null) continue;
+            if (suShellService.getCollectBillResponse() == null) continue;
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {
                 suShellService.setCollectBillResponse(collectBillResponse);
@@ -61,7 +61,7 @@ public class CollectRunnable implements Runnable {
     }
 
     private CollectBillResponse getCollectBean() {
-        Logs.d("测试");
+        Logs.d("网络请求");
         String getCollectRequest = getCollect();
         ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
         if (response != null) {
