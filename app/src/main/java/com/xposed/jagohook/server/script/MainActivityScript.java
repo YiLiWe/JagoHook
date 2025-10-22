@@ -59,12 +59,7 @@ public class MainActivityScript extends BaseScript {
             SuShellService.UiXmlParser.Node node = map.get("Search Text Field");
             suShellService.click(node.getBounds());
 
-            suShellService.input(collectBillResponse.getPhone());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            suShellService.inputStableX(collectBillResponse.getPhone());
         } else {
             List<SuShellService.UiXmlParser.Node> nodes1 = getEndNodes(nodes, "BI-FAST");
             if (!nodes1.isEmpty()) {

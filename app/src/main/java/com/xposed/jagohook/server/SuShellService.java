@@ -195,19 +195,14 @@ public class SuShellService extends Service {
     // 或者使用更可靠的输入方式（推荐）
     public void inputStableX(String text) {
         try {
-            // 先发送键盘事件确保焦点
-            outputStream.writeBytes("input keyevent KEYCODE_CLEAR\n");
-            outputStream.flush();
-            Thread.sleep(200);
-
-            input(text);
-            Thread.sleep(200);
-
-            // 发送回车确认输入
-            outputStream.writeBytes("input keyevent KEYCODE_ENTER\n");
-            outputStream.flush();
-            Thread.sleep(500);
-        } catch (IOException | InterruptedException e) {
+            // 逐个字符输入（更稳定）
+            for (char c : text.toCharArray()) {
+                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                    outputStream.writeBytes(String.format("input text \"%c\"\n", c));
+                    outputStream.flush();
+                }
+            }
+        } catch (IOException e) {
             Log.e(TAG, "稳定输入失败: " + e.getMessage());
         }
     }
