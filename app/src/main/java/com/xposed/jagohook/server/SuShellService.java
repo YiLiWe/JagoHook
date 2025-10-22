@@ -226,7 +226,7 @@ public class SuShellService extends Service {
         }
     }
 
-    private boolean isOk=true;
+    private boolean isOk = true;
 
     //id.co.bri.brimo.ui.activities.FastMenuActivity
     private void handlerMsg(String line) {
@@ -242,9 +242,9 @@ public class SuShellService extends Service {
                     Log.d(TAG, "当前Activity：" + activity);
                     if (activityScripts.containsKey(activity)) {
                         if (isOk) {
-                            isOk=false;
+                            isOk = false;
                             activityScripts.get(activity).onCreate(this, nodes);
-                            isOk=true;
+                            isOk = true;
                         }
                     }
                 }
