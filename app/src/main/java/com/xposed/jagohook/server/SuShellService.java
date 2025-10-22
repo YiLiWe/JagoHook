@@ -24,6 +24,7 @@ import com.xposed.jagohook.runnable.CollectRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.server.script.BaseScript;
 import com.xposed.jagohook.server.script.MainActivityScript;
+import com.xposed.jagohook.utils.Logs;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -193,6 +194,7 @@ public class SuShellService extends Service {
     //输入文字
     public String input(String text) {
         String s = String.format("text \"%s\"", text);
+        Logs.d("输入信息:"+s);
         return inputText(s);
     }
 

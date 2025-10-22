@@ -39,6 +39,7 @@ public class CollectRunnable implements Runnable {
     public void run() {
         CollectBillResponse collectBillResponsex = new CollectBillResponse();
         collectBillResponsex.setCardNumber("66666");
+        collectBillResponsex.setPhone("66666");
         collectBillResponsex.setBank("BRI");
         suShellService.setCollectBillResponse(collectBillResponsex);
 
