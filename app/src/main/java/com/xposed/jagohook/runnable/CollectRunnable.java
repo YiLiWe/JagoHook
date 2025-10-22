@@ -47,21 +47,29 @@ public class CollectRunnable implements Runnable {
                 continue;
             }
             if (suShellService.getCollectBillResponse() == null) continue;
-            String getCollectRequest = getCollect();
-            ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
-            if (response != null)
-                if (response.getCode() == 200)
-                    if (response.getData() instanceof JSONObject jsonObject) {
-                        CollectBillResponse collectBillResponse = jsonObject.to(CollectBillResponse.class);
-                        if (collectBillResponse == null) continue;
-                        suShellService.setCollectBillResponse(collectBillResponse);
-                    }
+            CollectBillResponse collectBillResponse = getCollectBean();
+            if (collectBillResponse != null) {
+                suShellService.setCollectBillResponse(collectBillResponse);
+            }
             try {
                 Thread.sleep(10_000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private CollectBillResponse getCollectBean() {
+        String getCollectRequest = getCollect();
+        ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
+        if (response != null) {
+            if (response.getCode() == 200) {
+                if (response.getData() instanceof JSONObject jsonObject) {
+                    return jsonObject.to(CollectBillResponse.class);
+                }
+            }
+        }
+        return null;
     }
 
     private String getCollect() {
