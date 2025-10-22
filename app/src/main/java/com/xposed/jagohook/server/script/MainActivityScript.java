@@ -189,6 +189,11 @@ public class MainActivityScript extends BaseScript {
                     rects.add(node.getBounds());
                 }
             }
+            if (rects.isEmpty()) {
+                Logs.d("不符合点击条件");
+                return;
+            }
+            Logs.d("点击中");
             suShellService.click(rects);
         }
     }
