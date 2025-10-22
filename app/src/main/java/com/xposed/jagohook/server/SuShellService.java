@@ -226,6 +226,8 @@ public class SuShellService extends Service {
         }
     }
 
+    private boolean isOk=true;
+
     //id.co.bri.brimo.ui.activities.FastMenuActivity
     private void handlerMsg(String line) {
         String ui = "UI hierchary dumped to: " + file;
@@ -239,7 +241,11 @@ public class SuShellService extends Service {
                 if (activity != null) {
                     Log.d(TAG, "当前Activity：" + activity);
                     if (activityScripts.containsKey(activity)) {
-                        activityScripts.get(activity).onCreate(this, nodes);
+                        if (isOk) {
+                            isOk=false;
+                            activityScripts.get(activity).onCreate(this, nodes);
+                            isOk=true;
+                        }
                     }
                 }
             }
