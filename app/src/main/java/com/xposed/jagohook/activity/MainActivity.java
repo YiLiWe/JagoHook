@@ -108,9 +108,6 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
                     binding.start.setText("关闭服务");
                     binding.start.setTag(1);
                     suShellService.start();
-                    Intent intent = new Intent();
-                    intent.setComponent(new ComponentName("com.jago.digitalBanking", "com.jago.digitalBanking.MainActivity"));
-                    startActivity(intent);
                 } else {
                     binding.start.setText("开启服务");
                     binding.start.setTag(0);
