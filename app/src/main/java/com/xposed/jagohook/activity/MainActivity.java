@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Editable;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -62,6 +63,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     }
 
     private void initViewClick() {
+        binding.kill.setOnClickListener(view -> System.exit(0));
         binding.save.setOnClickListener(view -> {
             Editable cardNumberEdit = binding.cardNumber.getText();
             Editable collectUrlEdit = binding.collectUrl.getText();

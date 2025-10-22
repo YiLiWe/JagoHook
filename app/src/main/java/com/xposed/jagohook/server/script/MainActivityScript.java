@@ -178,7 +178,8 @@ public class MainActivityScript extends BaseScript {
 
     //输入密码
     private void inputPassword(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map) {
-        if (map.containsKey("Masukkan PIN kamu")) {
+        if (map.containsKey("GUNAKAN PASSWORD")) {
+            Logs.d("匹配点击中");
             String pass = "115599";
             List<Rect> rects = new ArrayList<>();
             for (int i = 0; i < pass.length(); i++) {
