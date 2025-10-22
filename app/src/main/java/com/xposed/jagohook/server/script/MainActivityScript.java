@@ -50,6 +50,11 @@ public class MainActivityScript extends BaseScript {
             suShellService.back();
         }
 
+        if (collectBillResponse != null && map.containsKey(collectBillResponse.getPhone())) {
+            SuShellService.UiXmlParser.Node Periksa = map.get("Periksa");
+            suShellService.click(Periksa.getBounds());
+        }
+
         if (collectBillResponse != null && map.containsKey(collectBillResponse.getBank() + "\n" +
                 "BI-FAST")) {//选择银行
             SuShellService.UiXmlParser.Node node = map.get(collectBillResponse.getBank() + "\n" +
@@ -58,10 +63,8 @@ public class MainActivityScript extends BaseScript {
         } else if (collectBillResponse != null && map.containsKey("Periksa") && map.containsKey(collectBillResponse.getBank())) {
             SuShellService.UiXmlParser.Node node = map.get("Search Text Field");
             suShellService.click(node.getBounds());
-            suShellService.input(collectBillResponse.getPhone());
-
-            SuShellService.UiXmlParser.Node Periksa = map.get("Periksa");
-            suShellService.click(Periksa.getBounds());
+            String text = suShellService.input(collectBillResponse.getPhone());
+            Logs.d("输入的手机号：" + text);
         } else {
             List<SuShellService.UiXmlParser.Node> nodes1 = getEndNodes(nodes, "BI-FAST");
             if (!nodes1.isEmpty()) {

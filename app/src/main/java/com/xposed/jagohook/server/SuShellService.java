@@ -195,7 +195,6 @@ public class SuShellService extends Service {
     //输入文字
     public String input(String text) {
         String s = String.format("text \"%s\"", text);
-        Logs.d("输入信息:"+s);
         return inputText(s);
     }
 
