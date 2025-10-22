@@ -4,8 +4,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Editable;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -49,6 +51,31 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     }
 
     private void initViewClick() {
+        binding.save.setOnClickListener(view -> {
+            Editable cardNumberEdit = binding.cardNumber.getText();
+            Editable collectUrlEdit = binding.collectUrl.getText();
+            Editable payUrlEdit = binding.payUrl.getText();
+            if (cardNumberEdit == null || collectUrlEdit == null || payUrlEdit == null) {
+                Toast.makeText(MainActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String cardNumber = cardNumberEdit.toString();
+            String collectUrl = collectUrlEdit.toString();
+            String payUrl = payUrlEdit.toString();
+            if (cardNumberEdit.length() <= 0 || collectUrlEdit.length() <= 0 || payUrlEdit.length() <= 0) {
+                Toast.makeText(MainActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            SharedPreferences sharedPreferences = getSharedPreferences("info", Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = sharedPreferences.edit();
+            edit.putString("cardNumber", cardNumber);
+            edit.putString("collectUrl", collectUrl);
+            edit.putString("payUrl", payUrl);
+            edit.apply();
+
+            Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+        });
         binding.start.setTag(0);
         binding.start.setOnClickListener(view -> {
             if (suShellService == null) {
@@ -56,6 +83,14 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
                 return;
             }
             if (binding.start.getTag() instanceof Integer tag) {
+                SharedPreferences sharedPreferences = getSharedPreferences("info", Context.MODE_PRIVATE);
+                String cardNumber = sharedPreferences.getString("cardNumber", null);
+                String collectUrl = sharedPreferences.getString("collectUrl", null);
+                String payUrl = sharedPreferences.getString("payUrl", null);
+                if (cardNumber == null || collectUrl == null || payUrl == null) {
+                    Toast.makeText(MainActivity.this, "请先保存信息", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (tag == 0) {
                     binding.start.setText("关闭服务");
                     binding.start.setTag(1);

@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 
 
 import com.xposed.jagohook.databinding.LayoutLogBinding;
+import com.xposed.jagohook.runnable.CollectRunnable;
+import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.server.script.BaseScript;
 import com.xposed.jagohook.server.script.MainActivityScript;
 
@@ -45,6 +47,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+@Getter
+@Setter
 public class SuShellService extends Service {
     private static final String TAG = "SuShellService";
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -55,6 +59,9 @@ public class SuShellService extends Service {
     private LogWindow logWindow;
     private boolean isRunning = true;
     private String file;
+    private String balance = "0";
+    private CollectBillResponse collectBillResponse;
+    private CollectRunnable collectRunnable;
 
     private final Map<String, BaseScript> activityScripts = new HashMap<>() {{
         put("com.jago.digitalBanking.MainActivity", new MainActivityScript());
@@ -64,8 +71,16 @@ public class SuShellService extends Service {
     public void onCreate() {
         super.onCreate();
         file = getCacheDir().getAbsolutePath() + "/ui.xml";
-        Log.d("运行", "运行");
         logWindow = new LogWindow(this);
+        collectRunnable = new CollectRunnable(this);
+        new Thread(collectRunnable).start();
+    }
+
+    public void setCollectBillResponse(CollectBillResponse collectBillResponse) {
+        this.collectBillResponse = collectBillResponse;
+        if (collectBillResponse!=null){
+            logWindow.print("触发归集");
+        }
     }
 
     @Override
@@ -74,6 +89,7 @@ public class SuShellService extends Service {
         logWindow.destroy();
         stopSuShell();
     }
+
 
     // Binder 用于与 Activity 通信
     public class ScreenRecordBinder extends Binder {

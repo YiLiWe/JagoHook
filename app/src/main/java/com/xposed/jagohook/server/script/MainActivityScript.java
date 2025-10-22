@@ -2,6 +2,7 @@ package com.xposed.jagohook.server.script;
 
 import android.graphics.Rect;
 
+import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.storage.DataStorage;
 import com.xposed.jagohook.utils.Logs;
@@ -21,6 +22,46 @@ public class MainActivityScript extends BaseScript {
         clickDialog(suShellService, map);
         homeClick(suShellService, map, nodes);
         getBill(suShellService, map, nodes);
+        SelectBank(suShellService, map, nodes);
+    }
+
+    //选择银行
+    private void SelectBank(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
+        CollectBillResponse collectBillResponse = suShellService.getCollectBillResponse();
+        if (map.containsKey("Pilih Bank\n" +
+                "Tab 1 dari 3")) {
+            if (collectBillResponse == null) {
+                suShellService.back();
+            } else {
+                SuShellService.UiXmlParser.Node node = map.get("Search Text Field");
+                suShellService.click(node.getBounds());
+                suShellService.input(collectBillResponse.getBank());
+            }
+        } else if (collectBillResponse != null && map.containsKey(collectBillResponse.getBank() + "\n" +
+                "BI-FAST")) {//选择银行
+
+            SuShellService.UiXmlParser.Node node = map.get(collectBillResponse.getBank() + "\n" +
+                    "BI-FAST");
+            suShellService.click(node.getBounds());
+        } else if (collectBillResponse != null && map.containsKey("Periksa") && map.containsKey(collectBillResponse.getBank())) {
+            SuShellService.UiXmlParser.Node node = map.get("Search Text Field");
+            suShellService.click(node.getBounds());
+            suShellService.input(collectBillResponse.getPhone());
+
+            SuShellService.UiXmlParser.Node Periksa = map.get("Periksa");
+            suShellService.click(Periksa.getBounds());
+        } else if (map.containsKey("Akun tidak ditemukan")) {//卡号错误
+            suShellService.getLogWindow().print("卡号错误");
+            suShellService.setCollectBillResponse(null);
+        } else {
+            List<SuShellService.UiXmlParser.Node> nodes1 = getEndNodes(nodes, "BI-FAST");
+            if (!nodes1.isEmpty()) {
+                suShellService.back();
+            }
+            if (map.containsKey("Periksa") && collectBillResponse == null) {
+                suShellService.back();
+            }
+        }
     }
 
     //获取账单
@@ -35,6 +76,17 @@ public class MainActivityScript extends BaseScript {
             DataStorage.getInstance().setHome(false);
             suShellService.back();
         }
+    }
+
+
+    private List<SuShellService.UiXmlParser.Node> getEndNodes(List<SuShellService.UiXmlParser.Node> nodes, String text) {
+        List<SuShellService.UiXmlParser.Node> list = new ArrayList<>();
+        for (SuShellService.UiXmlParser.Node node : nodes) {
+            if (node.getContentDesc().endsWith(text)) {
+                list.add(node);
+            }
+        }
+        return list;
     }
 
     private List<SuShellService.UiXmlParser.Node> getStartNodes(List<SuShellService.UiXmlParser.Node> nodes, String text) {
@@ -59,12 +111,15 @@ public class MainActivityScript extends BaseScript {
                     suShellService.click(node.getBounds());
                 }
             } else {
-                Logs.d("点击首页");
                 dataStorage.setHome(true);
             }
         } else if (map.containsKey("Topup\n" +
                 "e-Wallet")) {
-            if (dataStorage.isHome()) {
+            if (suShellService.getCollectBillResponse() != null) {//转账
+                SuShellService.UiXmlParser.Node Transfer = map.get("Bank\n" +
+                        "Transfer");
+                suShellService.click(Transfer.getBounds());
+            } else if (dataStorage.isHome()) {
                 Logs.d("进入账单");
                 //进入账单
                 SuShellService.UiXmlParser.Node naf = toNAF(suShellService, nodes);
@@ -104,6 +159,8 @@ public class MainActivityScript extends BaseScript {
             SuShellService.UiXmlParser.Node node = getStartTextNode(map, "Rp");
             if (node == null) return;
             String balance = node.getContentDesc();
+            String numbersOnly = balance.replaceAll("[^0-9]", "");
+            suShellService.setBalance(numbersOnly);
             Logs.d("余额：" + balance);
         }
     }
