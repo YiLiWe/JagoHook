@@ -192,6 +192,52 @@ public class SuShellService extends Service {
         return executeSuCommand(builder.toString());
     }
 
+    // 或者使用更可靠的输入方式（推荐）
+    public void inputStableX(String text) {
+        try {
+            // 先发送键盘事件确保焦点
+            outputStream.writeBytes("input keyevent KEYCODE_CLEAR\n");
+            outputStream.flush();
+            Thread.sleep(200);
+
+            // 逐个字符输入（更稳定）
+            for (char c : text.toCharArray()) {
+                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                    outputStream.writeBytes(String.format("input text %c\n", c));
+                    outputStream.flush();
+                    Thread.sleep(50); // 每个字符间隔50毫秒
+                }
+            }
+
+            // 发送回车确认输入
+            outputStream.writeBytes("input keyevent KEYCODE_ENTER\n");
+            outputStream.flush();
+            Thread.sleep(500);
+        } catch (IOException | InterruptedException e) {
+            Log.e(TAG, "稳定输入失败: " + e.getMessage());
+        }
+    }
+
+    // 或者使用更可靠的输入方式（推荐）
+    public void inputStable(String text) {
+        try {
+            // 先发送键盘事件确保焦点
+            executeSuCommand("input keyevent KEYCODE_CLEAR");
+            Thread.sleep(200);
+            // 逐个字符输入（更稳定）
+            for (char c : text.toCharArray()) {
+                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                    executeSuCommand(String.format("input text %c\n", c));
+                    Thread.sleep(50); // 每个字符间隔50毫秒
+                }
+            }
+            executeSuCommand("input keyevent KEYCODE_ENTER");
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "稳定输入失败: " + e.getMessage());
+        }
+    }
+
     //输入文字
     public String input(String text) {
         String s = String.format("text \"%s\"", text);
