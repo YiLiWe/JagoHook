@@ -171,14 +171,6 @@ public class SuShellService extends Service {
         }
     }
 
-    //重新获取一次ui数据
-    public List<UiXmlParser.Node> getNodes() {
-        executeSuCommand("uiautomator dump " + file + "\n");
-        UiXmlParser uiXmlParser = new UiXmlParser(file);
-        uiXmlParser.parseUiXml();
-        return uiXmlParser.getNodes();
-    }
-
     //点击控件
     public void click(Rect rect) {
         if (rect == null) return;
@@ -188,44 +180,29 @@ public class SuShellService extends Service {
         inputText(text);
     }
 
-    public void click(List<Rect> rects) {
-        try {
-            StringBuilder builder = new StringBuilder();
-            for (Rect rect : rects) {
-                int x = rect.centerX();
-                int y = rect.centerY();
-                builder.append(String.format("input tap %s %s\n", x, y));
-            }
-            outputStream.writeBytes(builder.toString());
-            outputStream.flush();
-        } catch (IOException e) {
-            Log.i(TAG, "点击失败");
+    public String click(List<Rect> rects) {
+        StringBuilder builder = new StringBuilder();
+        for (Rect rect : rects) {
+            int x = rect.centerX();
+            int y = rect.centerY();
+            builder.append(String.format("input tap %s %s\n", x, y));
         }
+        return executeSuCommand(builder.toString());
     }
 
     //输入文字
-    public void input(String text) {
+    public String input(String text) {
         String s = String.format("text \"%s\"", text);
-        inputText(s);
+        return inputText(s);
     }
 
     //返回上一页
-    public void back() {
-        try {
-            outputStream.writeBytes("input keyevent KEYCODE_BACK\n");
-            outputStream.flush();
-        } catch (IOException e) {
-            Log.i(TAG, "点击失败");
-        }
+    public String back() {
+        return executeSuCommand("input keyevent KEYCODE_BACK");
     }
 
-    private void inputText(String text) {
-        try {
-            outputStream.writeBytes(String.format("input %s\n", text));
-            outputStream.flush();
-        } catch (IOException e) {
-            Log.i(TAG, "点击失败");
-        }
+    private String inputText(String text) {
+        return executeSuCommand(String.format("input %s", text));
     }
 
     private boolean isOk = true;
