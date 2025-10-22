@@ -38,6 +38,18 @@ public class MainActivityScript extends BaseScript {
                 suShellService.input(collectBillResponse.getBank());
             }
         }
+        if (map.containsKey("Bank tujuan tidak merespon")) {
+            suShellService.getLogWindow().print("卡号错误");
+            suShellService.setCollectBillResponse(null);
+            suShellService.back();
+        }
+
+        if (map.containsKey("Akun tidak ditemukan")) {//卡号错误
+            suShellService.getLogWindow().print("卡号错误");
+            suShellService.setCollectBillResponse(null);
+            suShellService.back();
+        }
+
         if (collectBillResponse != null && map.containsKey(collectBillResponse.getBank() + "\n" +
                 "BI-FAST")) {//选择银行
             SuShellService.UiXmlParser.Node node = map.get(collectBillResponse.getBank() + "\n" +
@@ -50,9 +62,6 @@ public class MainActivityScript extends BaseScript {
 
             SuShellService.UiXmlParser.Node Periksa = map.get("Periksa");
             suShellService.click(Periksa.getBounds());
-        } else if (map.containsKey("Akun tidak ditemukan")) {//卡号错误
-            suShellService.getLogWindow().print("卡号错误");
-            suShellService.setCollectBillResponse(null);
         } else {
             List<SuShellService.UiXmlParser.Node> nodes1 = getEndNodes(nodes, "BI-FAST");
             if (!nodes1.isEmpty()) {
