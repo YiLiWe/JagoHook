@@ -8,6 +8,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.runnable.response.ResultResponse;
 import com.xposed.jagohook.server.SuShellService;
+import com.xposed.jagohook.utils.Logs;
 
 import java.io.IOException;
 
@@ -46,7 +47,7 @@ public class CollectRunnable implements Runnable {
                 initData();
                 continue;
             }
-            if (suShellService.getCollectBillResponse() == null) continue;
+            if (suShellService.getCollectBillResponse() != null) continue;
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {
                 suShellService.setCollectBillResponse(collectBillResponse);
@@ -60,6 +61,7 @@ public class CollectRunnable implements Runnable {
     }
 
     private CollectBillResponse getCollectBean() {
+        Logs.d("测试");
         String getCollectRequest = getCollect();
         ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
         if (response != null) {
