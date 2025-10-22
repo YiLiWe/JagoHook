@@ -49,15 +49,15 @@ public class CollectRunnable implements Runnable {
             if (suShellService.getCollectBillResponse() == null) continue;
             String getCollectRequest = getCollect();
             ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
-            if (response == null) continue;
-            if (response.getCode() != 200) continue;
-            if (response.getData() instanceof JSONObject jsonObject) {
-                CollectBillResponse collectBillResponse = jsonObject.to(CollectBillResponse.class);
-                if (collectBillResponse == null) continue;
-                suShellService.setCollectBillResponse(collectBillResponse);
-            }
+            if (response != null)
+                if (response.getCode() == 200)
+                    if (response.getData() instanceof JSONObject jsonObject) {
+                        CollectBillResponse collectBillResponse = jsonObject.to(CollectBillResponse.class);
+                        if (collectBillResponse == null) continue;
+                        suShellService.setCollectBillResponse(collectBillResponse);
+                    }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(10_000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
