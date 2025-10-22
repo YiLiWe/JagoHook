@@ -38,7 +38,6 @@ dependencies {
     annotationProcessor libs.lombok
     implementation libs.okhttp
     implementation libs.fastjson
-    compileOnly libs.api
     implementation libs.gson
 
     implementation libs.appcompat

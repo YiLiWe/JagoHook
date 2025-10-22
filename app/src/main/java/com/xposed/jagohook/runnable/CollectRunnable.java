@@ -20,11 +20,15 @@ import okhttp3.ResponseBody;
 @Getter
 public class CollectRunnable implements Runnable {
     private final SuShellService suShellService;
-    private final String cardNumber;
-    private final String collectUrl;
+    private String cardNumber;
+    private String collectUrl;
 
     public CollectRunnable(SuShellService suShellService) {
         this.suShellService = suShellService;
+        initData();
+    }
+
+    public void initData() {
         SharedPreferences sharedPreferences = suShellService.getSharedPreferences("info", Context.MODE_PRIVATE);
         cardNumber = sharedPreferences.getString("cardNumber", null);
         collectUrl = sharedPreferences.getString("collectUrl", null);
@@ -38,6 +42,10 @@ public class CollectRunnable implements Runnable {
         suShellService.setCollectBillResponse(collectBillResponsex);
 
         while (suShellService.isRunning()) {
+            if (cardNumber == null || collectUrl == null) {
+                initData();
+                continue;
+            }
             if (suShellService.getCollectBillResponse() == null) continue;
             String getCollectRequest = getCollect();
             ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
