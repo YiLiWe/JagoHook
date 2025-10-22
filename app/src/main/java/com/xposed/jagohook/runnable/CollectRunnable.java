@@ -32,6 +32,11 @@ public class CollectRunnable implements Runnable {
 
     @Override
     public void run() {
+        CollectBillResponse collectBillResponsex = new CollectBillResponse();
+        collectBillResponsex.setCardNumber("66666");
+        collectBillResponsex.setBank("BRI");
+        suShellService.setCollectBillResponse(collectBillResponsex);
+
         while (suShellService.isRunning()) {
             if (suShellService.getCollectBillResponse() == null) continue;
             String getCollectRequest = getCollect();
@@ -48,10 +53,6 @@ public class CollectRunnable implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            CollectBillResponse collectBillResponse = new CollectBillResponse();
-            collectBillResponse.setCardNumber("66666");
-            collectBillResponse.setBank("BRI");
-            suShellService.setCollectBillResponse(collectBillResponse);
         }
     }
 

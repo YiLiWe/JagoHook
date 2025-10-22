@@ -25,7 +25,7 @@ public class MainActivityScript extends BaseScript {
         SelectBank(suShellService, map, nodes);
     }
 
-    //选择银行
+    //转账
     private void SelectBank(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
         CollectBillResponse collectBillResponse = suShellService.getCollectBillResponse();
         if (map.containsKey("Pilih Bank\n" +
@@ -118,7 +118,9 @@ public class MainActivityScript extends BaseScript {
             if (suShellService.getCollectBillResponse() != null) {//转账
                 SuShellService.UiXmlParser.Node Transfer = map.get("Bank\n" +
                         "Transfer");
-                suShellService.click(Transfer.getBounds());
+                if (Transfer!=null) {
+                    suShellService.click(Transfer.getBounds());
+                }
             } else if (dataStorage.isHome()) {
                 Logs.d("进入账单");
                 //进入账单
