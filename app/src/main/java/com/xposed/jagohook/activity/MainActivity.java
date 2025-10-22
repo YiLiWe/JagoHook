@@ -27,6 +27,17 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         super.onCreate(savedInstanceState);
         initXXPermissions();
         initViewClick();
+        initData();
+    }
+
+    private void initData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("info", Context.MODE_PRIVATE);
+        String cardNumber = sharedPreferences.getString("cardNumber", "");
+        String collectUrl = sharedPreferences.getString("collectUrl", "");
+        String payUrl = sharedPreferences.getString("payUrl", "");
+        binding.collectUrl.setText(collectUrl);
+        binding.cardNumber.setText(cardNumber);
+        binding.payUrl.setText(payUrl);
     }
 
     private void initXXPermissions() {
