@@ -205,7 +205,6 @@ public class SuShellService extends Service {
                 if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
                     outputStream.writeBytes(String.format("input text %c\n", c));
                     outputStream.flush();
-                    Thread.sleep(50); // 每个字符间隔50毫秒
                 }
             }
 
