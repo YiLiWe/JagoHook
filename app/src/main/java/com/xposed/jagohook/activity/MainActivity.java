@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         binding.collectUrl.setText(appConfig.getCollectUrl());
         binding.cardNumber.setText(appConfig.getCardNumber());
         binding.payUrl.setText(appConfig.getPayUrl());
+        binding.lockPass.setText(appConfig.getLockPass());
     }
 
     /**
