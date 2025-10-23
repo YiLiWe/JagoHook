@@ -95,8 +95,8 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         //确定转账
         if (nodeInfoMap.containsKey("Cek Ulang Transaksi")) {
-            if (nodeInfoMap.containsKey("Kirim Sekarang")) {
-                AccessibilityNodeInfo nodeInfo1 = nodeInfoMap.get("Kirim Sekarang");
+            if (nodeInfoMap.containsKey("Kirim Sekarang ")) {
+                AccessibilityNodeInfo nodeInfo1 = nodeInfoMap.get("Kirim Sekarang ");
                 if (nodeInfo1!=null){
                     AccessibleUtil.Click(this,nodeInfo1);
                     Logs.d("点击确认");
