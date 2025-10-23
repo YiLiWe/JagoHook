@@ -92,6 +92,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
                     "BI-FAST"));
         }
 
+        if (nodeInfoMap.containsKey("Keterangan penerima")){
+            //判断是否输入成功
+            if (nodeInfoMap.containsKey("Lanjut ")) {
+                clickButton(nodeInfoMap.get("Lanjut "));
+            }
+        }
+
         //输入金额
         if (nodeInfoMap.containsKey("Text Input Amount")) {
             AccessibilityNodeInfo info = nodeInfoMap.get("Text Input Amount");
