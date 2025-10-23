@@ -80,7 +80,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         binding.kill.setOnClickListener(view -> System.exit(0));
         binding.save.setOnClickListener(view -> handleSaveClick());
         binding.start.setTag(0);
-        binding.save.setOnClickListener(new View.OnClickListener() {
+        binding.start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 jumpToSettingPage(view.getContext());
