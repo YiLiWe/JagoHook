@@ -138,6 +138,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void clickBill(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (isTransfer) return;
         if (collectBillResponse != null) return;
+        if (isBill)return;
         if (nodeInfoMap.containsKey("Bank\n" +//在转换导航页，点击账单按钮
                 "Transfer")) {
             AccessibilityNodeInfo nodeInfo = nodeInfoMap.get("Transaksi");
