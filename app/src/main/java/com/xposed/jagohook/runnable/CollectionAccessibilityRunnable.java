@@ -39,7 +39,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
     @Override
     public void run() {
         CollectBillResponse collectBillResponsex = new CollectBillResponse();
-        collectBillResponsex.setPhone("001901139428502");
+        collectBillResponsex.setPhone("66666");
         collectBillResponsex.setIdPlgn(10000);
         collectBillResponsex.setBank("BRI");
         service.setCollectBillResponse(collectBillResponsex);
