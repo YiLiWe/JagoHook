@@ -81,15 +81,45 @@ public class CollectionAccessibilityService extends AccessibilityService {
                     "BI-FAST"));
         }
 
+        //输入金额
+        if (nodeInfoMap.containsKey("Text Input Amount")) {
+            AccessibilityNodeInfo info = nodeInfoMap.get("Text Input Amount");
+            if (info != null) {
+                AccessibilityNodeInfo accessibilityNodeInfo1 = info.getChild(0);
+                if (accessibilityNodeInfo1 != null) {
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(collectBillResponse.getIdPlgn()));
+                }
+
+                //判断是否输入成功
+                if (nodeInfoMap.containsKey("Lanjut ")) {
+                    AccessibilityNodeInfo Lanjut = nodeInfoMap.get("Lanjut ");
+                    if (Lanjut != null) {
+                        if (Lanjut.isClickable()) {
+                            clickButton(Lanjut);
+                        }
+                    }
+                }
+            }
+        }
+
+
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank())) {
             initCard(nodeInfoMap, collectBillResponse.getPhone());
         }
-
+        //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank()) && nodeInfoMap1.containsKey(collectBillResponse.getPhone())) {
             clickButton(nodeInfoMap.get("Periksa"));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
+
     }
 
     //获取账单
