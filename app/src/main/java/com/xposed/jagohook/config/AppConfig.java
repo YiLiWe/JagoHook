@@ -13,6 +13,7 @@ public class AppConfig {
     private static final String KEY_CARD_NUMBER = "cardNumber";
     private static final String KEY_COLLECT_URL = "collectUrl";
     private static final String KEY_PAY_URL = "payUrl";
+    private static final String LOCK_PASS="lockPass";
     
     private final SharedPreferences sharedPreferences;
     
@@ -33,8 +34,16 @@ public class AppConfig {
     public String getPayUrl() {
         return sharedPreferences.getString(KEY_PAY_URL, "");
     }
+
+    public String getLockPass() {
+        return sharedPreferences.getString(LOCK_PASS,"");
+    }
     
     // ========== Setter方法 ==========
+
+    public void setLockPass(String lockPass) {
+        sharedPreferences.edit().putString(LOCK_PASS, lockPass).apply();
+    }
     
     public void setCardNumber(String cardNumber) {
         sharedPreferences.edit().putString(KEY_CARD_NUMBER, cardNumber).apply();
@@ -62,9 +71,10 @@ public class AppConfig {
     
     // ========== 批量设置方法 ==========
     
-    public void setAllConfig(String cardNumber, String collectUrl, String payUrl) {
+    public void setAllConfig(String cardNumber, String collectUrl, String payUrl,String lockPass) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KEY_CARD_NUMBER, cardNumber);
+        editor.putString(LOCK_PASS, lockPass);
         editor.putString(KEY_COLLECT_URL, collectUrl);
         editor.putString(KEY_PAY_URL, payUrl);
         editor.apply();

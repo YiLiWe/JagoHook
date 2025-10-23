@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.xposed.jagohook.config.AppConfig;
 import com.xposed.jagohook.runnable.CollectionAccessibilityRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.utils.AccessibleUtil;
@@ -28,10 +29,12 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private boolean isBill = true;
     //转账中，不点击转账按钮
     private boolean isTransfer = false;
+    private AppConfig appConfig;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        appConfig = new AppConfig(this);
         collectionAccessibilityRunnable = new CollectionAccessibilityRunnable(this);
         new Thread(collectionAccessibilityRunnable).start();
         isRunning = true;
@@ -138,7 +141,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void clickBill(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (isTransfer) return;
         if (collectBillResponse != null) return;
-        if (isBill)return;
+        if (isBill) return;
         if (nodeInfoMap.containsKey("Bank\n" +//在转换导航页，点击账单按钮
                 "Transfer")) {
             AccessibilityNodeInfo nodeInfo = nodeInfoMap.get("Transaksi");
@@ -192,7 +195,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     //屏幕输入密码
     private void ScreenLockPassword(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (!nodeInfoMap.containsKey("GUNAKAN PASSWORD")) return;
-        String pass = "159951";
+        String pass = appConfig.getLockPass();
         for (int i = 0; i < pass.length(); i++) {
             String key = String.valueOf(pass.charAt(i));
             if (nodeInfoMap.containsKey(key)) {

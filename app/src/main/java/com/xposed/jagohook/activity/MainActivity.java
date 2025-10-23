@@ -1,13 +1,14 @@
 package com.xposed.jagohook.activity;
 
-import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.text.Editable;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -19,8 +20,8 @@ import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.utils.PermissionManager;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding> implements ServiceConnection {
-    
-  //  private SuShellService suShellService = null;
+
+    //  private SuShellService suShellService = null;
     private AppConfig appConfig;
     private PermissionManager permissionManager;
 
@@ -79,7 +80,24 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         binding.kill.setOnClickListener(view -> System.exit(0));
         binding.save.setOnClickListener(view -> handleSaveClick());
         binding.start.setTag(0);
-       // binding.start.setOnClickListener(view -> handleStartClick());
+        binding.save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                jumpToSettingPage(view.getContext());
+            }
+        });
+        // binding.start.setOnClickListener(view -> handleStartClick());
+    }
+
+
+    /**
+     * 跳转到无障碍服务设置页面
+     * @param context 设备上下文
+     */
+    public void jumpToSettingPage(Context context) {
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     /**
@@ -89,17 +107,19 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         Editable cardNumberEdit = binding.cardNumber.getText();
         Editable collectUrlEdit = binding.collectUrl.getText();
         Editable payUrlEdit = binding.payUrl.getText();
-        
-        if (!isInputValid(cardNumberEdit, collectUrlEdit, payUrlEdit)) {
+        Editable LockPass = binding.lockPass.getText();
+
+        if (!isInputValid(cardNumberEdit, collectUrlEdit, payUrlEdit, LockPass)) {
             Toast.makeText(MainActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
             return;
         }
-        
+
         String cardNumber = cardNumberEdit.toString();
         String collectUrl = collectUrlEdit.toString();
         String payUrl = payUrlEdit.toString();
-        
-        appConfig.setAllConfig(cardNumber, collectUrl, payUrl);
+        String lockPass = LockPass.toString();
+
+        appConfig.setAllConfig(cardNumber, collectUrl, payUrl, lockPass);
         Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
     }
 
@@ -129,9 +149,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     /**
      * 验证输入是否有效
      */
-    private boolean isInputValid(Editable cardNumber, Editable collectUrl, Editable payUrl) {
-        return cardNumber != null && collectUrl != null && payUrl != null &&
-               cardNumber.length() > 0 && collectUrl.length() > 0 && payUrl.length() > 0;
+    private boolean isInputValid(Editable cardNumber, Editable collectUrl, Editable payUrl, Editable lockPass) {
+        return cardNumber != null && collectUrl != null && payUrl != null && lockPass != null &&
+                cardNumber.length() > 0 && collectUrl.length() > 0 && payUrl.length() > 0 && lockPass.length() > 0;
     }
 
     /**
@@ -140,7 +160,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     private void startService() {
         binding.start.setText("关闭服务");
         binding.start.setTag(1);
-       // suShellService.start();
+        // suShellService.start();
     }
 
     /**
@@ -149,18 +169,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     private void stopService() {
         binding.start.setText("开启服务");
         binding.start.setTag(0);
-       // suShellService.stop();
+        // suShellService.stop();
     }
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         SuShellService.ScreenRecordBinder binder = (SuShellService.ScreenRecordBinder) iBinder;
-       // suShellService = binder.getService();
+        // suShellService = binder.getService();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-      //  suShellService = null;
+        //  suShellService = null;
         binding.start.setText("开启服务");
         binding.start.setTag(1);
     }
