@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Xml;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +28,18 @@ import com.xposed.jagohook.thread.ThreadPoolManager;
 import com.xposed.jagohook.ui.UiXmlParser;
 import com.xposed.jagohook.utils.ActivityExtractor;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +49,7 @@ import java.util.concurrent.Future;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -146,7 +155,7 @@ public class SuShellService extends Service {
      * 关闭服务
      */
     public void stop() {
-        threadPool.submit(this::stopSuShell);
+        threadPoolManager.submit(this::stopSuShell);
     }
 
     // ========== 资源管理方法 ==========
@@ -156,32 +165,15 @@ public class SuShellService extends Service {
      */
     private void cleanupResources() {
         logWindow.destroy();
-        threadPool.submit(this::stopSuShell);
+        threadPoolManager.submit(this::stopSuShell);
     }
     
     /**
      * 优雅关闭线程池
      */
     private void shutdownThreadPool() {
-        if (threadPool != null && !threadPool.isShutdown()) {
-            try {
-                cancelAllTasks();
-                
-                // 停止接受新任务并等待现有任务完成
-                threadPool.shutdown();
-                
-                // 等待所有任务完成，最多等待30秒
-                if (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
-                    // 如果超时，强制关闭
-                    threadPool.shutdownNow();
-                    Log.w(TAG, "线程池强制关闭");
-                }
-                Log.d(TAG, "线程池已优雅关闭");
-            } catch (InterruptedException e) {
-                Log.e(TAG, "线程池关闭时被中断: " + e.getMessage());
-                threadPool.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
+        if (threadPoolManager != null) {
+            threadPoolManager.shutdown();
         }
     }
     
@@ -189,18 +181,8 @@ public class SuShellService extends Service {
      * 取消所有正在执行的任务
      */
     private void cancelAllTasks() {
-        if (stdoutReaderFuture != null && !stdoutReaderFuture.isDone()) {
-            stdoutReaderFuture.cancel(true);
-        }
-        if (stderrReaderFuture != null && !stderrReaderFuture.isDone()) {
-            stderrReaderFuture.cancel(true);
-        }
-        if (commandExecutorFuture != null && !commandExecutorFuture.isDone()) {
-            commandExecutorFuture.cancel(true);
-        }
-        if (collectRunnableFuture != null && !collectRunnableFuture.isDone()) {
-            collectRunnableFuture.cancel(true);
-        }
+        // 由于现在使用ThreadPoolManager，不需要单独取消任务
+        // ThreadPoolManager会在关闭时自动取消所有任务
     }
 
 
@@ -230,7 +212,7 @@ public class SuShellService extends Service {
             stderrReader = new BufferedReader(new InputStreamReader(suProcess.getErrorStream()));
 
             // 使用线程池启动线程读取标准输出
-            stdoutReaderFuture = threadPool.submit(() -> {
+            threadPoolManager.submit(() -> {
                 try {
                     String line;
                     while ((line = stdoutReader.readLine()) != null) {
@@ -242,7 +224,7 @@ public class SuShellService extends Service {
             });
 
             // 使用线程池启动线程读取标准错误
-            stderrReaderFuture = threadPool.submit(() -> {
+            threadPoolManager.submit(() -> {
                 try {
                     String line;
                     while ((line = stderrReader.readLine()) != null) {
@@ -255,12 +237,12 @@ public class SuShellService extends Service {
             });
 
             // 使用线程池持续执行命令
-            commandExecutorFuture = threadPool.submit(() -> {
+            threadPoolManager.submit(() -> {
                 try {
                     while (isRunning) {
-                        outputStream.writeBytes("uiautomator dump " + file + "\n"); // 替换为你的命令
+                        outputStream.writeBytes("uiautomator dump " + file + "\n");
                         outputStream.flush();
-                        Thread.sleep(1000); // 5秒间隔
+                        Thread.sleep(1000); // 1秒间隔
                     }
                 } catch (IOException | InterruptedException e) {
                     Log.e(TAG, "Error executing command: " + e.getMessage());
@@ -353,7 +335,7 @@ public class SuShellService extends Service {
         }
 
         // 使用线程池在后台线程中执行处理逻辑
-        threadPool.submit(() -> {
+        threadPoolManager.submit(() -> {
             try {
                 Log.d(TAG, "开始处理UI dump");
 

@@ -69,7 +69,7 @@ public class ShellCommandExecutor {
      * 点击屏幕指定坐标
      */
     public String tap(int x, int y) {
-        String command = String.format("input tap %d %d", x, y);
+        String command = String.format("input tap %s %s", x, y);
         return executeCommand(command);
     }
     
