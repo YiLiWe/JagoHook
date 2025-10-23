@@ -97,9 +97,21 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (nodeInfoMap.containsKey("Cek Ulang Transaksi")) {
             if (nodeInfoMap.containsKey("Kirim Sekarang ")) {
                 AccessibilityNodeInfo nodeInfo1 = nodeInfoMap.get("Kirim Sekarang ");
-                if (nodeInfo1!=null){
-                    AccessibleUtil.Click(this,nodeInfo1);
-                    Logs.d("点击确认");
+                if (nodeInfo1 != null) {
+                    clickButton(nodeInfo1);
+                }
+            }
+        }
+
+        //输入密码
+        if (nodeInfoMap.containsKey("Masukkan PIN")) {
+            String pass = appConfig.getLockPass();
+            for (int i = 0; i < pass.length(); i++) {
+                String key = String.valueOf(pass.charAt(i));
+                if (nodeInfoMap.containsKey(key)) {
+                    AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get(key);
+                    if (accessibilityNodeInfo == null) return;
+                    accessibilityNodeInfo.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 }
             }
         }
