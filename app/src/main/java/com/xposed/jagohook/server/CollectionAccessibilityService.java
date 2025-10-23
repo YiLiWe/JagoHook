@@ -99,6 +99,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //在转换导航页，点击账单按钮
     private void clickBill(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+        if (nodeInfoMap.containsKey("Title Transfer ke Bank")) return;
         if (collectBillResponse != null) return;
         if (nodeInfoMap.containsKey("Bank\n" +//在转换导航页，点击账单按钮
                 "Transfer")) {
@@ -115,6 +116,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //底部导航栏处理
     private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+        if (nodeInfoMap.containsKey("Title Transfer ke Bank")) return;
         if (isBill && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
             if (nodeInfoMap.containsKey("Transaksi\n" +
                     "Tab 3 dari 5")) {
@@ -169,7 +171,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
             if (accessibilityNodeInfo == null) return;
             AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
-            if (accessibilityNodeInfo1!=null) {
+            if (accessibilityNodeInfo1 != null) {
                 accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
                 AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, text);
             }
