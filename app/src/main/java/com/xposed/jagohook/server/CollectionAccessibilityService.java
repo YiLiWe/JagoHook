@@ -140,8 +140,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (collectBillResponse != null) return;
         if (nodeInfoMap.containsKey("Bank\n" +//在转换导航页，点击账单按钮
                 "Transfer")) {
-            AccessibilityNodeInfo nodeInfo = nodeInfoMap.get("Bank\n" +
-                    "Transfer");
+            AccessibilityNodeInfo nodeInfo = nodeInfoMap.get("Transaksi");
             if (nodeInfo != null) {
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfo.getParent();
                 AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(1);
