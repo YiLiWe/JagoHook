@@ -65,6 +65,26 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
             clickButton(nodeInfoMap.get("Oke "));
         }
+
+        if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
+            collectBillResponse = null;
+            isTransfer = false;
+            Logs.d("转账失败");
+            clickButton(nodeInfoMap.get("Oke "));
+        }
+
+        if (collectBillResponse == null) {
+            if (nodeInfoMap.containsKey("Search Text Field")) {
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
+                if (accessibilityNodeInfo != null) {
+                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
+                    if (nodeInfo != null) {
+                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(3);
+                        clickButton(nodeInfo1);
+                    }
+                }
+            }
+        }
     }
 
     //转账
