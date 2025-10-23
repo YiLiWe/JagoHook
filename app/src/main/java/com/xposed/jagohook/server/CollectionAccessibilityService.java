@@ -172,8 +172,10 @@ public class CollectionAccessibilityService extends AccessibilityService {
             AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
             if (accessibilityNodeInfo == null) return;
             AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
-            accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-            AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, text);
+            if (accessibilityNodeInfo1!=null) {
+                accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, text);
+            }
         }
     }
 
