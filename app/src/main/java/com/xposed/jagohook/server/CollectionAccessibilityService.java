@@ -146,7 +146,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (!nodeInfoMap.containsKey("Aktivitas Terakhir")) return;
         AccessibilityNodeInfo nodeInfo = AccessibleUtil.toStateContentDescMap(nodeInfoMap, "Rp");
         if (nodeInfo == null) return;
-        String balance = nodeInfo.getText().toString();
+        String balance = nodeInfo.getContentDescription().toString();
         String numbersOnly = balance.replaceAll("[^0-9]", "");
         this.balance = numbersOnly;
         Logs.d("余额：" + numbersOnly);
