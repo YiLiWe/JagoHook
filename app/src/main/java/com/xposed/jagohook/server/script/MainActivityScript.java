@@ -63,8 +63,9 @@ public class MainActivityScript extends BaseScript {
 
             SuShellService.UiXmlParser.Node Periksa = map.get("Periksa");
             String text = suShellService.inputString(collectBillResponse.getPhone());
-            String text1 = String.format("input tap %s %s\n", Periksa.getBoundsX(), Periksa.getBoundsY());
-            suShellService.executeSuCommand(text + text1);
+            // String text1 = String.format("input tap %s %s\n", Periksa.getBoundsX(), Periksa.getBoundsY());
+            suShellService.input(collectBillResponse.getPhone());
+
         } else {
             List<SuShellService.UiXmlParser.Node> nodes1 = getEndNodes(nodes, "BI-FAST");
             if (!nodes1.isEmpty()) {

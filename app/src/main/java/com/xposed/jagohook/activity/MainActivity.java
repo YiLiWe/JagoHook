@@ -1,5 +1,6 @@
 package com.xposed.jagohook.activity;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +20,7 @@ import com.xposed.jagohook.utils.PermissionManager;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding> implements ServiceConnection {
     
-    private SuShellService suShellService = null;
+  //  private SuShellService suShellService = null;
     private AppConfig appConfig;
     private PermissionManager permissionManager;
 
@@ -56,7 +57,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         permissionManager.requestOverlayPermission(new PermissionManager.PermissionCallback() {
             @Override
             public void onPermissionGranted() {
-                connectService();
+                //connectService();
             }
 
             @Override
@@ -78,7 +79,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         binding.kill.setOnClickListener(view -> System.exit(0));
         binding.save.setOnClickListener(view -> handleSaveClick());
         binding.start.setTag(0);
-        binding.start.setOnClickListener(view -> handleStartClick());
+       // binding.start.setOnClickListener(view -> handleStartClick());
     }
 
     /**
@@ -105,7 +106,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     /**
      * 处理启动按钮点击
      */
-    private void handleStartClick() {
+    /*private void handleStartClick() {
         if (suShellService == null) {
             Toast.makeText(MainActivity.this, "操作失败，服务未连接,关闭重新打开", Toast.LENGTH_SHORT).show();
             return;
@@ -123,7 +124,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
                 stopService();
             }
         }
-    }
+    }*/
 
     /**
      * 验证输入是否有效
@@ -139,7 +140,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     private void startService() {
         binding.start.setText("关闭服务");
         binding.start.setTag(1);
-        suShellService.start();
+       // suShellService.start();
     }
 
     /**
@@ -148,18 +149,18 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     private void stopService() {
         binding.start.setText("开启服务");
         binding.start.setTag(0);
-        suShellService.stop();
+       // suShellService.stop();
     }
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         SuShellService.ScreenRecordBinder binder = (SuShellService.ScreenRecordBinder) iBinder;
-        suShellService = binder.getService();
+       // suShellService = binder.getService();
     }
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
-        suShellService = null;
+      //  suShellService = null;
         binding.start.setText("开启服务");
         binding.start.setTag(1);
     }
