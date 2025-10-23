@@ -3,4 +3,8 @@
     <string-array name="xposedscope">
         <item>com.jago.digitalBanking</item>
     </string-array>
+    <string-array name="modes">
+        <item>代收/归集</item>
+        <item>代付</item>
+    </string-array>
 </resources>

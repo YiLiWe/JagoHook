@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
-import android.util.Xml;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,85 +17,84 @@ import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 
-
 import com.xposed.jagohook.databinding.LayoutLogBinding;
 import com.xposed.jagohook.runnable.CollectRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.server.script.BaseScript;
 import com.xposed.jagohook.server.script.MainActivityScript;
-import com.xposed.jagohook.utils.Logs;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import com.xposed.jagohook.shell.ShellCommandExecutor;
+import com.xposed.jagohook.thread.ThreadPoolManager;
+import com.xposed.jagohook.ui.UiXmlParser;
+import com.xposed.jagohook.utils.ActivityExtractor;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 public class SuShellService extends Service {
+    
+    // ========== 常量定义 ==========
     private static final String TAG = "SuShellService";
+    private static final long MIN_PROCESS_INTERVAL = 2000; // 最小处理间隔2秒
+    
+    // ========== 组件管理 ==========
+    private ThreadPoolManager threadPoolManager;
+    private ShellCommandExecutor shellExecutor;
+    
+    // ========== UI处理相关 ==========
+    private volatile boolean isProcessing = false;
+    private final Object lock = new Object();
+    private long lastProcessTime = 0;
+    
+    // ========== Shell进程相关 ==========
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Process suProcess;
     private DataOutputStream outputStream;
     private BufferedReader stdoutReader;
     private BufferedReader stderrReader;
-    private LogWindow logWindow;
     private boolean isRunning = true;
+    
+    // ========== 文件路径 ==========
     private String file;
+    
+    // ========== 业务逻辑相关 ==========
     private String balance = "0";
     private CollectBillResponse collectBillResponse;
     private CollectRunnable collectRunnable;
-
+    private LogWindow logWindow;
+    
+    // ========== Activity脚本映射 ==========
     private final Map<String, BaseScript> activityScripts = new HashMap<>() {{
         put("com.jago.digitalBanking.MainActivity", new MainActivityScript());
     }};
 
+    // ========== Service生命周期方法 ==========
+    
     @Override
     public void onCreate() {
         super.onCreate();
-        file = getCacheDir().getAbsolutePath() + "/ui.xml";
-        logWindow = new LogWindow(this);
-        collectRunnable = new CollectRunnable(this);
-        new Thread(collectRunnable).start();
-    }
-
-    public void setCollectBillResponse(CollectBillResponse collectBillResponse) {
-        this.collectBillResponse = collectBillResponse;
-        if (collectBillResponse != null) {
-            logWindow.print("触发归集");
-        }
+        initializeComponents();
+        startBackgroundTasks();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        logWindow.destroy();
-        stopSuShell();
-    }
-
-
-    // Binder 用于与 Activity 通信
-    public class ScreenRecordBinder extends Binder {
-        public SuShellService getService() {
-            return SuShellService.this;
-        }
+        cleanupResources();
+        shutdownThreadPool();
     }
 
     @Nullable
@@ -105,16 +103,119 @@ public class SuShellService extends Service {
         return new ScreenRecordBinder();
     }
 
-    //开启服务
+    // ========== 初始化方法 ==========
+    
+    /**
+     * 初始化组件
+     */
+    private void initializeComponents() {
+        file = getCacheDir().getAbsolutePath() + "/ui.xml";
+        logWindow = new LogWindow(this);
+        collectRunnable = new CollectRunnable(this);
+        threadPoolManager = new ThreadPoolManager();
+        shellExecutor = new ShellCommandExecutor();
+    }
+    
+    /**
+     * 启动后台任务
+     */
+    private void startBackgroundTasks() {
+        threadPoolManager.submit(collectRunnable);
+    }
+
+    // ========== 业务方法 ==========
+    
+    /**
+     * 设置归集响应
+     */
+    public void setCollectBillResponse(CollectBillResponse collectBillResponse) {
+        this.collectBillResponse = collectBillResponse;
+        if (collectBillResponse != null) {
+            logWindow.print("触发归集");
+        }
+    }
+    
+    /**
+     * 开启服务
+     */
     public void start() {
         startSuShell();
     }
-
-
-    //关闭服务
+    
+    /**
+     * 关闭服务
+     */
     public void stop() {
-        stopSuShell();
+        threadPool.submit(this::stopSuShell);
     }
+
+    // ========== 资源管理方法 ==========
+    
+    /**
+     * 清理资源
+     */
+    private void cleanupResources() {
+        logWindow.destroy();
+        threadPool.submit(this::stopSuShell);
+    }
+    
+    /**
+     * 优雅关闭线程池
+     */
+    private void shutdownThreadPool() {
+        if (threadPool != null && !threadPool.isShutdown()) {
+            try {
+                cancelAllTasks();
+                
+                // 停止接受新任务并等待现有任务完成
+                threadPool.shutdown();
+                
+                // 等待所有任务完成，最多等待30秒
+                if (!threadPool.awaitTermination(30, TimeUnit.SECONDS)) {
+                    // 如果超时，强制关闭
+                    threadPool.shutdownNow();
+                    Log.w(TAG, "线程池强制关闭");
+                }
+                Log.d(TAG, "线程池已优雅关闭");
+            } catch (InterruptedException e) {
+                Log.e(TAG, "线程池关闭时被中断: " + e.getMessage());
+                threadPool.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    
+    /**
+     * 取消所有正在执行的任务
+     */
+    private void cancelAllTasks() {
+        if (stdoutReaderFuture != null && !stdoutReaderFuture.isDone()) {
+            stdoutReaderFuture.cancel(true);
+        }
+        if (stderrReaderFuture != null && !stderrReaderFuture.isDone()) {
+            stderrReaderFuture.cancel(true);
+        }
+        if (commandExecutorFuture != null && !commandExecutorFuture.isDone()) {
+            commandExecutorFuture.cancel(true);
+        }
+        if (collectRunnableFuture != null && !collectRunnableFuture.isDone()) {
+            collectRunnableFuture.cancel(true);
+        }
+    }
+
+
+    // ========== Binder类 ==========
+    
+    /**
+     * Binder 用于与 Activity 通信
+     */
+    public class ScreenRecordBinder extends Binder {
+        public SuShellService getService() {
+            return SuShellService.this;
+        }
+    }
+
+
 
     /**
      * 启动 su shell 并捕获输出
@@ -128,22 +229,20 @@ public class SuShellService extends Service {
             stdoutReader = new BufferedReader(new InputStreamReader(suProcess.getInputStream()));
             stderrReader = new BufferedReader(new InputStreamReader(suProcess.getErrorStream()));
 
-            // 启动线程读取标准输出
-            new Thread(() -> {
+            // 使用线程池启动线程读取标准输出
+            stdoutReaderFuture = threadPool.submit(() -> {
                 try {
                     String line;
                     while ((line = stdoutReader.readLine()) != null) {
-                        Log.d(TAG, "stdout: " + line);
                         handlerMsg(line);
-                        //  logWindow.print(line);
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "Error reading stdout: " + e.getMessage());
                 }
-            }).start();
+            });
 
-            // 启动线程读取标准错误
-            new Thread(() -> {
+            // 使用线程池启动线程读取标准错误
+            stderrReaderFuture = threadPool.submit(() -> {
                 try {
                     String line;
                     while ((line = stderrReader.readLine()) != null) {
@@ -153,20 +252,20 @@ public class SuShellService extends Service {
                 } catch (IOException e) {
                     Log.e(TAG, "Error reading stderr: " + e.getMessage());
                 }
-            }).start();
+            });
 
-            // 持续执行命令（示例：每隔5秒执行一次 `ls`）
-            new Thread(() -> {
+            // 使用线程池持续执行命令
+            commandExecutorFuture = threadPool.submit(() -> {
                 try {
                     while (isRunning) {
                         outputStream.writeBytes("uiautomator dump " + file + "\n"); // 替换为你的命令
                         outputStream.flush();
-                        Thread.sleep(2000); // 5秒间隔
+                        Thread.sleep(1000); // 5秒间隔
                     }
                 } catch (IOException | InterruptedException e) {
                     Log.e(TAG, "Error executing command: " + e.getMessage());
                 }
-            }).start();
+            });
 
         } catch (IOException e) {
             Log.e(TAG, "Failed to start su shell: " + e.getMessage());
@@ -194,38 +293,28 @@ public class SuShellService extends Service {
 
     // 或者使用更可靠的输入方式（推荐）
     public void inputStableX(String text) {
-        try {
-            // 逐个字符输入（更稳定）
-            for (char c : text.toCharArray()) {
-                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
-                    outputStream.writeBytes(String.format("input text \"%c\"\n", c));
-                    outputStream.flush();
-                }
+        StringBuilder stringBuilder = new StringBuilder();
+        // 逐个字符输入（更稳定）
+        for (char c : text.toCharArray()) {
+            if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                stringBuilder.append(String.format("input text \"%c\"\n", c));
             }
-        } catch (IOException e) {
-            Log.e(TAG, "稳定输入失败: " + e.getMessage());
         }
+        executeSuCommand(stringBuilder.toString());
     }
 
-    // 或者使用更可靠的输入方式（推荐）
-    public void inputStable(String text) {
-        try {
-            // 先发送键盘事件确保焦点
-            executeSuCommand("input keyevent KEYCODE_CLEAR");
-            Thread.sleep(200);
-            // 逐个字符输入（更稳定）
-            for (char c : text.toCharArray()) {
-                if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
-                    executeSuCommand(String.format("input text %c\n", c));
-                    Thread.sleep(50); // 每个字符间隔50毫秒
-                }
+
+    public String inputString(String text) {
+        StringBuilder stringBuilder = new StringBuilder();
+        // 逐个字符输入（更稳定）
+        for (char c : text.toCharArray()) {
+            if (Character.isLetterOrDigit(c) || Character.isWhitespace(c)) {
+                stringBuilder.append(String.format("input text \"%c\"\n", c));
             }
-            executeSuCommand("input keyevent KEYCODE_ENTER");
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "稳定输入失败: " + e.getMessage());
         }
+        return stringBuilder.toString();
     }
+
 
     //输入文字
     public String input(String text) {
@@ -242,26 +331,61 @@ public class SuShellService extends Service {
         return executeSuCommand(String.format("input %s", text));
     }
 
-    private boolean isOk = true;
-
     //id.co.bri.brimo.ui.activities.FastMenuActivity
     private void handlerMsg(String line) {
         String ui = "UI hierchary dumped to: " + file;
-        if (line.equals(ui)) {
-            UiXmlParser uiXmlParser = new UiXmlParser(file);
-            uiXmlParser.parseUiXml();
-            List<UiXmlParser.Node> nodes = uiXmlParser.getNodes();
-            String activity = executeSuCommand("dumpsys activity activities | grep  mFocusedWindow");
-            if (activity != null) {
-                activity = extractActivityName(activity);
+
+        // 检查是否是需要处理的UI dump消息
+        if (!line.equals(ui)) {
+            return;
+        }
+
+        // 检查是否正在处理中，避免二次频繁执行
+        synchronized (lock) {
+            long currentTime = System.currentTimeMillis();
+            if (isProcessing || (currentTime - lastProcessTime) < MIN_PROCESS_INTERVAL) {
+                Log.d(TAG, "跳过处理，正在执行中或时间间隔太短");
+                return;
+            }
+
+            isProcessing = true;
+            lastProcessTime = currentTime;
+        }
+
+        // 使用线程池在后台线程中执行处理逻辑
+        threadPool.submit(() -> {
+            try {
+                Log.d(TAG, "开始处理UI dump");
+
+                // 解析UI XML
+                UiXmlParser uiXmlParser = new UiXmlParser(file);
+                uiXmlParser.parseUiXml();
+                List<UiXmlParser.Node> nodes = uiXmlParser.getNodes();
+
+                // 获取当前Activity
+                String activity = executeSuCommand("dumpsys activity activities | grep mFocusedWindow");
                 if (activity != null) {
-                    Log.d(TAG, "当前Activity：" + activity);
-                    if (activityScripts.containsKey(activity)) {
-                        activityScripts.get(activity).onCreate(this, nodes);
+                    activity = extractActivityName(activity);
+                    if (activity != null) {
+                        Log.d(TAG, "当前Activity：" + activity);
+
+                        // 执行对应的脚本
+                        if (activityScripts.containsKey(activity)) {
+                            activityScripts.get(activity).onCreate(this, nodes);
+                        }
                     }
                 }
+
+            } catch (Exception e) {
+                Log.e(TAG, "处理UI dump时发生错误: " + e.getMessage());
+            } finally {
+                // 处理完成，重置状态
+                synchronized (lock) {
+                    isProcessing = false;
+                }
+                Log.d(TAG, "UI dump处理完成");
             }
-        }
+        });
     }
 
     public static String extractActivityName(String input) {

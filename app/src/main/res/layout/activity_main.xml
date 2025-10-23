@@ -28,8 +28,8 @@
             android:hint="卡号">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
                 android:id="@+id/cardNumber"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -39,9 +39,9 @@
             android:hint="归集后台">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/collect_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/collect_url"
                 android:text="http://129.227.37.66:8787/" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,10 +52,16 @@
             android:hint="代付后台">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
                 android:id="@+id/pay_url"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:entries="@array/modes" />
 
         <Button
             android:id="@+id/save"
@@ -69,10 +75,17 @@
             android:layout_height="wrap_content"
             android:text="开启服务" />
 
-        <Button
-            android:id="@+id/kill"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="彻底关闭" />
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/kill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="彻底关闭" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

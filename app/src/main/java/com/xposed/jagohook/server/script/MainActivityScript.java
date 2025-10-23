@@ -16,6 +16,7 @@ public class MainActivityScript extends BaseScript {
 
     @Override
     public void onCreate(SuShellService suShellService, List<SuShellService.UiXmlParser.Node> nodes) {
+
         Map<String, SuShellService.UiXmlParser.Node> map = NodeScriptUtils.toContentDescMap(nodes);
         inputPassword(suShellService, map);
         getBalance(suShellService, map);
@@ -28,6 +29,7 @@ public class MainActivityScript extends BaseScript {
     //转账
     private void SelectBank(SuShellService suShellService, Map<String, SuShellService.UiXmlParser.Node> map, List<SuShellService.UiXmlParser.Node> nodes) {
         CollectBillResponse collectBillResponse = suShellService.getCollectBillResponse();
+
         if (map.containsKey("Pilih Bank\n" +
                 "Tab 1 dari 3")) {
             if (collectBillResponse == null) {
@@ -59,7 +61,10 @@ public class MainActivityScript extends BaseScript {
             SuShellService.UiXmlParser.Node node = map.get("Search Text Field");
             suShellService.click(node.getBounds());
 
-            suShellService.inputStableX(collectBillResponse.getPhone());
+            SuShellService.UiXmlParser.Node Periksa = map.get("Periksa");
+            String text = suShellService.inputString(collectBillResponse.getPhone());
+            String text1 = String.format("input tap %s %s\n", Periksa.getBoundsX(), Periksa.getBoundsY());
+            suShellService.executeSuCommand(text + text1);
         } else {
             List<SuShellService.UiXmlParser.Node> nodes1 = getEndNodes(nodes, "BI-FAST");
             if (!nodes1.isEmpty()) {
