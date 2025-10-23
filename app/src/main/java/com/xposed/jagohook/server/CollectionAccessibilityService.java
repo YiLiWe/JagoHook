@@ -26,6 +26,8 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     // ========== ui相关变量 ==========
     private boolean isBill = true;
+    //转账中，不点击转账按钮
+    private boolean isTransfer = false;
 
     @Override
     public void onCreate() {
@@ -59,10 +61,11 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (collectBillResponse == null) return;
 
         //点击转账按钮
-        if (nodeInfoMap.containsKey("Bank\n" +
+        if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
                 "Transfer")) {
             clickButton(nodeInfoMap.get("Bank\n" +
                     "Transfer"));
+            isTransfer = true;
         }
 
         //选择银行
@@ -84,7 +87,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank())&&nodeInfoMap1.containsKey(collectBillResponse.getPhone())){
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank()) && nodeInfoMap1.containsKey(collectBillResponse.getPhone())) {
             clickButton(nodeInfoMap.get("Periksa"));
         }
     }
@@ -103,7 +106,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //在转换导航页，点击账单按钮
     private void clickBill(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
-        if (nodeInfoMap.containsKey("Title Transfer ke Bank")) return;
+        if (!isTransfer) return;
         if (collectBillResponse != null) return;
         if (nodeInfoMap.containsKey("Bank\n" +//在转换导航页，点击账单按钮
                 "Transfer")) {
@@ -120,7 +123,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //底部导航栏处理
     private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
-        if (nodeInfoMap.containsKey("Title Transfer ke Bank")) return;
+        if (!isTransfer) return;
         if (isBill && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
             if (nodeInfoMap.containsKey("Transaksi\n" +
                     "Tab 3 dari 5")) {
