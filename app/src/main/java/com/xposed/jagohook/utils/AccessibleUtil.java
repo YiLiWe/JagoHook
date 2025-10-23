@@ -8,13 +8,35 @@ import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AccessibleUtil {
+
+    //获取备注的文字
+    public static Map<String, AccessibilityNodeInfo> toContentDescMap(AccessibilityNodeInfo accessibilityNodeInfo) {
+        List<AccessibilityNodeInfo> accessibilityNodeInfos = new ArrayList<>();
+        AccessibleUtil.getAccessibilityNodeInfoS(accessibilityNodeInfos, accessibilityNodeInfo);
+        return toContentDescMap(accessibilityNodeInfos);
+    }
+
+    public static Map<String, AccessibilityNodeInfo> toContentDescMap(List<AccessibilityNodeInfo> accessibilityNodeInfos) {
+        Map<String, AccessibilityNodeInfo> map = new HashMap<>();
+        for (AccessibilityNodeInfo node : accessibilityNodeInfos) {
+            if (node.getContentDescription() != null) {
+                Logs.d(node.getContentDescription().toString());
+                map.put(node.getContentDescription().toString(), node);
+            }
+        }
+        return map;
+    }
+
+
     /**
      * 使用无障碍服务进行文本输入（最稳定）
      */
-    public static boolean inputTextByAccessibility( AccessibilityNodeInfo targetNode, String text) {
+    public static boolean inputTextByAccessibility(AccessibilityNodeInfo targetNode, String text) {
         // 设置新文本
         Bundle setTextArgs = new Bundle();
         setTextArgs.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
