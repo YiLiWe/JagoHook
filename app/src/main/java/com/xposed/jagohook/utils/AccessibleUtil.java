@@ -2,6 +2,7 @@ package com.xposed.jagohook.utils;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
+import android.content.pm.ArchivedActivityInfo;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -13,6 +14,27 @@ import java.util.List;
 import java.util.Map;
 
 public class AccessibleUtil {
+
+    //获取开头
+    public static AccessibilityNodeInfo toStateContentDescMap(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
+        for (String key : nodeInfoMap.keySet()) {
+            if (key.startsWith(text)) {
+                return nodeInfoMap.get(key);
+            }
+        }
+        return null;
+    }
+
+    public static Map<String, AccessibilityNodeInfo> toStateContentDescMapX(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
+        Map<String, AccessibilityNodeInfo> map = new HashMap<>();
+        for (String key : nodeInfoMap.keySet()) {
+            if (key.startsWith(text)) {
+                map.put(key, nodeInfoMap.get(key));
+            }
+        }
+        return map;
+    }
+
 
     //获取备注的文字
     public static Map<String, AccessibilityNodeInfo> toContentDescMap(AccessibilityNodeInfo accessibilityNodeInfo) {
