@@ -38,6 +38,13 @@ public class CollectionAccessibilityRunnable implements Runnable {
 
     @Override
     public void run() {
+        /*
+        CollectBillResponse collectBillResponsex = new CollectBillResponse();
+        collectBillResponsex.setPhone("001901139428502");
+        collectBillResponsex.setIdPlgn(10000);
+        collectBillResponsex.setBank("BRI");
+        service.setCollectBillResponse(collectBillResponsex);*/
+
         while (service.isRunning()) {
             if (cardNumber == null || collectUrl == null) {
                 initData();
