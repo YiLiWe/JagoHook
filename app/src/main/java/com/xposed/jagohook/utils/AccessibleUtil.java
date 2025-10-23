@@ -43,6 +43,23 @@ public class AccessibleUtil {
         return toContentDescMap(accessibilityNodeInfos);
     }
 
+    //获取备注的文字
+    public static Map<String, AccessibilityNodeInfo> toTextMap(AccessibilityNodeInfo accessibilityNodeInfo) {
+        List<AccessibilityNodeInfo> accessibilityNodeInfos = new ArrayList<>();
+        AccessibleUtil.getAccessibilityNodeInfoS(accessibilityNodeInfos, accessibilityNodeInfo);
+        return toTextMap(accessibilityNodeInfos);
+    }
+
+    public static Map<String, AccessibilityNodeInfo> toTextMap(List<AccessibilityNodeInfo> accessibilityNodeInfos) {
+        Map<String, AccessibilityNodeInfo> map = new HashMap<>();
+        for (AccessibilityNodeInfo node : accessibilityNodeInfos) {
+            if (node.getText() != null) {
+                map.put(node.getText().toString(), node);
+            }
+        }
+        return map;
+    }
+
     public static Map<String, AccessibilityNodeInfo> toContentDescMap(List<AccessibilityNodeInfo> accessibilityNodeInfos) {
         Map<String, AccessibilityNodeInfo> map = new HashMap<>();
         for (AccessibilityNodeInfo node : accessibilityNodeInfos) {

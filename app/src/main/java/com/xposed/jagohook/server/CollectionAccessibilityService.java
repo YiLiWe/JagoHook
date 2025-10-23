@@ -51,11 +51,11 @@ public class CollectionAccessibilityService extends AccessibilityService {
         BottomNavigationBar(nodeInfoMap);
         clickBill(nodeInfoMap);
         getBill(nodeInfoMap);
-        Transfer(nodeInfoMap);
+        Transfer(nodeInfoMap, nodeInfo);
     }
 
     //转账
-    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo) {
         if (collectBillResponse == null) return;
 
         //点击转账按钮
@@ -81,6 +81,10 @@ public class CollectionAccessibilityService extends AccessibilityService {
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank())) {
             initCard(nodeInfoMap, collectBillResponse.getPhone());
+        }
+
+        Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank())&&nodeInfoMap1.containsKey(collectBillResponse.getPhone())){
             clickButton(nodeInfoMap.get("Periksa"));
         }
     }
