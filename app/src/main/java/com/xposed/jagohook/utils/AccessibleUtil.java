@@ -47,7 +47,6 @@ public class AccessibleUtil {
         Map<String, AccessibilityNodeInfo> map = new HashMap<>();
         for (AccessibilityNodeInfo node : accessibilityNodeInfos) {
             if (node.getContentDescription() != null) {
-                Logs.d(node.getContentDescription().toString());
                 map.put(node.getContentDescription().toString(), node);
             }
         }

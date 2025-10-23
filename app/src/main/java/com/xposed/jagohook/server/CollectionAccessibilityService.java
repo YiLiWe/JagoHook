@@ -1,7 +1,6 @@
 package com.xposed.jagohook.server;
 
 import android.accessibilityservice.AccessibilityService;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -10,8 +9,6 @@ import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -177,17 +174,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, text);
             }
         }
-    }
-
-    private Map<String, AccessibilityNodeInfo> toContentDescMap(List<AccessibilityNodeInfo> nodes) {
-        Map<String, AccessibilityNodeInfo> map = new HashMap<>();
-        for (AccessibilityNodeInfo node : nodes) {
-            if (node.getContentDescription() != null) {
-                Logs.d(node.getContentDescription().toString());
-                map.put(node.getContentDescription().toString(), node);
-            }
-        }
-        return map;
     }
 
     @Override
