@@ -57,6 +57,14 @@ public class CollectionAccessibilityService extends AccessibilityService {
         clickBill(nodeInfoMap);
         getBill(nodeInfoMap);
         Transfer(nodeInfoMap, nodeInfo);
+        Dialogs(nodeInfoMap);
+    }
+
+    //弹窗直接点击确认
+    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+        if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
+            clickButton(nodeInfoMap.get("Oke "));
+        }
     }
 
     //转账
