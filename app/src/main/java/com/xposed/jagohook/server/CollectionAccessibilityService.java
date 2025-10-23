@@ -79,6 +79,16 @@ public class CollectionAccessibilityService extends AccessibilityService {
             isTransfer = true;
         }
 
+        //等待转账状态
+        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
+            collectBillResponse = null;
+            isTransfer = false;
+            Logs.d("转账成功");
+            if (nodeInfoMap.containsKey("Selesai")) {
+                clickButton(nodeInfoMap.get("Selesai"));
+            }
+        }
+
         //选择银行
         if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
             //输入银行搜索
