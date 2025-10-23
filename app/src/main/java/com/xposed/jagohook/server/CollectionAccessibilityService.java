@@ -92,7 +92,15 @@ public class CollectionAccessibilityService extends AccessibilityService {
                     "BI-FAST"));
         }
 
-        if (nodeInfoMap.containsKey("Keterangan penerima")){
+
+        //确定转账
+        if (nodeInfoMap.containsKey("Cek Ulang Transaksi")) {
+            if (nodeInfoMap.containsKey("Kirim Sekarang")) {
+                clickButton(nodeInfoMap.get("Kirim Sekarang"));
+            }
+        }
+
+        if (nodeInfoMap.containsKey("Keterangan penerima")) {
             //判断是否输入成功
             if (nodeInfoMap.containsKey("Lanjut ")) {
                 clickButton(nodeInfoMap.get("Lanjut "));
