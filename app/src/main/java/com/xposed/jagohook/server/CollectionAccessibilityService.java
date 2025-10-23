@@ -180,6 +180,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank())) {
             initCard(nodeInfoMap, collectBillResponse.getPhone());
         }
+
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank()) && nodeInfoMap1.containsKey(collectBillResponse.getPhone())) {
@@ -218,6 +219,11 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfo.getParent();
                 AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(1);
                 clickButton(accessibilityNodeInfo1);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
