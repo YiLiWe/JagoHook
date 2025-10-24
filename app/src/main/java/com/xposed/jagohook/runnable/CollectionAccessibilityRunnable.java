@@ -19,6 +19,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+//获取归集
 @Getter
 public class CollectionAccessibilityRunnable implements Runnable {
     private final CollectionAccessibilityService service;

@@ -12,5 +12,13 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:actionBarStyle">@style/toolbar</item>
+        <item name="actionMenuTextColor">@color/white</item>
     </style>
+
+
+    <style name="toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@color/white</item>
+    </style>
+
 </resources>

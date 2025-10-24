@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.text.Editable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 import com.xposed.jagohook.activity.base.BaseActivity;
 import com.xposed.jagohook.config.AppConfig;
@@ -19,7 +21,7 @@ import com.xposed.jagohook.databinding.ActivityMainBinding;
 import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.utils.PermissionManager;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding> implements ServiceConnection {
+public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     //  private SuShellService suShellService = null;
     private AppConfig appConfig;
@@ -69,16 +71,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
         });
     }
 
-    public void connectService() {
-        Intent intent = new Intent(this, SuShellService.class);
-        bindService(intent, this, Context.BIND_AUTO_CREATE);
-    }
-
     /**
      * 初始化视图点击事件
      */
     private void initViewClick() {
-        binding.kill.setOnClickListener(view -> System.exit(0));
+        binding.toolbar.setOnMenuItemClickListener(item -> {
+            Intent intent = new Intent(MainActivity.this, BillActivity.class);
+            startActivity(intent);
+            return false;
+        });
         binding.save.setOnClickListener(view -> handleSaveClick());
         binding.start.setTag(0);
         binding.start.setOnClickListener(new View.OnClickListener() {
@@ -125,64 +126,10 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> implements S
     }
 
     /**
-     * 处理启动按钮点击
-     */
-    /*private void handleStartClick() {
-        if (suShellService == null) {
-            Toast.makeText(MainActivity.this, "操作失败，服务未连接,关闭重新打开", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        if (binding.start.getTag() instanceof Integer tag) {
-            if (!appConfig.isConfigValid()) {
-                Toast.makeText(MainActivity.this, "请先保存信息", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            
-            if (tag == 0) {
-                startService();
-            } else {
-                stopService();
-            }
-        }
-    }*/
-
-    /**
      * 验证输入是否有效
      */
     private boolean isInputValid(Editable cardNumber, Editable collectUrl, Editable payUrl, Editable lockPass) {
         return cardNumber != null && collectUrl != null && payUrl != null && lockPass != null &&
                 cardNumber.length() > 0 && collectUrl.length() > 0 && payUrl.length() > 0 && lockPass.length() > 0;
-    }
-
-    /**
-     * 启动服务
-     */
-    private void startService() {
-        binding.start.setText("关闭服务");
-        binding.start.setTag(1);
-        // suShellService.start();
-    }
-
-    /**
-     * 停止服务
-     */
-    private void stopService() {
-        binding.start.setText("开启服务");
-        binding.start.setTag(0);
-        // suShellService.stop();
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-        SuShellService.ScreenRecordBinder binder = (SuShellService.ScreenRecordBinder) iBinder;
-        // suShellService = binder.getService();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName componentName) {
-        //  suShellService = null;
-        binding.start.setText("开启服务");
-        binding.start.setTag(1);
     }
 }

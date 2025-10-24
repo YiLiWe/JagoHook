@@ -8,5 +8,6 @@
         <item>代付</item>
     </string-array>
     <string name="accessibility_service_description">监听</string>
-    <string name="accessibility_service_label">监听</string>
+    <string name="accessibility_service_label">Jago归集代收服务</string>
+    <string name="accessibility_service_label_2">Jago代付服务</string>
 </resources>
