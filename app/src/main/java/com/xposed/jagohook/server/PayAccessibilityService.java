@@ -341,9 +341,11 @@ public class PayAccessibilityService extends AccessibilityService {
         if (nodeInfo == null) return;
         String balance = nodeInfo.getContentDescription().toString();
         String numbersOnly = balance.replaceAll("[^0-9]", "");
-        this.balance = numbersOnly;
+        if (!numbersOnly.isEmpty()) {
+            this.balance = numbersOnly;
+            Logs.d("余额：" + numbersOnly);
+        }
         clickButton(nodeInfo);
-        Logs.d("余额：" + numbersOnly);
     }
 
     //屏幕输入密码
