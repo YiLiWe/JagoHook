@@ -82,7 +82,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
     private String getCollect() {
         OkHttpClient okHttpClient = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(String.format("%sgetCollect?cardNumber=%s&balance=%s", collectUrl, cardNumber, service.getBalance()))
+                .url(String.format("%sv1/getCollect?cardNumber=%s&balance=%s", collectUrl, cardNumber, service.getBalance()))
                 .build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.isSuccessful()) {
