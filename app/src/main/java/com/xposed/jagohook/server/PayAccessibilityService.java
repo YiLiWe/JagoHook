@@ -68,22 +68,24 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(payRunnable).start();
 
         isRunning = true;
+
+        logWindow.printA("代付运行中");
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         try {
+            AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
+            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
+            ScreenLockPassword(nodeInfoMap);
+            getBalance(nodeInfoMap);
+            BottomNavigationBar(nodeInfoMap);
+            Transfer(nodeInfoMap, nodeInfo);
+            Dialogs(nodeInfoMap);
             Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            Logs.d("异常:" + e.getMessage());
         }
-        AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
-        Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
-        ScreenLockPassword(nodeInfoMap);
-        getBalance(nodeInfoMap);
-        BottomNavigationBar(nodeInfoMap);
-        Transfer(nodeInfoMap, nodeInfo);
-        Dialogs(nodeInfoMap);
     }
 
     //弹窗直接点击确认
@@ -97,6 +99,7 @@ public class PayAccessibilityService extends AccessibilityService {
             postCollectStatus(0, "卡号错误", id);
             takeLatestOrderBean = null;
             isTransfer = false;
+            balance = "0";
             Logs.d("转账失败");
             logWindow.printA("归集失败");
             clickButton(nodeInfoMap.get("Oke "));
@@ -202,6 +205,7 @@ public class PayAccessibilityService extends AccessibilityService {
             postCollectStatus(1, "转账成功", id);
             takeLatestOrderBean = null;
             isTransfer = false;
+            balance = "0";
             logWindow.printA("归集成功");
             Logs.d("转账成功");
             if (nodeInfoMap.containsKey("Selesai")) {
