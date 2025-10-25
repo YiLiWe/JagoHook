@@ -163,7 +163,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     AppDatabase appDatabase = AppDatabase.getInstance(CollectionAccessibilityService.this);
                     PostCollectionErrorDao billDao = appDatabase.postCollectionErrorDao();
                     PostCollectionErrorEntity postCollectionErrorEntity = new PostCollectionErrorEntity();
@@ -191,7 +191,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         //等待转账状态
         if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
             long id = collectBillResponse.getId();
-            postCollectStatus(1, "转账成功",id);
+            postCollectStatus(1, "转账成功", id);
             collectBillResponse = null;
             isTransfer = false;
             logWindow.printA("归集成功");
@@ -391,6 +391,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void ScreenLockPassword(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (!nodeInfoMap.containsKey("GUNAKAN PASSWORD")) return;
         String pass = appConfig.getLockPass();
+        Logs.d("输入密码：" + pass);
         for (int i = 0; i < pass.length(); i++) {
             String key = String.valueOf(pass.charAt(i));
             if (nodeInfoMap.containsKey(key)) {
