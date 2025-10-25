@@ -342,6 +342,7 @@ public class PayAccessibilityService extends AccessibilityService {
         String balance = nodeInfo.getContentDescription().toString();
         String numbersOnly = balance.replaceAll("[^0-9]", "");
         this.balance = numbersOnly;
+        clickButton(nodeInfo);
         Logs.d("余额：" + numbersOnly);
     }
 

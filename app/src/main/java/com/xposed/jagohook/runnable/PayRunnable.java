@@ -7,6 +7,7 @@ import com.alibaba.fastjson2.JSON;
 import com.xposed.jagohook.runnable.response.MessageBean;
 import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.server.PayAccessibilityService;
+import com.xposed.jagohook.utils.Logs;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,7 @@ public class PayRunnable implements Runnable {
     public TakeLatestOrderBean getOrder() {
         String text = takeLatestPayoutOrder();
         if (text == null) return null;
+        Logs.d("代付订单:" + text);
         MessageBean messageBean = JSON.to(MessageBean.class, text);
         if (messageBean == null) return null;
         if (messageBean.getData() == null) return null;
