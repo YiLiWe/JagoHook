@@ -63,13 +63,6 @@ public class PayRunnable implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            TakeLatestOrderBean takeLatestOrderBean1 = new TakeLatestOrderBean();
-            takeLatestOrderBean1.setOrderNo("89955");
-            takeLatestOrderBean1.setMoney(true);
-            takeLatestOrderBean1.setAmount(10000);
-            takeLatestOrderBean1.setBankName("BRI");
-            takeLatestOrderBean1.setCardNumber("001901139428502");
-            service.setTakeLatestOrderBean(takeLatestOrderBean1);
         }
     }
 
