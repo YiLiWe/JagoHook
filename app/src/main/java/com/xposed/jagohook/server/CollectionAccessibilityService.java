@@ -68,7 +68,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     //转账中，不点击转账按钮
     private boolean isTransfer = false;
     private AppConfig appConfig;
-    private  long lastExecutionTime = 0;
+    private long lastExecutionTime = 0;
 
     // ========== 悬浮窗 ==========
     private LogWindow logWindow;
@@ -105,16 +105,20 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-
-            AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
-            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
-            ScreenLockPassword(nodeInfoMap);
-            getBalance(nodeInfoMap);
-            BottomNavigationBar(nodeInfoMap);
-            clickBill(nodeInfoMap);
-            getBill(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo);
-            Dialogs(nodeInfoMap);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
+        Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
+        ScreenLockPassword(nodeInfoMap);
+        getBalance(nodeInfoMap);
+        BottomNavigationBar(nodeInfoMap);
+        clickBill(nodeInfoMap);
+        getBill(nodeInfoMap);
+        Transfer(nodeInfoMap, nodeInfo);
+        Dialogs(nodeInfoMap);
     }
 
     //弹窗直接点击确认

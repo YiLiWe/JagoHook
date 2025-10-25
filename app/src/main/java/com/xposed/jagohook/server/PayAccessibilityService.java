@@ -50,7 +50,7 @@ public class PayAccessibilityService extends AccessibilityService {
     private PostPayErrorRunnable postPayErrorRunnable;
     private LogWindow logWindow;
 
-    private  long lastExecutionTime = 0;
+    private long lastExecutionTime = 0;
 
     //转账中，不点击转账按钮
     private boolean isTransfer = false;
@@ -72,13 +72,18 @@ public class PayAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-            AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
-            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
-            ScreenLockPassword(nodeInfoMap);
-            getBalance(nodeInfoMap);
-            BottomNavigationBar(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo);
-            Dialogs(nodeInfoMap);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
+        Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
+        ScreenLockPassword(nodeInfoMap);
+        getBalance(nodeInfoMap);
+        BottomNavigationBar(nodeInfoMap);
+        Transfer(nodeInfoMap, nodeInfo);
+        Dialogs(nodeInfoMap);
     }
 
     //弹窗直接点击确认
@@ -219,7 +224,7 @@ public class PayAccessibilityService extends AccessibilityService {
                 clickButton(nodeInfoMap.get(takeLatestOrderBean.getBankName() + "\n" +
                         "BI-FAST"));
             }
-        }else {//选择钱包银行
+        } else {//选择钱包银行
             if (nodeInfoMap.containsKey(takeLatestOrderBean.getBankName())) {
                 clickButton(nodeInfoMap.get(takeLatestOrderBean.getBankName()));
             }
