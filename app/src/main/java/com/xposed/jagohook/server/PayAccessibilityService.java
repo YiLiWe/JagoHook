@@ -173,11 +173,20 @@ public class PayAccessibilityService extends AccessibilityService {
         if (takeLatestOrderBean == null) return;
 
         //点击转账按钮
-        if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
-                "Transfer")) {
-            clickButton(nodeInfoMap.get("Bank\n" +
-                    "Transfer"));
-            isTransfer = true;
+        if (!takeLatestOrderBean.isMoney()) {
+            if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
+                    "Transfer")) {
+                clickButton(nodeInfoMap.get("Bank\n" +
+                        "Transfer"));
+                isTransfer = true;
+            }
+        } else {//进行钱包转账
+            if (!isTransfer && nodeInfoMap.containsKey("Topup\n" +
+                    "e-Wallet")) {
+                clickButton(nodeInfoMap.get("Topup\n" +
+                        "e-Wallet"));
+                isTransfer = true;
+            }
         }
 
         //等待转账状态
@@ -194,16 +203,24 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //选择银行
-        if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
-            //输入银行搜索
-            initCard(nodeInfoMap, takeLatestOrderBean.getBankName());
+        if (!takeLatestOrderBean.isMoney()) {
+            if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
+                //输入银行搜索
+                initCard(nodeInfoMap, takeLatestOrderBean.getBankName());
+            }
         }
 
         //银行存在
-        if (nodeInfoMap.containsKey(takeLatestOrderBean.getBankName() + "\n" +
-                "BI-FAST")) {
-            clickButton(nodeInfoMap.get(takeLatestOrderBean.getBankName() + "\n" +
-                    "BI-FAST"));
+        if (!takeLatestOrderBean.isMoney()) {
+            if (nodeInfoMap.containsKey(takeLatestOrderBean.getBankName() + "\n" +
+                    "BI-FAST")) {
+                clickButton(nodeInfoMap.get(takeLatestOrderBean.getBankName() + "\n" +
+                        "BI-FAST"));
+            }
+        }else {//选择钱包银行
+            if (nodeInfoMap.containsKey(takeLatestOrderBean.getBankName())) {
+                clickButton(nodeInfoMap.get(takeLatestOrderBean.getBankName()));
+            }
         }
 
 

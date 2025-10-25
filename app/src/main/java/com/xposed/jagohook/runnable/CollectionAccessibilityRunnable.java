@@ -51,7 +51,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
                 initData();
                 continue;
             }
-            if (service.getCollectBillResponse() == null) continue;
+            if (service.getCollectBillResponse() != null) continue;
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {
                 service.setCollectBillResponse(collectBillResponse);
@@ -65,8 +65,9 @@ public class CollectionAccessibilityRunnable implements Runnable {
     }
 
     private CollectBillResponse getCollectBean() {
-        Logs.d("网络请求");
         String getCollectRequest = getCollect();
+        if (getCollectRequest == null) return null;
+        Logs.d("请求归集结果:" + getCollectRequest);
         ResultResponse response = JSON.to(ResultResponse.class, getCollectRequest);
         if (response != null) {
             if (response.getCode() == 200) {

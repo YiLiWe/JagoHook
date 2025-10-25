@@ -1,24 +1,18 @@
 package com.xposed.jagohook.activity;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.Settings;
 import android.text.Editable;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 
 import com.xposed.jagohook.activity.base.BaseActivity;
 import com.xposed.jagohook.config.AppConfig;
 import com.xposed.jagohook.databinding.ActivityMainBinding;
-import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.utils.PermissionManager;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding> {

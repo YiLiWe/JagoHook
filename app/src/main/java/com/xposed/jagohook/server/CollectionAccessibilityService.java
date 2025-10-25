@@ -298,11 +298,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 AccessibilityNodeInfo BackButton = nodeInfoMap.get("Back Button");
                 clickButton(BackButton);
             }
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 
