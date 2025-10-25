@@ -8,10 +8,12 @@ import androidx.room.RoomDatabase;
 
 import com.xposed.jagohook.room.dao.BillDao;
 import com.xposed.jagohook.room.dao.PostCollectionErrorDao;
+import com.xposed.jagohook.room.dao.PostPayErrorDao;
 import com.xposed.jagohook.room.entity.BillEntity;
 import com.xposed.jagohook.room.entity.PostCollectionErrorEntity;
+import com.xposed.jagohook.room.entity.PostPayErrorEntity;
 
-@Database(entities = {BillEntity.class, PostCollectionErrorEntity.class}, version = 1)
+@Database(entities = {BillEntity.class, PostCollectionErrorEntity.class, PostPayErrorEntity.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase mAppDatabase;
@@ -34,4 +36,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BillDao billDao();
 
     public abstract PostCollectionErrorDao postCollectionErrorDao();
+
+    public abstract PostPayErrorDao postPayErrorDao();
 }

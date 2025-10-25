@@ -16,7 +16,11 @@ import androidx.annotation.NonNull;
 
 import com.xposed.jagohook.config.AppConfig;
 import com.xposed.jagohook.databinding.LayoutLogBinding;
+import com.xposed.jagohook.room.AppDatabase;
+import com.xposed.jagohook.room.dao.PostPayErrorDao;
+import com.xposed.jagohook.room.entity.PostPayErrorEntity;
 import com.xposed.jagohook.runnable.PayRunnable;
+import com.xposed.jagohook.runnable.PostPayErrorRunnable;
 import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
@@ -43,7 +47,7 @@ public class PayAccessibilityService extends AccessibilityService {
     private boolean isRunning = false;
     private TakeLatestOrderBean takeLatestOrderBean;
     private String balance = "0";
-
+    private PostPayErrorRunnable postPayErrorRunnable;
     private LogWindow logWindow;
 
     //转账中，不点击转账按钮
@@ -55,8 +59,12 @@ public class PayAccessibilityService extends AccessibilityService {
         super.onCreate();
         appConfig = new AppConfig(this);
         logWindow = new LogWindow(this);
+
+        postPayErrorRunnable = new PostPayErrorRunnable(this);
         payRunnable = new PayRunnable(this);
+        new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
+
         isRunning = true;
     }
 
@@ -129,15 +137,33 @@ public class PayAccessibilityService extends AccessibilityService {
                 .url(appConfig.getPayUrl() + "app/payoutOrderCallback")
                 .build();
         OkHttpClient client = new OkHttpClient();
+        int finalState = state;
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
+                AppDatabase appDatabase = AppDatabase.getInstance(PayAccessibilityService.this);
+                PostPayErrorDao billDao = appDatabase.postPayErrorDao();
+                PostPayErrorEntity postCollectionErrorEntity = new PostPayErrorEntity();
+                postCollectionErrorEntity.setOrderNo(transferBean.getOrderNo());
+                postCollectionErrorEntity.setAmount(String.valueOf(transferBean.getAmount()));
+                postCollectionErrorEntity.setState(finalState);
+                postCollectionErrorEntity.setFailReason(error);
+                postCollectionErrorEntity.setPaymentTime(timeStr);
+                billDao.insert(postCollectionErrorEntity);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
+                if (response.isSuccessful()) return;
+                AppDatabase appDatabase = AppDatabase.getInstance(PayAccessibilityService.this);
+                PostPayErrorDao billDao = appDatabase.postPayErrorDao();
+                PostPayErrorEntity postCollectionErrorEntity = new PostPayErrorEntity();
+                postCollectionErrorEntity.setOrderNo(transferBean.getOrderNo());
+                postCollectionErrorEntity.setAmount(String.valueOf(transferBean.getAmount()));
+                postCollectionErrorEntity.setState(finalState);
+                postCollectionErrorEntity.setFailReason(error);
+                postCollectionErrorEntity.setPaymentTime(timeStr);
+                billDao.insert(postCollectionErrorEntity);
             }
         });
     }
