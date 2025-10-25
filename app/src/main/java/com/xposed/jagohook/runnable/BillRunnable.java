@@ -8,6 +8,7 @@ import com.xposed.jagohook.room.AppDatabase;
 import com.xposed.jagohook.room.dao.BillDao;
 import com.xposed.jagohook.room.entity.BillEntity;
 import com.xposed.jagohook.server.CollectionAccessibilityService;
+import com.xposed.jagohook.utils.Logs;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 //上传代收
 public class BillRunnable implements Runnable {
@@ -58,6 +60,11 @@ public class BillRunnable implements Runnable {
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 billDao.updateStateById(billEntity.getUid(), 1);
+            }
+            try (ResponseBody body = response.body()) {
+                if (body == null) return;
+                String result = body.string();
+                Logs.d(result);
             }
         } catch (IOException e) {
             billDao.updateStateById(billEntity.getUid(), 0);
