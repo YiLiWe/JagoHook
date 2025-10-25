@@ -54,8 +54,10 @@ public class BillRunnable implements Runnable {
 
     private void postBill(BillDao billDao, BillEntity billEntity) {
         OkHttpClient okHttpClient = new OkHttpClient();
+        String text = String.format("%sv1/harvest?cardNumber=%s&text=%s", collectUrl, cardNumber, billEntity.getText());
+        Logs.d("提交内容:" + text);
         Request request = new Request.Builder()
-                .url(String.format("%sv1/harvest?cardNumber=%s&text=%s", collectUrl, cardNumber, billEntity.getText()))
+                .url(text)
                 .build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.isSuccessful()) {
