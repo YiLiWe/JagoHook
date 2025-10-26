@@ -106,7 +106,7 @@ public class PayAccessibilityService extends AccessibilityService {
             clickButton(nodeInfoMap.get("Oke "));
         }
 
-        if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")){
+        if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")) {
             TakeLatestOrderBean id = takeLatestOrderBean;
             postCollectStatus(0, "网络异常", id);
             takeLatestOrderBean = null;
@@ -299,6 +299,10 @@ public class PayAccessibilityService extends AccessibilityService {
             }
         }
 
+        //确认钱包转账
+        if (nodeInfoMap.containsKey("Cek Ulang Transaksi") && nodeInfoMap.containsKey("Top Up Sekarang")) {
+            clickButton(nodeInfoMap.get("Top Up Sekarang"));
+        }
 
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean.getBankName())) {
