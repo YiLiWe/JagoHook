@@ -43,12 +43,14 @@ import okhttp3.Response;
 @Getter
 @Setter
 public class PayAccessibilityService extends AccessibilityService {
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
     // ========== 代付相关 ==========
-    private boolean isRunning = false;
-    private TakeLatestOrderBean takeLatestOrderBean;
+    private volatile boolean isRunning = false;
+    private volatile TakeLatestOrderBean takeLatestOrderBean;
     private PostPayErrorRunnable postPayErrorRunnable;
     private PayRunnable payRunnable;
-    private String balance = "0";
+    private volatile String balance = "0";
 
     // ========== ui操作 ==========
     private LogWindow logWindow;
@@ -400,8 +402,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
     }
 
-    public static class LogWindow {
-        private final Handler handler = new Handler(Looper.getMainLooper());
+    public class LogWindow {
         private final PayAccessibilityService service;
         private final LayoutLogBinding binding;
         private WindowManager windowManager;

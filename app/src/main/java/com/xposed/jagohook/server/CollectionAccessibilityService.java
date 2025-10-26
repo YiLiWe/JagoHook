@@ -49,13 +49,14 @@ import okhttp3.Response;
 @Getter
 @Setter
 public class CollectionAccessibilityService extends AccessibilityService {
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     // ========== 归集相关变量 ==========
     private CollectionAccessibilityRunnable collectionAccessibilityRunnable;
     private PostCollectionErrorRunnable postCollectionErrorRunnable;
-    private CollectBillResponse collectBillResponse;
-    private String balance = "0";
-    private boolean isRunning = false;
+    private volatile CollectBillResponse collectBillResponse;
+    private volatile String balance = "0";
+    private volatile boolean isRunning = false;
     private String cardNumber;
     private String collectUrl;
 
@@ -424,8 +425,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     }
 
-    public static class LogWindow {
-        private final Handler handler = new Handler(Looper.getMainLooper());
+    public class LogWindow {
         private final CollectionAccessibilityService service;
         private final LayoutLogBinding binding;
         private WindowManager windowManager;
