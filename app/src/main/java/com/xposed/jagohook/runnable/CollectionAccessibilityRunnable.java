@@ -51,6 +51,8 @@ public class CollectionAccessibilityRunnable implements Runnable {
                 initData();
                 continue;
             }
+            if (service.getBalance().isEmpty()) continue;
+            if (service.getBalance().equals("0")) continue;
             if (service.getCollectBillResponse() != null) continue;
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {

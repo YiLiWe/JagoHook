@@ -63,6 +63,8 @@ public class PayRunnable implements Runnable {
         while (service.isRunning()) {
             if (service.getTakeLatestOrderBean() != null) continue;
             if (cardNumber == null || collectUrl == null) continue;
+            if (service.getBalance().isEmpty()) continue;
+            if (service.getBalance().equals("0")) continue;
             TakeLatestOrderBean takeLatestOrderBean = getOrder();
             if (takeLatestOrderBean != null) {
                 service.getLogWindow().print("获取到订单:" + takeLatestOrderBean.getOrderNo());
