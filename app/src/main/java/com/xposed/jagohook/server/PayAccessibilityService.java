@@ -94,8 +94,8 @@ public class PayAccessibilityService extends AccessibilityService {
 
     public void performCustomScroll(AccessibilityService service) {
         Path path = new Path();
-        path.moveTo(500, 1000); // 起始点
-        path.lineTo(500, 300); // 结束点
+        path.moveTo(500, 300); // 起始点
+        path.lineTo(500, 1000); // 结束点
 
         GestureDescription.Builder builder = new GestureDescription.Builder();
         builder.addStroke(new GestureDescription.StrokeDescription(path, 0, 300));
