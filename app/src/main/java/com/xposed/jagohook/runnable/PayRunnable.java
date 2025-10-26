@@ -81,7 +81,6 @@ public class PayRunnable implements Runnable {
     public TakeLatestOrderBean getOrder() {
         String text = takeLatestPayoutOrder();
         if (text == null) return null;
-        Logs.d("代付订单:" + text);
         MessageBean messageBean = JSON.to(MessageBean.class, text);
         if (messageBean == null) return null;
         if (messageBean.getData() == null) return null;

@@ -300,8 +300,8 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //确认钱包转账
-        if (nodeInfoMap.containsKey("Cek Ulang Transaksi") && nodeInfoMap.containsKey("Top Up Sekarang")) {
-            clickButton(nodeInfoMap.get("Top Up Sekarang"));
+        if (nodeInfoMap.containsKey("Cek Ulang Transaksi") && nodeInfoMap.containsKey("Top Up Sekarang ")) {
+            clickButton(nodeInfoMap.get("Top Up Sekarang "));
         }
 
         //输入银行卡号
@@ -319,8 +319,6 @@ public class PayAccessibilityService extends AccessibilityService {
                 e.printStackTrace();
             }
         }
-
-
     }
 
 
