@@ -102,6 +102,9 @@ public class PayAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
         try {
+            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {//不处理控件点击事件
+                return;
+            }
             AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
             Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
             ScreenLockPassword(nodeInfoMap);
