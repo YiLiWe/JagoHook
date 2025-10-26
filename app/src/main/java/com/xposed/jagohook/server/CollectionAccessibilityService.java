@@ -120,7 +120,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
             getBill(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
-            Thread.sleep(2000);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
