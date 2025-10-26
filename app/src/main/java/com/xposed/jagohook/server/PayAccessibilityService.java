@@ -43,17 +43,18 @@ import okhttp3.Response;
 @Getter
 @Setter
 public class PayAccessibilityService extends AccessibilityService {
-    private PayRunnable payRunnable;
+    // ========== 代付相关 ==========
     private boolean isRunning = false;
     private TakeLatestOrderBean takeLatestOrderBean;
-    private String balance = "0";
     private PostPayErrorRunnable postPayErrorRunnable;
+    private PayRunnable payRunnable;
+    private String balance = "0";
+
+    // ========== ui操作 ==========
     private LogWindow logWindow;
-
-    private long lastExecutionTime = 0;
-
-    //转账中，不点击转账按钮
     private boolean isTransfer = false;
+
+    // ========== 配置 ==========
     private AppConfig appConfig;
 
     @Override
@@ -82,7 +83,7 @@ public class PayAccessibilityService extends AccessibilityService {
             BottomNavigationBar(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }

@@ -6,19 +6,8 @@ import java.util.Map;
 import lombok.Getter;
 
 public class BankUtils {
-    // 定义HashMap存储银行名称映射（Key：分割线上方银行，Value：分割线下方银行）
     @Getter
-    private static Map<String, String> bankMap = new HashMap<>();
-
-    static {
-        initBankMapping();
-    }
-
-    /**
-     * 初始化银行名称映射（Key：分割线上方银行，Value：分割线下方对应银行）
-     * 注：按“完全匹配”规则建立映射，无匹配项时Value设为“无对应匹配值”
-     */
-    private static void initBankMapping() {
+    private final static Map<String, String> bankMap = new HashMap<>() {{
         // 分割线上方银行（Key）→ 分割线下方银行（Value）
         bankMap.put("OCBC", "OCBC NISP"); // 按常见对应关系匹配，若实际不同可调整
         bankMap.put("BANK BCA", "BCA");
@@ -148,9 +137,8 @@ public class BankUtils {
         bankMap.put("PT BANK NANO SYARIAH", "Bank Nano Syariah");
         bankMap.put("PT BANK SMBC INDONESIA TBK", "Bank SMBC Indonesia");
         bankMap.put("PT Bank Hibank Indonesia", "Hibank");
-       // bankMap.put("PT. BANK CHINA CONSTRUCTION INDONESIA(CCBI)", "Bank CCB Indonesia");
+        // bankMap.put("PT. BANK CHINA CONSTRUCTION INDONESIA(CCBI)", "Bank CCB Indonesia");
         bankMap.put("PT. BANK IBK INDONESIA", "IBK Bank");
         bankMap.put("STANDARD CHARTERED", "Standard Chartered");
-    }
-
+    }};
 }
