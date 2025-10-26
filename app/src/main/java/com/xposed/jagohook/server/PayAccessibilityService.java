@@ -85,7 +85,7 @@ public class PayAccessibilityService extends AccessibilityService {
             BottomNavigationBar(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
