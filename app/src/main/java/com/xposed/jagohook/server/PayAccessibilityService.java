@@ -27,7 +27,9 @@ import com.xposed.jagohook.utils.Logs;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -55,7 +57,7 @@ public class PayAccessibilityService extends AccessibilityService {
     // ========== ui操作 ==========
     private LogWindow logWindow;
     private boolean isTransfer = false;
-
+    private AccessibilityNodeInfo scrollView;
     // ========== 配置 ==========
     private AppConfig appConfig;
 
@@ -71,9 +73,22 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(payRunnable).start();
 
         isRunning = true;
-
         logWindow.printA("代付运行中");
+        scrollDown();
     }
+
+    //下拉
+    private void scrollDown() {
+        if (takeLatestOrderBean != null) {
+            handler.postDelayed(this::scrollDown, 10_000);
+        } else if (scrollView == null) {
+            handler.postDelayed(this::scrollDown, 10_000);
+        } else {
+            scrollView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            handler.postDelayed(this::scrollDown, 10_000);
+        }
+    }
+
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
@@ -85,9 +100,22 @@ public class PayAccessibilityService extends AccessibilityService {
             BottomNavigationBar(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
+            handlerScrollView(nodeInfo);
             Thread.sleep(1000);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
+        }
+    }
+
+    //处理滑动
+    private void handlerScrollView(AccessibilityNodeInfo nodeInfo) {
+        List<AccessibilityNodeInfo> accessibilityNodeInfos = new ArrayList<>();
+        AccessibleUtil.getAccessibilityNodeInfoS(accessibilityNodeInfos, nodeInfo);
+        for (AccessibilityNodeInfo accessibilityNodeInfo : accessibilityNodeInfos) {
+            if (accessibilityNodeInfo.isScrollable()) {
+                scrollView = accessibilityNodeInfo;
+                break;
+            }
         }
     }
 
@@ -361,7 +389,6 @@ public class PayAccessibilityService extends AccessibilityService {
             this.balance = numbersOnly;
             Logs.d("余额：" + numbersOnly);
         }
-        clickButton(nodeInfo);
     }
 
     //屏幕输入密码
