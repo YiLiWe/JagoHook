@@ -110,7 +110,6 @@ public class PayAccessibilityService extends AccessibilityService {
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
             handlerScrollView(nodeInfo);
-            Thread.sleep(1000);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
@@ -352,11 +351,6 @@ public class PayAccessibilityService extends AccessibilityService {
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean.getBankName()) && nodeInfoMap1.containsKey(takeLatestOrderBean.getCardNumber())) {
             clickButton(nodeInfoMap.get("Periksa"));
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 

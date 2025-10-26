@@ -117,7 +117,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
             getBill(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
-            Thread.sleep(1000);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
@@ -288,11 +287,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank()) && nodeInfoMap1.containsKey(collectBillResponse.getPhone())) {
             clickButton(nodeInfoMap.get("Periksa"));
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
 
