@@ -84,7 +84,7 @@ public class PayAccessibilityService extends AccessibilityService {
         } else if (scrollView == null) {
             handler.postDelayed(this::scrollDown, 10_000);
         } else {
-            scrollView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            scrollView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
             handler.postDelayed(this::scrollDown, 10_000);
         }
     }
