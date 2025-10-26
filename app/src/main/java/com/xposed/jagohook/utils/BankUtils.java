@@ -9,136 +9,136 @@ public class BankUtils {
     @Getter
     private final static Map<String, String> bankMap = new HashMap<>() {{
         // 分割线上方银行（Key）→ 分割线下方银行（Value）
-        bankMap.put("OCBC", "OCBC NISP"); // 按常见对应关系匹配，若实际不同可调整
-        bankMap.put("BANK BCA", "BCA");
-        bankMap.put("BANK CIMB NIAGA", "CIMB Niaga");
-        bankMap.put("BANK BRI", "BRI");
-        bankMap.put("BANK MANDIRI", "Mandiri");
-        bankMap.put("BANK BNI", "BNI");
-        bankMap.put("BANK SEABANK INDONESIA", "Seabank");
-        bankMap.put("BANK SYARIAH INDONESIA", "Bank Syariah Indonesia");
-        bankMap.put("BANK PERMATA", "Permata Bank");
-        bankMap.put("BANK BTN", "BTN");
-        // bankMap.put("BANK JAGO", "Nomor Telepon atau Email"); // 下方无完全匹配“BANK JAGO”，按实际需求调整
-        bankMap.put("BANK ACEH SYARIAH", "BPD Aceh Syariah");
-        bankMap.put("BANK ALADIN", "Bank Aladin Syariah");
-        bankMap.put("BANK AMAR INDONESIA", "Bank Amar");
-        bankMap.put("BANK ANZ", "ANZ");
-        bankMap.put("BANK ARTHA GRAHA", "Bank Artha Graha");
-        bankMap.put("BANK BANTEN", "Bank Banten");
-        bankMap.put("BANK BCA SYARIAH", "BCA Syariah");
-        bankMap.put("BANK BENGKULU", "Bank Bengkulu");
-        bankMap.put("BANK BJB", "BJB");
-        bankMap.put("BANK BJB SYARIAH", "BJB Syariah");
-        bankMap.put("BANK BNP PARIBAS", "BNP Paribas");
-        bankMap.put("BANK BPR KS", "BPR KS");
-        bankMap.put("BANK BTN SYARIAH", "BTN Syariah");
-        bankMap.put("BANK BTPN SYARIAH", "BTPN Syariah");
-        bankMap.put("BANK BUKOPIN SYARIAH", "Bank Syariah Bukopin");
-        bankMap.put("BANK BUMI ARTA", "Bank Bumi Arta");
-        bankMap.put("BANK CAPITAL", "Bank Capital");
-        bankMap.put("BANK CHINATRUST", "CTBC Indonesia"); // 常见对应关系，可调整
-        bankMap.put("BANK CIMB NIAGA SYARIAH", "CIMB Syariah");
-        bankMap.put("BANK DANAMON", "Danamon");
-        bankMap.put("BANK DANAMON SYARIAH", "Bank Danamon Syariah");
-        bankMap.put("BANK DBS", "DBS");
-        //  bankMap.put("BANK DEUTSCHE", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BANK DIGITAL BCA", "BCA Digital");
-        bankMap.put("BANK DKI", "Bank DKI");
-        bankMap.put("BANK DKI SYARIAH", "Bank DKI Syariah");
-        bankMap.put("BANK EKA", "BPR Eka");
-        bankMap.put("BANK GANESHA", "Bank Ganesha");
-        bankMap.put("BANK ICBC", "ICBC");
-        bankMap.put("BANK INA PERDANA", "Bank Ina");
-        bankMap.put("BANK INDEX", "Bank Index");
-       /* bankMap.put("BANK INTERIM INDONESIA", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BANK JAGO UU SYARIAH", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BANK JASA JAKARTA", "无对应匹配值"); // 下方无完全匹配项*/
-        bankMap.put("BANK JATENG", "Bank Jateng");
-        bankMap.put("BANK JATENG SYARIAH", "Bank Jateng Syariah");
-        bankMap.put("BANK JATIM", "Bank Jatim");
-        bankMap.put("BANK JATIM SYARIAH", "Bank Jatim Syariah");
-        bankMap.put("BANK JTRUST INDONESIA", "JTrust Bank");
-        bankMap.put("BANK KALBAR", "Bank Kalbar");
-        bankMap.put("BANK KALBAR SYARIAH", "Bank Kalbar Syariah");
-        bankMap.put("BANK KALTENG", "Bank Kalteng");
-        bankMap.put("BANK KB BUKOPIN", "Bank KB Bukopin");
-        bankMap.put("BANK KEB HANA", "KEB Hana Bank");
-        bankMap.put("BANK MANDIRI TASPEN", "Bank Mandiri Taspen");
-        // bankMap.put("BANK MAS", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BANK MASPION INDONESIA", "Bank Maspion");
-        bankMap.put("BANK MAYAPADA", "Bank Mayapada");
-        bankMap.put("BANK MAYBANK", "Maybank");
-        bankMap.put("BANK MAYBANK UU SYARIAH", "Maybank Syariah");
-        bankMap.put("BANK MEGA", "Bank Mega");
-        bankMap.put("BANK MEGA SYARIAH", "Mega Syariah");
-        bankMap.put("BANK MESTIKA DHARMA", "Bank Mestika");
-        bankMap.put("BANK MIZUHO", "Bank Mizuho");
-        bankMap.put("BANK MNC INTERNASIONAL", "MNC Bank");
-        bankMap.put("BANK MUAMALAT", "Bank Muamalat");
-        bankMap.put("BANK NAGARI", "Bank Nagari");
-        bankMap.put("BANK NAGARI SYARIAH", "Bank Nagari Syariah");
-        bankMap.put("BANK NEO COMMERCE", "Bank Neo Commerce");
-        bankMap.put("BANK NOBU", "Bank National Nobu");
-        bankMap.put("BANK OF AMERICA", "Bank of America");
-        bankMap.put("BANK OF CHINA (HKG)", "Bank of China");
-        bankMap.put("BANK OF INDIA INDONESIA", "Bank of India Indonesia");
-        //  bankMap.put("BANK OF TOKYO MITSUBISHI UFJ", "MUFG Bank"); // 常见对应关系，可调整
-        bankMap.put("BANK OKE", "Bank OKE");
-        bankMap.put("BANK PANIN", "Bank Panin");
-        bankMap.put("BANK PANIN SYARIAH", "Bank Panin Syariah");
-        bankMap.put("BANK PERMATA SYARIAH", "Bank Permata Syariah");
-        //bankMap.put("BANK ONB INDONESIA", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BANK RAYA INDONESIA", "Bank Raya Indonesia");
-        bankMap.put("BANK RESONA PERDANIA", "Bank Resona Perdania");
-        bankMap.put("BANK SAHABAT SAMPOERNA", "Bank Sahabat Sampoerna");
-        bankMap.put("BANK SBIINDONESIA", "Bank SBI Indonesia");
-        bankMap.put("BANK SHINHAN INDONESIA", "Shinhan Bank");
-        bankMap.put("BANK SINARMAS", "Bank Sinarmas");
-        bankMap.put("BANK SUMSEL BABEL", "Bank Sumsel Babel");
-        bankMap.put("BANK SUMSEL BABEL SYARIAH", "Bank Sumsel Babel Syaria");
-        bankMap.put("BANK UOB", "UOB");
-        bankMap.put("BANK VICTORIA", "Bank Victoria");
-        bankMap.put("BANK VICTORIA SYARIAH", "Bank Victoria Syariah");
-        bankMap.put("BANK WOORI SAUDARA", "Bank Woori Saudara");
-        bankMap.put("BPD BALI", "BPD Bali");
-        bankMap.put("BPD DIY", "BPD DIY");
-        bankMap.put("BPD DIY SYARIAH", "BPD DIY Syariah");
-        bankMap.put("BPD JAMBI", "Bank Jambi");
-        bankMap.put("BPD KALSEL", "Bank Kalsel");
-        bankMap.put("BPD KALSEL SYARIAH", "Bank Kalsel Syariah");
-        bankMap.put("BPD KALTIM KALTARA", "BPD Kaltimtara");
-        bankMap.put("BPD KALTIM SYARIAH", "BPD Kaltimtara Syariah");
-        bankMap.put("BPD LAMPUNG", "Bank Lampung");
-        bankMap.put("BPD MALUKU", "Bank Maluku & Maluku Utara");
-        // bankMap.put("BPD NTBS", "BPD NTB Syariah"); // 按常见对应关系，可调整
-        bankMap.put("BPD NTT", "Bank NTT");
-        bankMap.put("BPD PAPUA", "Bank Papua");
-        bankMap.put("BPD RIAU KEPRI", "Bank Riau");
-        bankMap.put("BPD SULAWESI SELATAN", "Bank Sulselbar");
-        bankMap.put("BPD SULAWESI TENGAH", "BPD Sulteng");
-        bankMap.put("BPD SULAWESI TENGGARA", "BPD Sultra");
-        bankMap.put("BPD SUMUT", "BPD Sumut");
-        bankMap.put("BPD SUMUT SYARIAH", "BPD Sumut Syariah");
-     /*   bankMap.put("BPR DANAGUNG ABADI", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BPR DANAGUNG BAKTI", "无对应匹配值"); // 下方无完全匹配项
-        bankMap.put("BPR DANAGUNG RAMULTI", "无对应匹配值"); // 下方无完全匹配项*/
-        bankMap.put("BPR SUPRA", "BPR Supra");
-        bankMap.put("Bank Krom Indonesia", "Krom Bank");
-        bankMap.put("Bank SulutGo", "Bank SulutGo");
-        bankMap.put("Bank Super indonesia", "Superbank");
-        bankMap.put("CITIBANK", "Citibank");
-        bankMap.put("DOKU", "DOKU");
-        bankMap.put("HSBC INDONESIA", "HSBC");
-        bankMap.put("JPMORGAN CHASE BANK", "JPMorgan Chase");
-        bankMap.put("LINKAJA", "LINKAJA");
-        bankMap.put("PAYPRO", "PAYPRO");
-        bankMap.put("PT ALLO BANK INDONESIA", "Bank Allo");
-        bankMap.put("PT BANK NANO SYARIAH", "Bank Nano Syariah");
-        bankMap.put("PT BANK SMBC INDONESIA TBK", "Bank SMBC Indonesia");
-        bankMap.put("PT Bank Hibank Indonesia", "Hibank");
-        // bankMap.put("PT. BANK CHINA CONSTRUCTION INDONESIA(CCBI)", "Bank CCB Indonesia");
-        bankMap.put("PT. BANK IBK INDONESIA", "IBK Bank");
-        bankMap.put("STANDARD CHARTERED", "Standard Chartered");
+       put("OCBC", "OCBC NISP"); // 按常见对应关系匹配，若实际不同可调整
+       put("BANK BCA", "BCA");
+       put("BANK CIMB NIAGA", "CIMB Niaga");
+       put("BANK BRI", "BRI");
+       put("BANK MANDIRI", "Mandiri");
+       put("BANK BNI", "BNI");
+       put("BANK SEABANK INDONESIA", "Seabank");
+       put("BANK SYARIAH INDONESIA", "Bank Syariah Indonesia");
+       put("BANK PERMATA", "Permata Bank");
+       put("BANK BTN", "BTN");
+       //put("BANK JAGO", "Nomor Telepon atau Email"); // 下方无完全匹配“BANK JAGO”，按实际需求调整
+       put("BANK ACEH SYARIAH", "BPD Aceh Syariah");
+       put("BANK ALADIN", "Bank Aladin Syariah");
+       put("BANK AMAR INDONESIA", "Bank Amar");
+       put("BANK ANZ", "ANZ");
+       put("BANK ARTHA GRAHA", "Bank Artha Graha");
+       put("BANK BANTEN", "Bank Banten");
+       put("BANK BCA SYARIAH", "BCA Syariah");
+       put("BANK BENGKULU", "Bank Bengkulu");
+       put("BANK BJB", "BJB");
+       put("BANK BJB SYARIAH", "BJB Syariah");
+       put("BANK BNP PARIBAS", "BNP Paribas");
+       put("BANK BPR KS", "BPR KS");
+       put("BANK BTN SYARIAH", "BTN Syariah");
+       put("BANK BTPN SYARIAH", "BTPN Syariah");
+       put("BANK BUKOPIN SYARIAH", "Bank Syariah Bukopin");
+       put("BANK BUMI ARTA", "Bank Bumi Arta");
+       put("BANK CAPITAL", "Bank Capital");
+       put("BANK CHINATRUST", "CTBC Indonesia"); // 常见对应关系，可调整
+       put("BANK CIMB NIAGA SYARIAH", "CIMB Syariah");
+       put("BANK DANAMON", "Danamon");
+       put("BANK DANAMON SYARIAH", "Bank Danamon Syariah");
+       put("BANK DBS", "DBS");
+       //put("BANK DEUTSCHE", "无对应匹配值"); // 下方无完全匹配项
+       put("BANK DIGITAL BCA", "BCA Digital");
+       put("BANK DKI", "Bank DKI");
+       put("BANK DKI SYARIAH", "Bank DKI Syariah");
+       put("BANK EKA", "BPR Eka");
+       put("BANK GANESHA", "Bank Ganesha");
+       put("BANK ICBC", "ICBC");
+       put("BANK INA PERDANA", "Bank Ina");
+       put("BANK INDEX", "Bank Index");
+       //put("BANK INTERIM INDONESIA", "无对应匹配值"); // 下方无完全匹配项
+       put("BANK JAGO UU SYARIAH", "无对应匹配值"); // 下方无完全匹配项
+       put("BANK JASA JAKARTA", "无对应匹配值"); // 下方无完全匹配项*/
+       put("BANK JATENG", "Bank Jateng");
+       put("BANK JATENG SYARIAH", "Bank Jateng Syariah");
+       put("BANK JATIM", "Bank Jatim");
+       put("BANK JATIM SYARIAH", "Bank Jatim Syariah");
+       put("BANK JTRUST INDONESIA", "JTrust Bank");
+       put("BANK KALBAR", "Bank Kalbar");
+       put("BANK KALBAR SYARIAH", "Bank Kalbar Syariah");
+       put("BANK KALTENG", "Bank Kalteng");
+       put("BANK KB BUKOPIN", "Bank KB Bukopin");
+       put("BANK KEB HANA", "KEB Hana Bank");
+       put("BANK MANDIRI TASPEN", "Bank Mandiri Taspen");
+       //put("BANK MAS", "无对应匹配值"); // 下方无完全匹配项
+       put("BANK MASPION INDONESIA", "Bank Maspion");
+       put("BANK MAYAPADA", "Bank Mayapada");
+       put("BANK MAYBANK", "Maybank");
+       put("BANK MAYBANK UU SYARIAH", "Maybank Syariah");
+       put("BANK MEGA", "Bank Mega");
+       put("BANK MEGA SYARIAH", "Mega Syariah");
+       put("BANK MESTIKA DHARMA", "Bank Mestika");
+       put("BANK MIZUHO", "Bank Mizuho");
+       put("BANK MNC INTERNASIONAL", "MNC Bank");
+       put("BANK MUAMALAT", "Bank Muamalat");
+       put("BANK NAGARI", "Bank Nagari");
+       put("BANK NAGARI SYARIAH", "Bank Nagari Syariah");
+       put("BANK NEO COMMERCE", "Bank Neo Commerce");
+       put("BANK NOBU", "Bank National Nobu");
+       put("BANK OF AMERICA", "Bank of America");
+       put("BANK OF CHINA (HKG)", "Bank of China");
+       put("BANK OF INDIA INDONESIA", "Bank of India Indonesia");
+       //put("BANK OF TOKYO MITSUBISHI UFJ", "MUFG Bank"); // 常见对应关系，可调整
+       put("BANK OKE", "Bank OKE");
+       put("BANK PANIN", "Bank Panin");
+       put("BANK PANIN SYARIAH", "Bank Panin Syariah");
+       put("BANK PERMATA SYARIAH", "Bank Permata Syariah");
+       //put("BANK ONB INDONESIA", "无对应匹配值"); // 下方无完全匹配项
+       put("BANK RAYA INDONESIA", "Bank Raya Indonesia");
+       put("BANK RESONA PERDANIA", "Bank Resona Perdania");
+       put("BANK SAHABAT SAMPOERNA", "Bank Sahabat Sampoerna");
+       put("BANK SBIINDONESIA", "Bank SBI Indonesia");
+       put("BANK SHINHAN INDONESIA", "Shinhan Bank");
+       put("BANK SINARMAS", "Bank Sinarmas");
+       put("BANK SUMSEL BABEL", "Bank Sumsel Babel");
+       put("BANK SUMSEL BABEL SYARIAH", "Bank Sumsel Babel Syaria");
+       put("BANK UOB", "UOB");
+       put("BANK VICTORIA", "Bank Victoria");
+       put("BANK VICTORIA SYARIAH", "Bank Victoria Syariah");
+       put("BANK WOORI SAUDARA", "Bank Woori Saudara");
+       put("BPD BALI", "BPD Bali");
+       put("BPD DIY", "BPD DIY");
+       put("BPD DIY SYARIAH", "BPD DIY Syariah");
+       put("BPD JAMBI", "Bank Jambi");
+       put("BPD KALSEL", "Bank Kalsel");
+       put("BPD KALSEL SYARIAH", "Bank Kalsel Syariah");
+       put("BPD KALTIM KALTARA", "BPD Kaltimtara");
+       put("BPD KALTIM SYARIAH", "BPD Kaltimtara Syariah");
+       put("BPD LAMPUNG", "Bank Lampung");
+       put("BPD MALUKU", "Bank Maluku & Maluku Utara");
+       //put("BPD NTBS", "BPD NTB Syariah"); // 按常见对应关系，可调整
+       put("BPD NTT", "Bank NTT");
+       put("BPD PAPUA", "Bank Papua");
+       put("BPD RIAU KEPRI", "Bank Riau");
+       put("BPD SULAWESI SELATAN", "Bank Sulselbar");
+       put("BPD SULAWESI TENGAH", "BPD Sulteng");
+       put("BPD SULAWESI TENGGARA", "BPD Sultra");
+       put("BPD SUMUT", "BPD Sumut");
+       put("BPD SUMUT SYARIAH", "BPD Sumut Syariah");
+     /*p.put("BPR DANAGUNG ABADI", "无对应匹配值"); // 下方无完全匹配项
+       put("BPR DANAGUNG BAKTI", "无对应匹配值"); // 下方无完全匹配项
+       put("BPR DANAGUNG RAMULTI", "无对应匹配值"); // 下方无完全匹配项*/
+       put("BPR SUPRA", "BPR Supra");
+       put("Bank Krom Indonesia", "Krom Bank");
+       put("Bank SulutGo", "Bank SulutGo");
+       put("Bank Super indonesia", "Superbank");
+       put("CITIBANK", "Citibank");
+       put("DOKU", "DOKU");
+       put("HSBC INDONESIA", "HSBC");
+       put("JPMORGAN CHASE BANK", "JPMorgan Chase");
+       put("LINKAJA", "LINKAJA");
+       put("PAYPRO", "PAYPRO");
+       put("PT ALLO BANK INDONESIA", "Bank Allo");
+       put("PT BANK NANO SYARIAH", "Bank Nano Syariah");
+       put("PT BANK SMBC INDONESIA TBK", "Bank SMBC Indonesia");
+       put("PT Bank Hibank Indonesia", "Hibank");
+       //put("PT. BANK CHINA CONSTRUCTION INDONESIA(CCBI)", "Bank CCB Indonesia");
+       put("PT. BANK IBK INDONESIA", "IBK Bank");
+       put("STANDARD CHARTERED", "Standard Chartered");
     }};
 }
