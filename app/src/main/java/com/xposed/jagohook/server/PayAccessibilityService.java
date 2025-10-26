@@ -102,7 +102,18 @@ public class PayAccessibilityService extends AccessibilityService {
             isTransfer = false;
             balance = "0";
             Logs.d("转账失败");
-            logWindow.printA("归集失败");
+            logWindow.printA("转账失败");
+            clickButton(nodeInfoMap.get("Oke "));
+        }
+
+        if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")){
+            TakeLatestOrderBean id = takeLatestOrderBean;
+            postCollectStatus(0, "网络异常", id);
+            takeLatestOrderBean = null;
+            isTransfer = false;
+            balance = "0";
+            Logs.d("转账失败");
+            logWindow.printA("转账失败");
             clickButton(nodeInfoMap.get("Oke "));
         }
 
@@ -296,7 +307,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean.getBankName()) && nodeInfoMap1.containsKey(takeLatestOrderBean.getBankName())) {
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean.getBankName()) && nodeInfoMap1.containsKey(takeLatestOrderBean.getCardNumber())) {
             clickButton(nodeInfoMap.get("Periksa"));
             try {
                 Thread.sleep(2000);
