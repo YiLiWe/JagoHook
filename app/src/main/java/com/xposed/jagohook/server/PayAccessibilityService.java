@@ -1,7 +1,9 @@
 package com.xposed.jagohook.server;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.GestureDescription;
 import android.content.Context;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Looper;
@@ -84,10 +86,20 @@ public class PayAccessibilityService extends AccessibilityService {
         } else if (scrollView == null) {
             handler.postDelayed(this::scrollDown, 10_000);
         } else {
-            scrollView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            performCustomScroll(this);
             Logs.d("下拉");
             handler.postDelayed(this::scrollDown, 10_000);
         }
+    }
+
+    public void performCustomScroll(AccessibilityService service) {
+        Path path = new Path();
+        path.moveTo(500, 1000); // 起始点
+        path.lineTo(500, 300); // 结束点
+
+        GestureDescription.Builder builder = new GestureDescription.Builder();
+        builder.addStroke(new GestureDescription.StrokeDescription(path, 0, 300));
+        service.dispatchGesture(builder.build(), null, null);
     }
 
 
