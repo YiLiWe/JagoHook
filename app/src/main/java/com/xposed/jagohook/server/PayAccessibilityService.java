@@ -390,7 +390,6 @@ public class PayAccessibilityService extends AccessibilityService {
         String numbersOnly = balance.replaceAll("[^0-9]", "");
         if (!numbersOnly.isEmpty()) {
             this.balance = numbersOnly;
-            Logs.d("余额：" + numbersOnly);
         }
     }
 

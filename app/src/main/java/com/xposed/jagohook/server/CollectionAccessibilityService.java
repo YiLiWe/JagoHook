@@ -382,8 +382,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (nodeInfo == null) return;
         String balance = nodeInfo.getContentDescription().toString();
         String numbersOnly = balance.replaceAll("[^0-9]", "");
-        this.balance = numbersOnly;
-        Logs.d("余额：" + numbersOnly);
+        if (!numbersOnly.isEmpty()) {
+            this.balance = numbersOnly;
+        }
         isBill = true;
     }
 
