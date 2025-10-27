@@ -55,11 +55,10 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private CollectionAccessibilityRunnable collectionAccessibilityRunnable;
     private PostCollectionErrorRunnable postCollectionErrorRunnable;
     private volatile CollectBillResponse collectBillResponse;
-    private volatile String balance = "0";
-    private volatile boolean isRunning = false;
+    private String balance = "0";
+    private boolean isRunning = false;
     private String cardNumber;
     private String collectUrl;
-
 
     //收款提交
     private BillRunnable billRunnable;
@@ -90,6 +89,35 @@ public class CollectionAccessibilityService extends AccessibilityService {
         isRunning = true;
         logWindow.printA("代收/归集运行中");
 
+        handlerAccessibility();
+    }
+
+    //执行界面点击事件
+    private void handlerAccessibility() {
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        if (nodeInfo == null) {
+            handler.postDelayed(this::handlerAccessibility, 2000);
+            return;
+        }
+        if (nodeInfo.getChildCount() == 0) {
+            handler.postDelayed(this::handlerAccessibility, 2000);
+            return;
+        }
+        List<AccessibilityNodeInfo> nodeInfos = new ArrayList<>();
+        AccessibleUtil.getAccessibilityNodeInfoS(nodeInfos, nodeInfo);
+        Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
+        try {
+            ScreenLockPassword(nodeInfoMap);
+            getBalance(nodeInfoMap);
+            BottomNavigationBar(nodeInfoMap);
+            clickBill(nodeInfoMap);
+            getBill(nodeInfoMap);
+            Transfer(nodeInfoMap, nodeInfo);
+            Dialogs(nodeInfoMap);
+        } catch (Throwable e) {
+            Logs.d("异常:" + e.getMessage());
+        }
+        handler.postDelayed(this::handlerAccessibility, 2000);
     }
 
     public void initData() {
@@ -103,11 +131,12 @@ public class CollectionAccessibilityService extends AccessibilityService {
         super.onDestroy();
         isRunning = false;
         logWindow.destroy();
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        try {
+   /*     try {
             if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {//不处理控件点击事件
                 return;
             }
@@ -123,7 +152,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             Thread.sleep(2000);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
-        }
+        }*/
     }
 
     //弹窗直接点击确认

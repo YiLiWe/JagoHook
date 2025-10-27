@@ -2,10 +2,14 @@ package com.xposed.jagohook.utils;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
+import android.content.Context;
 import android.content.pm.ArchivedActivityInfo;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
@@ -14,6 +18,48 @@ import java.util.List;
 import java.util.Map;
 
 public class AccessibleUtil {
+
+    /**
+     * 模拟从上往下拉手势
+     * @param service AccessibilityService实例
+     * @param startY 起始Y坐标（顶部位置）
+     * @param endY 结束Y坐标（底部位置）
+     * @param duration 动画持续时间(毫秒)
+     */
+    public static void performPullDown(AccessibilityService service, int startY, int endY, int duration) {
+        // 参数校验
+        if (service == null || startY >= endY) {
+            return;
+        }
+
+        // 创建手势路径（从上往下滑动）
+        Path path = new Path();
+        int centerX = getScreenCenterX(service);
+        path.moveTo(centerX, startY);    // 起点（上方）
+        path.lineTo(centerX, endY);      // 终点（下方）
+
+        // 构建手势描述
+        GestureDescription.Builder builder = new GestureDescription.Builder();
+        builder.addStroke(new GestureDescription.StrokeDescription(
+                path,
+                0,      // 立即开始
+                duration // 持续时间
+        ));
+
+        // 执行手势
+        service.dispatchGesture(builder.build(), null, null);
+    }
+
+
+    // 获取屏幕中心X坐标
+    public static int getScreenCenterX(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        return metrics.widthPixels / 2;
+    }
+
 
     //获取开头
     public static AccessibilityNodeInfo toStateContentDescMap(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
