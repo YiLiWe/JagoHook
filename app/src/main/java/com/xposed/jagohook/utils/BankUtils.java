@@ -52,8 +52,8 @@ public class BankUtils {
        put("BANK INA PERDANA", "Bank Ina");
        put("BANK INDEX", "Bank Index");
        //put("BANK INTERIM INDONESIA", "无对应匹配值"); // 下方无完全匹配项
-       put("BANK JAGO UU SYARIAH", "无对应匹配值"); // 下方无完全匹配项
-       put("BANK JASA JAKARTA", "无对应匹配值"); // 下方无完全匹配项*/
+      // put("BANK JAGO UU SYARIAH", "无对应匹配值"); // 下方无完全匹配项
+       //ut("BANK JASA JAKARTA", "无对应匹配值"); // 下方无完全匹配项*/
        put("BANK JATENG", "Bank Jateng");
        put("BANK JATENG SYARIAH", "Bank Jateng Syariah");
        put("BANK JATIM", "Bank Jatim");
