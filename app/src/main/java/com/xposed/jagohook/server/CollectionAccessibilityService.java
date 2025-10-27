@@ -27,6 +27,7 @@ import com.xposed.jagohook.runnable.BillRunnable;
 import com.xposed.jagohook.runnable.CollectionAccessibilityRunnable;
 import com.xposed.jagohook.runnable.PostCollectionErrorRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
+import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 
@@ -169,6 +170,28 @@ public class CollectionAccessibilityService extends AccessibilityService {
             balance = "0";
             Logs.d("转账失败");
             logWindow.printA("归集失败");
+            clickButton(nodeInfoMap.get("Oke "));
+        }
+
+        if (nodeInfoMap.containsKey("Ada yang salah.")){
+            long id = collectBillResponse.getId();;
+            postCollectStatus(0, "网络异常", id);
+            collectBillResponse = null;
+            isTransfer = false;
+            balance = "0";
+            Logs.d("转账失败");
+            logWindow.printA("转账失败");
+            clickButton(nodeInfoMap.get("Oke "));
+        }
+
+        if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")) {
+            long id = collectBillResponse.getId();
+            postCollectStatus(0, "Ups! Koneksi Internet Hilang", id);
+            collectBillResponse = null;
+            isTransfer = false;
+            balance = "0";
+            Logs.d("转账失败");
+            logWindow.printA("转账失败");
             clickButton(nodeInfoMap.get("Oke "));
         }
 
