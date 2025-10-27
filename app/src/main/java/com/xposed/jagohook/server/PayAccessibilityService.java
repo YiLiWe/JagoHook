@@ -166,7 +166,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
         if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
             TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "卡号错误", id);
+            postCollectStatus(0, "Bank tujuan tidak merespon", id);
             takeLatestOrderBean = null;
             isTransfer = false;
             balance = "0";
@@ -177,7 +177,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
         if (nodeInfoMap.containsKey("Ada yang salah.")){
             TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "网络异常", id);
+            postCollectStatus(0, "Ada yang salah.", id);
             takeLatestOrderBean = null;
             isTransfer = false;
             balance = "0";
