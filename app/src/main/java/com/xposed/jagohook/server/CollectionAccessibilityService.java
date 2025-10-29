@@ -30,6 +30,7 @@ import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
+import com.xposed.jagohook.utils.TimeUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -95,6 +96,10 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //执行界面点击事件
     private void handlerAccessibility() {
+        if (TimeUtils.isNightToMorning()){
+            handler.postDelayed(this::handlerAccessibility, 2000);
+            return;
+        }
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         if (nodeInfo == null) {
             handler.postDelayed(this::handlerAccessibility, 2000);

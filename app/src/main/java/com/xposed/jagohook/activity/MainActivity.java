@@ -16,7 +16,6 @@ import com.xposed.jagohook.databinding.ActivityMainBinding;
 import com.xposed.jagohook.utils.PermissionManager;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding> {
-
     //  private SuShellService suShellService = null;
     private AppConfig appConfig;
     private PermissionManager permissionManager;

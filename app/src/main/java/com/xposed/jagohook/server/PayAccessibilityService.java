@@ -25,6 +25,7 @@ import com.xposed.jagohook.runnable.PostPayErrorRunnable;
 import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
+import com.xposed.jagohook.utils.TimeUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -85,6 +86,10 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //下拉
     private void scrollDown() {
+        if (TimeUtils.isNightToMorning()){
+            handler.postDelayed(this::scrollDown, 10_000);
+            return;
+        }
         if (takeLatestOrderBean != null) {
             handler.postDelayed(this::scrollDown, 10_000);
         } else {
@@ -124,6 +129,10 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //执行界面点击事件
     private void handlerAccessibility() {
+        if (TimeUtils.isNightToMorning()){
+            handler.postDelayed(this::handlerAccessibility, 10_000);
+            return;
+        }
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         if (nodeInfo == null) {
             handler.postDelayed(this::handlerAccessibility, 2000);
@@ -147,6 +156,8 @@ public class PayAccessibilityService extends AccessibilityService {
         }
         handler.postDelayed(this::handlerAccessibility, 2000);
     }
+
+
 
     //处理滑动
     private AccessibilityNodeInfo handlerScrollView(List<AccessibilityNodeInfo> accessibilityNodeInfos) {
