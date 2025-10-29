@@ -114,7 +114,7 @@ public class BillActivity extends AppCompatActivity implements Runnable {
                     helper.billDao().deleteAll();
                 });
                 Toast.makeText(BillActivity.this, "已清空", Toast.LENGTH_SHORT).show();
-            });
+            }).show();
             return false;
         });
     }
