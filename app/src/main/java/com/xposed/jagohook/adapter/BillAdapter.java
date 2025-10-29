@@ -34,7 +34,6 @@ public class BillAdapter extends RecyclerView.Adapter<BillAdapter.ViewHolder> {
         switch (logEntity.getState()) {
             case 0 -> binding.state.setText("提交失败");
             case 1 -> binding.state.setText("提交成功");
-            case 2 -> binding.state.setText("处理中");
         }
     }
 

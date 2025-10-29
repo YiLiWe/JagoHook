@@ -39,8 +39,8 @@ public class PostCollectionErrorRunnable implements Runnable {
     @Override
     public void run() {
         AppDatabase appDatabase = AppDatabase.getInstance(accessibilityService);
-        PostCollectionErrorDao billDao = appDatabase.postCollectionErrorDao();
         while (accessibilityService.isRunning()) {
+            PostCollectionErrorDao billDao = appDatabase.postCollectionErrorDao();
             List<PostCollectionErrorEntity> billEntities = billDao.queryPageVideo(10, 0);
             for (PostCollectionErrorEntity billEntity : billEntities) {
                 postBill(billDao, billEntity);

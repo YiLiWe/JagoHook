@@ -38,8 +38,8 @@ public class PostPayErrorRunnable implements Runnable {
     @Override
     public void run() {
         AppDatabase appDatabase = AppDatabase.getInstance(accessibilityService);
-        PostPayErrorDao billDao = appDatabase.postPayErrorDao();
         while (accessibilityService.isRunning()) {
+            PostPayErrorDao billDao = appDatabase.postPayErrorDao();
             List<PostPayErrorEntity> billEntities = billDao.queryPageVideo(10, 0);
             for (PostPayErrorEntity billEntity : billEntities) {
                 postBill(billDao, billEntity);

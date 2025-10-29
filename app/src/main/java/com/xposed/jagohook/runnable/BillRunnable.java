@@ -38,8 +38,8 @@ public class BillRunnable implements Runnable {
     @Override
     public void run() {
         AppDatabase appDatabase = AppDatabase.getInstance(accessibilityService);
-        BillDao billDao = appDatabase.billDao();
         while (accessibilityService.isRunning()) {
+            BillDao billDao = appDatabase.billDao();
             List<BillEntity> billEntities = billDao.queryByState(10, 0, 0);
             for (BillEntity billEntity : billEntities) {
                 postBill(billDao, billEntity);
