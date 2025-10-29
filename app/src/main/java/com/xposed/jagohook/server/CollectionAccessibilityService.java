@@ -178,6 +178,18 @@ public class CollectionAccessibilityService extends AccessibilityService {
             clickButton(nodeInfoMap.get("Oke "));
         }
 
+        if (nodeInfoMap.containsKey("Akun tidak ditemukan")){
+            long id = collectBillResponse.getId();
+            postCollectStatus(2, "Akun tidak ditemukan", id);
+            collectBillResponse = null;
+            isTransfer = false;
+            balance = "0";
+            Logs.d("转账失败");
+            logWindow.printA("归集失败");
+            clickButton(nodeInfoMap.get("Oke "));
+        }
+
+
         if (nodeInfoMap.containsKey("Ada yang salah.")){
             long id = collectBillResponse.getId();;
             postCollectStatus(0, "网络异常", id);

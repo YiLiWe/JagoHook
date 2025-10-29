@@ -197,6 +197,17 @@ public class PayAccessibilityService extends AccessibilityService {
             clickButton(nodeInfoMap.get("Oke "));
         }
 
+        if (nodeInfoMap.containsKey("Akun tidak ditemukan")){
+            TakeLatestOrderBean id = takeLatestOrderBean;
+            postCollectStatus(0, "Akun tidak ditemukan", id);
+            takeLatestOrderBean = null;
+            isTransfer = false;
+            balance = "0";
+            Logs.d("转账失败");
+            logWindow.printA("转账失败");
+            clickButton(nodeInfoMap.get("Oke "));
+        }
+
         if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")) {
             TakeLatestOrderBean id = takeLatestOrderBean;
             postCollectStatus(0, "Ups! Koneksi Internet Hilang", id);

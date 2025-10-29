@@ -48,25 +48,39 @@ public class CollectionAccessibilityRunnable implements Runnable {
         service.setCollectBillResponse(collectBillResponsex);*/
 
         while (service.isRunning()) {
-            if (TimeUtils.isNightToMorning()){
+            if (TimeUtils.isNightToMorning()) {
+                stop();
                 continue;
             }
             if (cardNumber == null || collectUrl == null) {
                 initData();
                 continue;
             }
-            if (service.getBalance().isEmpty()) continue;
-            if (service.getBalance().equals("0")) continue;
-            if (service.getCollectBillResponse() != null) continue;
+            if (service.getBalance().isEmpty()) {
+                stop();
+                continue;
+            }
+            if (service.getBalance().equals("0")) {
+                stop();
+                continue;
+            }
+            if (service.getCollectBillResponse() != null) {
+                stop();
+                continue;
+            }
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {
                 service.setCollectBillResponse(collectBillResponse);
             }
-            try {
-                Thread.sleep(10_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            stop();
+        }
+    }
+
+    private void stop() {
+        try {
+            Thread.sleep(10_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

@@ -62,27 +62,42 @@ public class PayRunnable implements Runnable {
     @Override
     public void run() {
         while (service.isRunning()) {
-            if (TimeUtils.isNightToMorning()){
+            if (TimeUtils.isNightToMorning()) {
+                stop();
                 continue;
             }
-            if (service.getTakeLatestOrderBean() != null) continue;
-            if (cardNumber == null || collectUrl == null) continue;
-            if (service.getBalance().isEmpty()) continue;
-            if (service.getBalance().equals("0")) continue;
+            if (service.getTakeLatestOrderBean() != null) {
+                stop();
+                continue;
+            }
+            if (cardNumber == null || collectUrl == null) {
+                stop();
+                continue;
+            }
+            if (service.getBalance().isEmpty()) {
+                stop();
+                continue;
+            }
+            if (service.getBalance().equals("0")) {
+                stop();
+                continue;
+            }
             TakeLatestOrderBean takeLatestOrderBean = getOrder();
             if (takeLatestOrderBean != null) {
                 service.getLogWindow().print("获取到订单:" + takeLatestOrderBean.getOrderNo());
                 service.setTakeLatestOrderBean(takeLatestOrderBean);
             }
-            try {
-                Thread.sleep(10_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            stop();
         }
     }
 
-
+    private void stop() {
+        try {
+            Thread.sleep(10_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     public TakeLatestOrderBean getOrder() {
         String text = takeLatestPayoutOrder();
