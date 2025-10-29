@@ -10,6 +10,7 @@ import com.xposed.jagohook.runnable.response.ResultResponse;
 import com.xposed.jagohook.server.CollectionAccessibilityService;
 import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.utils.Logs;
+import com.xposed.jagohook.utils.TimeUtils;
 
 import java.io.IOException;
 
@@ -47,6 +48,9 @@ public class CollectionAccessibilityRunnable implements Runnable {
         service.setCollectBillResponse(collectBillResponsex);*/
 
         while (service.isRunning()) {
+            if (TimeUtils.isNightToMorning()){
+                continue;
+            }
             if (cardNumber == null || collectUrl == null) {
                 initData();
                 continue;

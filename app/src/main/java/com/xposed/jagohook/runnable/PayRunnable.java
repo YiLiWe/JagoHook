@@ -14,6 +14,7 @@ import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.server.PayAccessibilityService;
 import com.xposed.jagohook.utils.BankUtils;
 import com.xposed.jagohook.utils.Logs;
+import com.xposed.jagohook.utils.TimeUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -61,6 +62,9 @@ public class PayRunnable implements Runnable {
     @Override
     public void run() {
         while (service.isRunning()) {
+            if (TimeUtils.isNightToMorning()){
+                continue;
+            }
             if (service.getTakeLatestOrderBean() != null) continue;
             if (cardNumber == null || collectUrl == null) continue;
             if (service.getBalance().isEmpty()) continue;
@@ -77,6 +81,8 @@ public class PayRunnable implements Runnable {
             }
         }
     }
+
+
 
     public TakeLatestOrderBean getOrder() {
         String text = takeLatestPayoutOrder();
