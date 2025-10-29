@@ -100,7 +100,7 @@ public class PayAccessibilityService extends AccessibilityService {
             Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(accessibilityNodeInfos);
             if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页下拉
                 if (scrollView != null) {
-                    AccessibleUtil.performPullDown(this, 200, 1000, 1000);
+                    AccessibleUtil.performPullDown(this, 300, 1000, 1000);
                     Logs.d("下拉");
                 }
             }
