@@ -46,6 +46,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
         collectBillResponsex.setIdPlgn(10000);
         collectBillResponsex.setBank("BRI");
         service.setCollectBillResponse(collectBillResponsex);*/
+        service.getLogWindow().print("归集账单启动...");
 
         while (service.isRunning()) {
             if (TimeUtils.isNightToMorning()) {
