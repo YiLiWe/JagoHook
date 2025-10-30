@@ -80,7 +80,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {
                 if (!BankUtils.getBankMap().containsKey(collectBillResponse.getBank())) {
-                    postCollectStatus(0, "不支持该银行", collectBillResponse.getId());
+                    postCollectStatus(2, "不支持该银行", collectBillResponse.getId());
                 } else {
                     String bank = BankUtils.getBankMap().get(collectBillResponse.getBank());
                     collectBillResponse.setBank(bank);

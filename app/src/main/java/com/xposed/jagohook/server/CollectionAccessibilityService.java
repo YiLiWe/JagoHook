@@ -157,7 +157,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
             long id = collectBillResponse.getId();
-            postCollectStatus(2, "卡号错误", id);
+            postCollectStatus(2, "Bank tujuan tidak merespon", id);
             collectBillResponse = null;
             isTransfer = false;
             balance = "0";
@@ -180,7 +180,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         if (nodeInfoMap.containsKey("Ada yang salah.")){
             long id = collectBillResponse.getId();;
-            postCollectStatus(0, "网络异常", id);
+            postCollectStatus(2, "Ada yang salah.", id);
             collectBillResponse = null;
             isTransfer = false;
             balance = "0";
@@ -191,7 +191,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")) {
             long id = collectBillResponse.getId();
-            postCollectStatus(0, "Ups! Koneksi Internet Hilang", id);
+            postCollectStatus(2, "Ups! Koneksi Internet Hilang", id);
             collectBillResponse = null;
             isTransfer = false;
             balance = "0";
