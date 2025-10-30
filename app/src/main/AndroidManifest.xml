@@ -53,6 +53,19 @@
 
         <service android:name=".server.SuShellService" />
         <activity android:name=".activity.BillActivity" />
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="UOB转账" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="UOB转账" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="53" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposedscope" />
     </application>
 
 </manifest>
