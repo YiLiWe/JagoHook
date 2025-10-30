@@ -3,18 +3,26 @@ package com.xposed.jagohook.runnable;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.xposed.jagohook.room.AppDatabase;
+import com.xposed.jagohook.room.dao.PostCollectionErrorDao;
+import com.xposed.jagohook.room.entity.PostCollectionErrorEntity;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.runnable.response.ResultResponse;
 import com.xposed.jagohook.server.CollectionAccessibilityService;
 import com.xposed.jagohook.server.SuShellService;
+import com.xposed.jagohook.utils.BankUtils;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
 
 import java.io.IOException;
 
 import lombok.Getter;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -71,10 +79,49 @@ public class CollectionAccessibilityRunnable implements Runnable {
             }
             CollectBillResponse collectBillResponse = getCollectBean();
             if (collectBillResponse != null) {
+                if (!BankUtils.getBankMap().containsKey(collectBillResponse.getBank())) {
+                    postCollectStatus(0, "不支持该银行", collectBillResponse.getId());
+                } else {
+                    String bank = BankUtils.getBankMap().get(collectBillResponse.getBank());
+                    collectBillResponse.setBank(bank);
+                }
                 service.setCollectBillResponse(collectBillResponse);
             }
             stop();
         }
+    }
+
+
+    private void postCollectStatus(int state, String error, long id) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(String.format("%sv1/collectStatus?id=%s&state=%s&error=%s", collectUrl, id, state, error))
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                AppDatabase appDatabase = AppDatabase.getInstance(service);
+                PostCollectionErrorDao billDao = appDatabase.postCollectionErrorDao();
+                PostCollectionErrorEntity postCollectionErrorEntity = new PostCollectionErrorEntity();
+                postCollectionErrorEntity.setId(id);
+                postCollectionErrorEntity.setState(state);
+                postCollectionErrorEntity.setError(error);
+                billDao.insert(postCollectionErrorEntity);
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    AppDatabase appDatabase = AppDatabase.getInstance(service);
+                    PostCollectionErrorDao billDao = appDatabase.postCollectionErrorDao();
+                    PostCollectionErrorEntity postCollectionErrorEntity = new PostCollectionErrorEntity();
+                    postCollectionErrorEntity.setId(id);
+                    postCollectionErrorEntity.setState(state);
+                    postCollectionErrorEntity.setError(error);
+                    billDao.insert(postCollectionErrorEntity);
+                }
+            }
+        });
     }
 
     private void stop() {
