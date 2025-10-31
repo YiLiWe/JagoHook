@@ -45,6 +45,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         binding.cardNumber.setText(appConfig.getCardNumber());
         binding.payUrl.setText(appConfig.getPayUrl());
         binding.lockPass.setText(appConfig.getLockPass());
+        binding.pass.setText(appConfig.getPASS());
     }
 
     /**
