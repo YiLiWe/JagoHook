@@ -41,11 +41,21 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
      * 初始化数据
      */
     private void initData() {
-        binding.collectUrl.setText(appConfig.getCollectUrl());
-        binding.cardNumber.setText(appConfig.getCardNumber());
-        binding.payUrl.setText(appConfig.getPayUrl());
-        binding.lockPass.setText(appConfig.getLockPass());
-        binding.pass.setText(appConfig.getPASS());
+        if (!appConfig.getCollectUrl().isEmpty()) {
+            binding.collectUrl.setText(appConfig.getCollectUrl());
+        }
+        if (!appConfig.getCardNumber().isEmpty()) {
+            binding.cardNumber.setText(appConfig.getCardNumber());
+        }
+        if (!appConfig.getPayUrl().isEmpty()) {
+            binding.payUrl.setText(appConfig.getPayUrl());
+        }
+        if (!appConfig.getLockPass().isEmpty()) {
+            binding.lockPass.setText(appConfig.getLockPass());
+        }
+        if (!appConfig.getPASS().isEmpty()) {
+            binding.pass.setText(appConfig.getPASS());
+        }
     }
 
     /**

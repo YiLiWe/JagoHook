@@ -28,7 +28,7 @@ public class CollectRunnable implements Runnable {
         this.suShellService = suShellService;
         initData();
     }
-
+//Zheng115599!@#
     public void initData() {
         SharedPreferences sharedPreferences = suShellService.getSharedPreferences("info", Context.MODE_PRIVATE);
         cardNumber = sharedPreferences.getString("cardNumber", null);
