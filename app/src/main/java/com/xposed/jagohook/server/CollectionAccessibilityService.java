@@ -166,6 +166,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
                     AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
                 }
             }
+            if (nodeInfoMap.containsKey("Konfirmasi ")) {
+                clickButton(nodeInfoMap.get("Konfirmasi "));
+            }
         }
 
         if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
