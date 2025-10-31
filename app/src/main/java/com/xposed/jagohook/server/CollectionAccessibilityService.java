@@ -101,7 +101,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //执行界面点击事件
     private void handlerAccessibility() {
-        if (TimeUtils.isNightToMorning()){
+        if (TimeUtils.isNightToMorning()) {
             handler.postDelayed(this::handlerAccessibility, 5_000);
             return;
         }
@@ -155,6 +155,19 @@ public class CollectionAccessibilityService extends AccessibilityService {
             clickButton(nodeInfoMap.get("Oke "));
         }
 
+        if (nodeInfoMap.containsKey("Autentikasi")) {//登录密码
+            if (nodeInfoMap.containsKey("password_field")) {
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("password_field");
+                if (accessibilityNodeInfo == null) return;
+                AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
+                if (accessibilityNodeInfo1 != null) {
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
+                }
+            }
+        }
+
         if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
             long id = collectBillResponse.getId();
             postCollectStatus(2, "Bank tujuan tidak merespon", id);
@@ -166,7 +179,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             clickButton(nodeInfoMap.get("Oke "));
         }
 
-        if (nodeInfoMap.containsKey("Akun tidak ditemukan")){
+        if (nodeInfoMap.containsKey("Akun tidak ditemukan")) {
             long id = collectBillResponse.getId();
             postCollectStatus(2, "Akun tidak ditemukan", id);
             collectBillResponse = null;
@@ -178,8 +191,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
 
-        if (nodeInfoMap.containsKey("Ada yang salah.")){
-            long id = collectBillResponse.getId();;
+        if (nodeInfoMap.containsKey("Ada yang salah.")) {
+            long id = collectBillResponse.getId();
+            ;
             postCollectStatus(2, "Ada yang salah.", id);
             collectBillResponse = null;
             isTransfer = false;

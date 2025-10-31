@@ -103,8 +103,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         Editable collectUrlEdit = binding.collectUrl.getText();
         Editable payUrlEdit = binding.payUrl.getText();
         Editable LockPass = binding.lockPass.getText();
+        Editable pass = binding.pass.getText();
 
-        if (!isInputValid(cardNumberEdit, collectUrlEdit, payUrlEdit, LockPass)) {
+        if (!isInputValid(cardNumberEdit, collectUrlEdit, payUrlEdit, LockPass, pass)) {
             Toast.makeText(MainActivity.this, "请填写完整信息", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -113,16 +114,17 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         String collectUrl = collectUrlEdit.toString();
         String payUrl = payUrlEdit.toString();
         String lockPass = LockPass.toString();
+        String passStr = pass.toString();
 
-        appConfig.setAllConfig(cardNumber, collectUrl, payUrl, lockPass);
+        appConfig.setAllConfig(cardNumber, collectUrl, payUrl, lockPass,passStr);
         Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * 验证输入是否有效
      */
-    private boolean isInputValid(Editable cardNumber, Editable collectUrl, Editable payUrl, Editable lockPass) {
+    private boolean isInputValid(Editable cardNumber, Editable collectUrl, Editable payUrl, Editable lockPass, Editable pass) {
         return cardNumber != null && collectUrl != null && payUrl != null && lockPass != null &&
-                cardNumber.length() > 0 && collectUrl.length() > 0 && payUrl.length() > 0 && lockPass.length() > 0;
+                cardNumber.length() > 0 && collectUrl.length() > 0 && payUrl.length() > 0 && lockPass.length() > 0 && pass.length() > 0;
     }
 }
