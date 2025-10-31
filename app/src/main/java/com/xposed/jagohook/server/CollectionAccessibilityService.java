@@ -196,7 +196,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         if (nodeInfoMap.containsKey("Ada yang salah.")) {
             long id = collectBillResponse.getId();
-            ;
             postCollectStatus(2, "Ada yang salah.", id);
             collectBillResponse = null;
             isTransfer = false;
@@ -391,12 +390,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
         List<BillEntity> billEntities = new ArrayList<>();
         for (String key : nodeInfoMap1.keySet()) {
             if (dao.countByText(key) > 0) continue;
-            if (!key.contains("+Rp")) continue;
-            BillEntity bill = new BillEntity();
-            bill.setState(0);
-            bill.setText(key);
-            bill.setTime(getSystemFormattedTime());
-            billEntities.add(bill);
+            if (key.contains("+Rp") || key.endsWith("Pemasukan")) {
+                BillEntity bill = new BillEntity();
+                bill.setState(0);
+                bill.setText(key);
+                bill.setTime(getSystemFormattedTime());
+                billEntities.add(bill);
+            }
         }
         dao.insert(billEntities);
     }
