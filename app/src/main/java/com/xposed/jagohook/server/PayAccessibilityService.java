@@ -176,6 +176,23 @@ public class PayAccessibilityService extends AccessibilityService {
             clickButton(nodeInfoMap.get("Oke "));
         }
 
+        if (nodeInfoMap.containsKey("Autentikasi")) {//登录密码
+            if (nodeInfoMap.containsKey("password_field")) {
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("password_field");
+                if (accessibilityNodeInfo == null) return;
+                AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
+                if (accessibilityNodeInfo1 != null) {
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
+                }
+            }
+            if (nodeInfoMap.containsKey("Konfirmasi ")) {
+                clickButton(nodeInfoMap.get("Konfirmasi "));
+            }
+        }
+
+
         if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
             TakeLatestOrderBean id = takeLatestOrderBean;
             postCollectStatus(0, "Bank tujuan tidak merespon", id);
