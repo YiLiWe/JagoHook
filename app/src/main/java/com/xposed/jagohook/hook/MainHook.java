@@ -1,15 +1,6 @@
 package com.xposed.jagohook.hook;
 
-import android.app.Activity;
-import android.app.Application;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.XC_MethodHook;
@@ -20,49 +11,20 @@ public class MainHook implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        XposedHelpers.findAndHookMethod("android.app.Instrumentation", lpparam.classLoader, "callApplicationOnCreate", Application.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (param.args[0] instanceof Application application) {
-                    application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
-                        @Override
-                        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-                            Log.d("代码", activity.getClass().getName());
-                        }
-
-                        @Override
-                        public void onActivityDestroyed(@NonNull Activity activity) {
-
-                        }
-
-                        @Override
-                        public void onActivityPaused(@NonNull Activity activity) {
-
-                        }
-
-                        @Override
-                        public void onActivityResumed(@NonNull Activity activity) {
-
-                        }
-
-                        @Override
-                        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
-
-                        }
-
-                        @Override
-                        public void onActivityStarted(@NonNull Activity activity) {
-
-                        }
-
-                        @Override
-                        public void onActivityStopped(@NonNull Activity activity) {
-
-                        }
-                    });
+        // Hook ClassLoader 的 loadClass 方法
+        XposedHelpers.findAndHookMethod(
+                ClassLoader.class,
+                "loadClass",
+                String.class,
+                boolean.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        String className = (String) param.args[0];
+                        Log.d("代码", className);
+                    }
                 }
-            }
-        });
+        );
     }
 
 }
