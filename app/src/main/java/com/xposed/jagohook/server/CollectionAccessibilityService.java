@@ -28,6 +28,7 @@ import com.xposed.jagohook.runnable.CollectionAccessibilityRunnable;
 import com.xposed.jagohook.runnable.PostCollectionErrorRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
+import com.xposed.jagohook.server.script.PayErrors;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -75,7 +77,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
     // ========== 悬浮窗 ==========
     private LogWindow logWindow;
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -94,8 +95,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
 
-        logWindow.printA("代收/归集运行中");
-
+        logWindow.printA("代收服务启动成功...");
         handlerAccessibility();
     }
 
@@ -118,13 +118,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
         AccessibleUtil.getAccessibilityNodeInfoS(nodeInfos, nodeInfo);
         Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
         try {
+            Dialogs(nodeInfoMap);
             ScreenLockPassword(nodeInfoMap);
             getBalance(nodeInfoMap);
             BottomNavigationBar(nodeInfoMap);
             clickBill(nodeInfoMap);
             getBill(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
-            Dialogs(nodeInfoMap);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
@@ -149,8 +149,34 @@ public class CollectionAccessibilityService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
     }
 
+    //归集成功
+    private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+        long id = collectBillResponse.getId();
+        postCollectStatus(1, "归集成功", id);
+        collectBillResponse = null;
+        isTransfer = false;
+        balance = "0";
+        logWindow.printA("归集成功");
+        Logs.d("归集成功");
+        if (nodeInfoMap.containsKey("Selesai")) {
+            clickButton(nodeInfoMap.get("Selesai"));
+        }
+    }
+
+    //归集失败
+    private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
+        long id = collectBillResponse.getId();
+        postCollectStatus(2, text, id);
+        collectBillResponse = null;
+        isTransfer = false;
+        balance = "0";
+        Logs.d("转账失败");
+        logWindow.printA("归集失败");
+        clickButton(nodeInfoMap.get("Oke "));
+    }
+
     //弹窗直接点击确认
-    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) throws IOException {
         if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
             clickButton(nodeInfoMap.get("Oke "));
         }
@@ -171,61 +197,12 @@ public class CollectionAccessibilityService extends AccessibilityService {
             }
         }
 
-        if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
-            long id = collectBillResponse.getId();
-            postCollectStatus(2, "Bank tujuan tidak merespon", id);
-            collectBillResponse = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("归集失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Akun tidak ditemukan")) {
-            long id = collectBillResponse.getId();
-            postCollectStatus(2, "Akun tidak ditemukan", id);
-            collectBillResponse = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("归集失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Saldo kamu tidak mencukupi")){
-            long id = collectBillResponse.getId();
-            postCollectStatus(2, "Saldo kamu tidak mencukupi", id);
-            collectBillResponse = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("归集失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-
-
-        if (nodeInfoMap.containsKey("Ada yang salah.")) {
-            long id = collectBillResponse.getId();
-            postCollectStatus(2, "Ada yang salah.", id);
-            collectBillResponse = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")) {
-            long id = collectBillResponse.getId();
-            postCollectStatus(2, "Ups! Koneksi Internet Hilang", id);
-            collectBillResponse = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
+        //批量处理转账失败
+        for (String error : PayErrors.errors) {
+            if (nodeInfoMap.containsKey(error)) {
+                error(nodeInfoMap, error);
+                throw new IOException(error);
+            }
         }
 
         if (collectBillResponse == null) {
@@ -288,16 +265,8 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         //等待转账状态
         if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
-            long id = collectBillResponse.getId();
-            postCollectStatus(1, "转账成功", id);
-            collectBillResponse = null;
-            isTransfer = false;
-            balance = "0";
-            logWindow.printA("归集成功");
-            Logs.d("转账成功");
-            if (nodeInfoMap.containsKey("Selesai")) {
-                clickButton(nodeInfoMap.get("Selesai"));
-            }
+            success(nodeInfoMap);
+            return;
         }
 
         //选择银行
@@ -509,79 +478,5 @@ public class CollectionAccessibilityService extends AccessibilityService {
     @Override
     public void onInterrupt() {
 
-    }
-
-    public class LogWindow {
-        private final CollectionAccessibilityService service;
-        private final LayoutLogBinding binding;
-        private WindowManager windowManager;
-
-        public LogWindow(CollectionAccessibilityService service) {
-            this.service = service;
-            this.binding = LayoutLogBinding.inflate(LayoutInflater.from(service));
-            init();
-        }
-
-        public void print(String str) {
-            handler.post(() -> printA(str));
-        }
-
-        private void printA(String str) {
-            // 获取当前文本
-            String currentText = binding.text.getText().toString();
-            String[] lines = currentText.split("\n");
-
-            // 检查最新内容是否已经存在
-            boolean isDuplicate = false;
-            for (String line : lines) {
-                if (line.equals(str)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            // 如果内容不存在，才追加
-            if (!isDuplicate) {
-                // 如果行数超过 20，移除最早的行
-                if (lines.length >= 10) {
-                    StringBuilder newText = new StringBuilder();
-                    // 保留最后 19 行
-                    for (int i = lines.length - 9; i < lines.length; i++) {
-                        newText.append(lines[i]);
-                    }
-                    binding.text.setText(newText.toString());
-                }
-                // 追加新内容并滚动到底部
-                binding.text.append("\n" + getCurrentDate() + ": " + str);
-                binding.scroll.post(() -> binding.scroll.fullScroll(View.FOCUS_DOWN));
-            }
-        }
-
-        public static String getCurrentDate() {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-ss", Locale.getDefault());
-            return sdf.format(new Date());
-        }
-
-        private void init() {
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    dpToPx(service, 300),
-                    dpToPx(service, 100),
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |  // 关键：悬浮窗不获取焦点
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, // 关键：悬浮窗不可触摸（穿透点击）
-                    PixelFormat.TRANSLUCENT
-            );
-            params.gravity = Gravity.TOP | Gravity.END;
-            windowManager = (WindowManager) service.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.addView(binding.getRoot(), params);
-        }
-
-        public void destroy() {
-            windowManager.removeView(binding.getRoot());
-        }
-
-        public int dpToPx(Context context, float dp) {
-            float density = context.getResources().getDisplayMetrics().density;
-            return (int) (dp * density + 0.5f); // 四舍五入
-        }
     }
 }

@@ -18,13 +18,6 @@ public class MainHook implements IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
-        XposedBridge.hookAllMethods(System.class, "exit", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                param.setResult(null); // 阻止退出
-            }
-        });
         XposedHelpers.findAndHookMethod("android.app.Instrumentation", lpparam.classLoader, "callApplicationOnCreate", Application.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -66,6 +59,13 @@ public class MainHook implements IXposedHookLoadPackage {
                         }
                     });
                 }
+            }
+        });
+        XposedBridge.hookAllMethods(System.class, "exit", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                param.setResult(null); // 阻止退出
             }
         });
     }

@@ -23,6 +23,7 @@ import com.xposed.jagohook.room.entity.PostPayErrorEntity;
 import com.xposed.jagohook.runnable.PayRunnable;
 import com.xposed.jagohook.runnable.PostPayErrorRunnable;
 import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
+import com.xposed.jagohook.server.script.PayErrors;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
@@ -87,7 +88,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //下拉
     private void scrollDown() {
-        if (TimeUtils.isNightToMorning()){
+        if (TimeUtils.isNightToMorning()) {
             handler.postDelayed(this::scrollDown, 10_000);
             return;
         }
@@ -112,25 +113,11 @@ public class PayAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
-        /*try {
-            if (accessibilityEvent.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {//不处理控件点击事件
-                return;
-            }
-            AccessibilityNodeInfo nodeInfo = accessibilityEvent.getSource();
-            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfo);
-            ScreenLockPassword(nodeInfoMap);
-            getBalance(nodeInfoMap);
-            BottomNavigationBar(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo);
-            Dialogs(nodeInfoMap);
-        } catch (Throwable e) {
-            Logs.d("异常:" + e.getMessage());
-        }*/
     }
 
     //执行界面点击事件
     private void handlerAccessibility() {
-        if (TimeUtils.isNightToMorning()){
+        if (TimeUtils.isNightToMorning()) {
             handler.postDelayed(this::handlerAccessibility, 10_000);
             return;
         }
@@ -147,17 +134,16 @@ public class PayAccessibilityService extends AccessibilityService {
         AccessibleUtil.getAccessibilityNodeInfoS(nodeInfos, nodeInfo);
         Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
         try {
+            Dialogs(nodeInfoMap);
             ScreenLockPassword(nodeInfoMap);
             getBalance(nodeInfoMap);
             BottomNavigationBar(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo);
-            Dialogs(nodeInfoMap);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
         }
         handler.postDelayed(this::handlerAccessibility, 2000);
     }
-
 
 
     //处理滑动
@@ -170,8 +156,34 @@ public class PayAccessibilityService extends AccessibilityService {
         return null;
     }
 
+    //归集成功
+    private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+        TakeLatestOrderBean id = takeLatestOrderBean;
+        postCollectStatus(1, "转账成功", id);
+        takeLatestOrderBean = null;
+        isTransfer = false;
+        balance = "0";
+        logWindow.printA("归集成功");
+        Logs.d("转账成功");
+        if (nodeInfoMap.containsKey("Selesai")) {
+            clickButton(nodeInfoMap.get("Selesai"));
+        }
+    }
+
+    //归集失败
+    private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
+        TakeLatestOrderBean id = takeLatestOrderBean;
+        postCollectStatus(0, text, id);
+        takeLatestOrderBean = null;
+        isTransfer = false;
+        balance = "0";
+        Logs.d("转账失败");
+        logWindow.printA("转账失败");
+        clickButton(nodeInfoMap.get("Oke "));
+    }
+
     //弹窗直接点击确认
-    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) throws IOException {
         if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
             clickButton(nodeInfoMap.get("Oke "));
         }
@@ -192,60 +204,12 @@ public class PayAccessibilityService extends AccessibilityService {
             }
         }
 
-
-        if (nodeInfoMap.containsKey("Bank tujuan tidak merespon")) {//卡号错误
-            TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "Bank tujuan tidak merespon", id);
-            takeLatestOrderBean = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Ada yang salah.")){
-            TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "Ada yang salah.", id);
-            takeLatestOrderBean = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Akun tidak ditemukan")){
-            TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "Akun tidak ditemukan", id);
-            takeLatestOrderBean = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Saldo kamu tidak mencukupi")){
-            TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "Saldo kamu tidak mencukupi", id);
-            takeLatestOrderBean = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Ups! Koneksi Internet Hilang")) {
-            TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(0, "Ups! Koneksi Internet Hilang", id);
-            takeLatestOrderBean = null;
-            isTransfer = false;
-            balance = "0";
-            Logs.d("转账失败");
-            logWindow.printA("转账失败");
-            clickButton(nodeInfoMap.get("Oke "));
+        //批量处理转账失败
+        for (String error : PayErrors.errors) {
+            if (nodeInfoMap.containsKey(error)) {
+                error(nodeInfoMap, error);
+                throw new IOException(error);
+            }
         }
 
         if (takeLatestOrderBean == null) {
@@ -342,18 +306,10 @@ public class PayAccessibilityService extends AccessibilityService {
             }
         }
 
+
         //等待转账状态
         if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
-            TakeLatestOrderBean id = takeLatestOrderBean;
-            postCollectStatus(1, "转账成功", id);
-            takeLatestOrderBean = null;
-            isTransfer = false;
-            balance = "0";
-            logWindow.printA("归集成功");
-            Logs.d("转账成功");
-            if (nodeInfoMap.containsKey("Selesai")) {
-                clickButton(nodeInfoMap.get("Selesai"));
-            }
+            success(nodeInfoMap);
         }
 
         //选择银行
@@ -524,79 +480,5 @@ public class PayAccessibilityService extends AccessibilityService {
     @Override
     public void onInterrupt() {
 
-    }
-
-    public class LogWindow {
-        private final PayAccessibilityService service;
-        private final LayoutLogBinding binding;
-        private WindowManager windowManager;
-
-        public LogWindow(PayAccessibilityService service) {
-            this.service = service;
-            this.binding = LayoutLogBinding.inflate(LayoutInflater.from(service));
-            init();
-        }
-
-        public void print(String str) {
-            handler.post(() -> printA(str));
-        }
-
-        private void printA(String str) {
-            // 获取当前文本
-            String currentText = binding.text.getText().toString();
-            String[] lines = currentText.split("\n");
-
-            // 检查最新内容是否已经存在
-            boolean isDuplicate = false;
-            for (String line : lines) {
-                if (line.equals(str)) {
-                    isDuplicate = true;
-                    break;
-                }
-            }
-            // 如果内容不存在，才追加
-            if (!isDuplicate) {
-                // 如果行数超过 20，移除最早的行
-                if (lines.length >= 10) {
-                    StringBuilder newText = new StringBuilder();
-                    // 保留最后 19 行
-                    for (int i = lines.length - 9; i < lines.length; i++) {
-                        newText.append(lines[i]);
-                    }
-                    binding.text.setText(newText.toString());
-                }
-                // 追加新内容并滚动到底部
-                binding.text.append("\n" + getCurrentDate() + ": " + str);
-                binding.scroll.post(() -> binding.scroll.fullScroll(View.FOCUS_DOWN));
-            }
-        }
-
-        public static String getCurrentDate() {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-ss", Locale.getDefault());
-            return sdf.format(new Date());
-        }
-
-        private void init() {
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    dpToPx(service, 300),
-                    dpToPx(service, 100),
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |  // 关键：悬浮窗不获取焦点
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, // 关键：悬浮窗不可触摸（穿透点击）
-                    PixelFormat.TRANSLUCENT
-            );
-            params.gravity = Gravity.TOP | Gravity.END;
-            windowManager = (WindowManager) service.getSystemService(Context.WINDOW_SERVICE);
-            windowManager.addView(binding.getRoot(), params);
-        }
-
-        public void destroy() {
-            windowManager.removeView(binding.getRoot());
-        }
-
-        public int dpToPx(Context context, float dp) {
-            float density = context.getResources().getDisplayMetrics().density;
-            return (int) (dp * density + 0.5f); // 四舍五入
-        }
     }
 }

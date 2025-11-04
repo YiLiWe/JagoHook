@@ -48,12 +48,6 @@ public class CollectionAccessibilityRunnable implements Runnable {
 
     @Override
     public void run() {
-        /*
-        CollectBillResponse collectBillResponsex = new CollectBillResponse();
-        collectBillResponsex.setPhone("001901139428502");
-        collectBillResponsex.setIdPlgn(10000);
-        collectBillResponsex.setBank("BRI");
-        service.setCollectBillResponse(collectBillResponsex);*/
         service.getLogWindow().print("归集账单启动...");
 
         while (service.isRunning()) {
@@ -86,6 +80,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
                     collectBillResponse.setBank(bank);
                 }
                 service.setCollectBillResponse(collectBillResponse);
+                service.getLogWindow().print("归集账单成功:" + collectBillResponse.getId());
             }
             stop();
         }
