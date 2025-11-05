@@ -226,6 +226,20 @@ public class PayAccessibilityService extends AccessibilityService {
             }
         }
 
+        //关闭弹窗
+        if (getTakeLatestOrderBean()==null){
+            if (nodeInfoMap.containsKey("Contact Item")){
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Contact Item");
+                if (accessibilityNodeInfo != null) {
+                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
+                    if (nodeInfo != null) {
+                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(2);
+                        clickButton(nodeInfo1);
+                    }
+                }
+            }
+        }
+
         //批量处理转账失败
         for (String error : PayErrors.errors) {
             if (nodeInfoMap.containsKey(error)) {
