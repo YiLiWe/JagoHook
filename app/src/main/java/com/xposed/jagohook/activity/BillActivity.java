@@ -18,11 +18,6 @@ import com.xposed.jagohook.room.entity.BillEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @Description 账单界面
- * @Author 不一样的风景
- * @Time 2024/11/2 17:20
- */
 public class BillActivity extends AppCompatActivity implements Runnable {
     private ActivityBillBinding binding;
     private int pageSize = 10, pageNumber = 1;
@@ -40,12 +35,6 @@ public class BillActivity extends AppCompatActivity implements Runnable {
         initData();
     }
 
-    /**
-     * @Description 初始化列表
-     * @code 1
-     * @Author 不一样的风景
-     * @Time 2024/11/2 17:21
-     */
     private void initRecycler() {
         adapter = new BillAdapter(beans);
         binding.recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -53,44 +42,20 @@ public class BillActivity extends AppCompatActivity implements Runnable {
         binding.recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
-    /**
-     * @Description 初始化刷新
-     * @code 1
-     * @Author 不一样的风景
-     * @Time 2024/11/2 17:21
-     */
     private void initSmart() {
         binding.smart.setOnRefreshListener(this::onRefresh);
         binding.smart.setOnLoadMoreListener(this::onLoadMore);
     }
 
-    /**
-     * @Description 加载更多通知
-     * @code 1
-     * @Author 不一样的风景
-     * @Time 2024/11/2 17:21
-     */
     private void onLoadMore(RefreshLayout refreshLayout) {
         pageNumber = pageNumber + 1;
         initData();
     }
 
-    /**
-     * @Description 提交数据
-     * @code 1
-     * @Author 不一样的风景
-     * @Time 2024/11/2 17:22
-     */
     private void initData() {
         new Thread(this).start();
     }
 
-    /**
-     * @Description 刷新数据
-     * @code 1
-     * @Author 不一样的风景
-     * @Time 2024/11/2 17:31
-     */
     private void onRefresh(RefreshLayout refreshLayout) {
         adapter.notifyItemRangeRemoved(0, beans.size() + 1);
         beans.clear();
@@ -99,12 +64,6 @@ public class BillActivity extends AppCompatActivity implements Runnable {
         initData();
     }
 
-    /**
-     * @Description 初始化标题栏
-     * @code 1
-     * @Author 不一样的风景
-     * @Time 2024/11/2 17:32
-     */
     private void initToolbar() {
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         binding.toolbar.setOnMenuItemClickListener(item -> {

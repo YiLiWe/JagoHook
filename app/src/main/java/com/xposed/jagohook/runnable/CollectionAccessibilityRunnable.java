@@ -13,7 +13,6 @@ import com.xposed.jagohook.room.entity.PostCollectionErrorEntity;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
 import com.xposed.jagohook.runnable.response.ResultResponse;
 import com.xposed.jagohook.server.CollectionAccessibilityService;
-import com.xposed.jagohook.server.SuShellService;
 import com.xposed.jagohook.utils.BankUtils;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;

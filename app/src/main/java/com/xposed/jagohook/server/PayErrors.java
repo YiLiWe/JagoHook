@@ -1,4 +1,4 @@
-package com.xposed.jagohook.server.script;
+package com.xposed.jagohook.server;
 
 import java.util.ArrayList;
 import java.util.List;

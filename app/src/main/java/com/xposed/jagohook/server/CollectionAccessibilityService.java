@@ -3,21 +3,15 @@ package com.xposed.jagohook.server;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.format.DateFormat;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 
 import com.xposed.jagohook.config.AppConfig;
-import com.xposed.jagohook.databinding.LayoutLogBinding;
 import com.xposed.jagohook.room.AppDatabase;
 import com.xposed.jagohook.room.dao.BillDao;
 import com.xposed.jagohook.room.dao.PostCollectionErrorDao;
@@ -27,19 +21,14 @@ import com.xposed.jagohook.runnable.BillRunnable;
 import com.xposed.jagohook.runnable.CollectionAccessibilityRunnable;
 import com.xposed.jagohook.runnable.PostCollectionErrorRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
-import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
-import com.xposed.jagohook.server.script.PayErrors;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import lombok.Getter;
@@ -99,6 +88,14 @@ public class CollectionAccessibilityService extends AccessibilityService {
         handlerAccessibility();
     }
 
+    public synchronized void setCollectBillResponse(CollectBillResponse collectBillResponse) {
+        this.collectBillResponse = collectBillResponse;
+    }
+
+    public synchronized CollectBillResponse getCollectBillResponse() {
+        return collectBillResponse;
+    }
+
     //执行界面点击事件
     private void handlerAccessibility() {
         if (TimeUtils.isNightToMorning()) {
@@ -151,9 +148,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //归集成功
     private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
-        long id = collectBillResponse.getId();
+        long id = getCollectBillResponse().getId();
         postCollectStatus(1, "归集成功", id);
-        collectBillResponse = null;
+        setCollectBillResponse(null);
         isTransfer = false;
         balance = "0";
         logWindow.printA("归集成功");
@@ -165,9 +162,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //归集失败
     private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
-        long id = collectBillResponse.getId();
+        long id = getCollectBillResponse().getId();
         postCollectStatus(2, text, id);
-        collectBillResponse = null;
+        setCollectBillResponse(null);
         isTransfer = false;
         balance = "0";
         Logs.d("转账失败");
@@ -205,7 +202,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             }
         }
 
-        if (collectBillResponse == null) {
+        if (getCollectBillResponse() == null) {
             if (nodeInfoMap.containsKey("Search Text Field")) {
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
                 if (accessibilityNodeInfo != null) {
@@ -253,7 +250,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //转账
     private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo) {
-        if (collectBillResponse == null) return;
+        if (getCollectBillResponse() == null) return;
 
         //点击转账按钮
         if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
@@ -320,7 +317,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo1 = info.getChild(0);
                 if (accessibilityNodeInfo1 != null) {
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(collectBillResponse.getIdPlgn()));
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(getCollectBillResponse().getIdPlgn()));
                 }
 
                 //判断是否输入成功
@@ -337,13 +334,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
 
         //输入银行卡号
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank())) {
-            initCard(nodeInfoMap, collectBillResponse.getPhone());
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(getCollectBillResponse().getBank())) {
+            initCard(nodeInfoMap, getCollectBillResponse().getPhone());
         }
 
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse.getBank()) && nodeInfoMap1.containsKey(collectBillResponse.getPhone())) {
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(getCollectBillResponse().getBank()) && nodeInfoMap1.containsKey(getCollectBillResponse().getPhone())) {
             clickButton(nodeInfoMap.get("Periksa"));
         }
 
@@ -394,7 +391,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     //在转换导航页，点击账单按钮
     private void clickBill(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (isTransfer) return;
-        if (collectBillResponse != null) return;
+        if (getCollectBillResponse() != null) return;
         if (isBill) return;
         if (nodeInfoMap.containsKey("Bank\n" +//在转换导航页，点击账单按钮
                 "Transfer")) {
