@@ -107,9 +107,9 @@ public class PayRunnable implements Runnable {
         if (messageBean == null) return null;
         if (messageBean.getData() == null) return null;
         TakeLatestOrderBean takeLatestOrderBean1 = messageBean.getData().to(TakeLatestOrderBean.class);
-        takeLatestOrderBean1.setBankName(getBank(takeLatestOrderBean1.getBankName()));
         if (Banks.contains(takeLatestOrderBean1.getBankName())) {
             takeLatestOrderBean1.setMoney(true);
+            takeLatestOrderBean1.setBankName(getBank(takeLatestOrderBean1.getBankName()));
         } else {
             takeLatestOrderBean1.setMoney(false);
             if (!BankUtils.getBankMap().containsKey(takeLatestOrderBean1.getBankName())) {

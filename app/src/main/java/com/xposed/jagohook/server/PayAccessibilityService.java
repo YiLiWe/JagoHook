@@ -70,7 +70,7 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("2.0代付运行中");
+        logWindow.printA("2.2代付运行中");
 
         scrollDown();
 
@@ -329,7 +329,7 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //选择银行
-        if (takeLatestOrderBean1.isMoney()) {
+        if (!takeLatestOrderBean1.isMoney()) {
             if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
                 //输入银行搜索
                 initCard(nodeInfoMap, takeLatestOrderBean1.getBankName());
@@ -337,7 +337,7 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //银行存在
-        if (takeLatestOrderBean1.isMoney()) {
+        if (!takeLatestOrderBean1.isMoney()) {
             if (nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName() + "\n" +
                     "BI-FAST")) {
                 clickButton(nodeInfoMap.get(takeLatestOrderBean1.getBankName() + "\n" +
