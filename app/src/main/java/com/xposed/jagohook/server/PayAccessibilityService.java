@@ -70,7 +70,7 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("2.2代付运行中");
+        logWindow.printA("2.3代付运行中");
 
         scrollDown();
 
