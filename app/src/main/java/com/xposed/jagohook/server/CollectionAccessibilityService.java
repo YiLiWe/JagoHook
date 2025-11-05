@@ -84,7 +84,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
 
-        logWindow.printA("1.0代收服务启动成功...");
+        logWindow.printA("1.2代收服务启动成功...");
         handlerAccessibility();
     }
 
@@ -114,7 +114,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
         List<AccessibilityNodeInfo> nodeInfos = new ArrayList<>();
         AccessibleUtil.getAccessibilityNodeInfoS(nodeInfos, nodeInfo);
         Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
-        CollectBillResponse collectBillResponse1 = getCollectBillResponse();
         try {
             Dialogs(nodeInfoMap);
             ScreenLockPassword(nodeInfoMap);
@@ -122,7 +121,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             BottomNavigationBar(nodeInfoMap);
             clickBill(nodeInfoMap);
             getBill(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo, collectBillResponse1);
+            Transfer(nodeInfoMap, nodeInfo);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
             e.printStackTrace();
@@ -258,7 +257,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     }
 
     //转账
-    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo, CollectBillResponse collectBillResponse1) {
+    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo) {
         if (getCollectBillResponse() == null) return;
 
         //点击转账按钮
@@ -278,13 +277,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
         //选择银行
         if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
             //输入银行搜索
-            initCard(nodeInfoMap, collectBillResponse1.getBank());
+            initCard(nodeInfoMap, getCollectBillResponse().getBank());
         }
 
         //银行存在
-        if (nodeInfoMap.containsKey(collectBillResponse1.getBank() + "\n" +
+        if (nodeInfoMap.containsKey(getCollectBillResponse().getBank() + "\n" +
                 "BI-FAST")) {
-            clickButton(nodeInfoMap.get(collectBillResponse1.getBank() + "\n" +
+            clickButton(nodeInfoMap.get(getCollectBillResponse().getBank() + "\n" +
                     "BI-FAST"));
         }
 
@@ -313,7 +312,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
         if (nodeInfoMap.containsKey("Keterangan penerima")) {
-            if (nodeInfoMap.containsKey(collectBillResponse1.getBank() + " • " + collectBillResponse1.getCardNumber())) {
+            if (nodeInfoMap.containsKey(getCollectBillResponse().getBank() + " • " + getCollectBillResponse().getCardNumber())) {
                 //判断是否输入成功
                 if (nodeInfoMap.containsKey("Lanjut ")) {
                     clickButton(nodeInfoMap.get("Lanjut "));
@@ -330,7 +329,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo1 = info.getChild(0);
                 if (accessibilityNodeInfo1 != null) {
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(collectBillResponse1.getIdPlgn()));
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(getCollectBillResponse().getIdPlgn()));
                 }
 
                 //判断是否输入成功
@@ -347,13 +346,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
 
         //输入银行卡号
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse1.getBank())) {
-            initCard(nodeInfoMap, collectBillResponse1.getPhone());
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(getCollectBillResponse().getBank())) {
+            initCard(nodeInfoMap, getCollectBillResponse().getPhone());
         }
 
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse1.getBank()) && nodeInfoMap1.containsKey(collectBillResponse1.getPhone())) {
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(getCollectBillResponse().getBank()) && nodeInfoMap1.containsKey(getCollectBillResponse().getPhone())) {
             clickButton(nodeInfoMap.get("Periksa"));
         }
 
