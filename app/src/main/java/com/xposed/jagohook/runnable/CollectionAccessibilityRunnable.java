@@ -76,8 +76,8 @@ public class CollectionAccessibilityRunnable implements Runnable {
                     String bank = BankUtils.getBankMap().get(collectBillResponse.getBank());
                     collectBillResponse.setBank(bank);
                 }
-                service.setCollectBillResponse(collectBillResponse);
                 service.getLogWindow().print("归集账单成功:" + collectBillResponse.getId());
+                service.setCollectBillResponse(collectBillResponse);
             }
             stop();
         }

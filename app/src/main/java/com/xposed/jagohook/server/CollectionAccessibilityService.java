@@ -150,7 +150,8 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //归集成功
     private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
-        long id = getCollectBillResponse().getId();
+        if (this.collectBillResponse == null) return;
+        long id = this.collectBillResponse.getId();
         postCollectStatus(1, "归集成功", id);
         setCollectBillResponse(null);
         isTransfer = false;
@@ -164,7 +165,8 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //归集失败
     private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
-        long id = getCollectBillResponse().getId();
+        if (this.collectBillResponse == null) return;
+        long id = this.collectBillResponse.getId();
         postCollectStatus(2, text, id);
         setCollectBillResponse(null);
         isTransfer = false;
@@ -189,7 +191,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
                     AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
-                    if (getCollectBillResponse()!=null){
+                    if (getCollectBillResponse() != null) {
                         success(nodeInfoMap);
                     }
                 }
@@ -199,7 +201,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             }
         }
 
-        if (getCollectBillResponse() == null) {
+        if (this.collectBillResponse == null) {
             if (nodeInfoMap.containsKey("Search Text Field")) {
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
                 if (accessibilityNodeInfo != null) {
