@@ -21,6 +21,7 @@ import com.xposed.jagohook.runnable.BillRunnable;
 import com.xposed.jagohook.runnable.CollectionAccessibilityRunnable;
 import com.xposed.jagohook.runnable.PostCollectionErrorRunnable;
 import com.xposed.jagohook.runnable.response.CollectBillResponse;
+import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
@@ -57,7 +58,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private BillRunnable billRunnable;
 
     // ========== ui相关变量 ==========
-    private boolean isBill = true;
+    private boolean isBill = false;
     //转账中，不点击转账按钮
     private boolean isTransfer = false;
     private AppConfig appConfig;
@@ -115,8 +116,11 @@ public class CollectionAccessibilityService extends AccessibilityService {
             if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页下拉
                 if (scrollView != null) {
                     AccessibleUtil.performPullDown(this, 300, 1000, 1000);
-                    isBill = true;
-                    Logs.d("下拉");
+                    handler.postDelayed(() -> {
+                        if (collectBillResponse == null) {
+                            isBill = true;
+                        }
+                    }, 5_000);
                 }
             }
             handler.postDelayed(this::scrollDown, 5_000);
@@ -153,7 +157,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
         CollectBillResponse collectBillResponse1 = getCollectBillResponse();
         try {
-            Dialogs(nodeInfoMap);
+            Dialogs(nodeInfoMap, collectBillResponse1);
             ScreenLockPassword(nodeInfoMap);
             getBalance(nodeInfoMap);
             BottomNavigationBar(nodeInfoMap);
@@ -186,10 +190,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
     }
 
     //归集成功
-    private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap, CollectBillResponse collectBillResponse) {
         if (this.collectBillResponse == null) return;
-        long id = this.collectBillResponse.getId();
-        postCollectStatus(1, "归集成功", id);
+        postCollectStatus(1, "归集成功", collectBillResponse.getId());
         setCollectBillResponse(null);
         isTransfer = false;
         balance = "0";
@@ -201,69 +204,15 @@ public class CollectionAccessibilityService extends AccessibilityService {
     }
 
     //归集失败
-    private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
+    private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text, CollectBillResponse collectBillResponse) {
         if (this.collectBillResponse == null) return;
-        long id = this.collectBillResponse.getId();
-        postCollectStatus(2, text, id);
+        postCollectStatus(2, text, collectBillResponse.getId());
         setCollectBillResponse(null);
         isTransfer = false;
         balance = "0";
         Logs.d("转账失败");
         logWindow.printA("归集失败");
         clickButton(nodeInfoMap.get("Oke "));
-    }
-
-    //弹窗直接点击确认
-    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) throws IOException {
-        if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
-            clickButton(nodeInfoMap.get("Oke "));
-        }
-
-        if (nodeInfoMap.containsKey("Autentikasi")) {//登录密码
-            if (nodeInfoMap.containsKey("password_field")) {
-                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("password_field");
-                if (accessibilityNodeInfo == null) return;
-                AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
-                if (accessibilityNodeInfo1 != null) {
-                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
-                    if (getCollectBillResponse() != null) {
-                        success(nodeInfoMap);
-                    }
-                }
-            }
-            if (nodeInfoMap.containsKey("Konfirmasi ")) {
-                clickButton(nodeInfoMap.get("Konfirmasi "));
-            }
-        }
-
-        if (this.collectBillResponse == null) {
-            if (nodeInfoMap.containsKey("Search Text Field")) {
-                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
-                if (accessibilityNodeInfo != null) {
-                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
-                    if (nodeInfo != null) {
-                        clickButton(nodeInfo.getChild(3));
-                    }
-                }
-            }
-        }
-
-        //关闭弹窗
-        if (getCollectBillResponse() == null) {
-            if (nodeInfoMap.containsKey("Back Button")) {
-                clickButton(nodeInfoMap.get("Back Button"));
-            }
-        }
-
-        //批量处理转账失败
-        for (String error : PayErrors.errors) {
-            if (nodeInfoMap.containsKey(error)) {
-                error(nodeInfoMap, error);
-                throw new IOException(error);
-            }
-        }
     }
 
     private void postCollectStatus(int state, String error, long id) {
@@ -299,14 +248,73 @@ public class CollectionAccessibilityService extends AccessibilityService {
         });
     }
 
-    //转账
-    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo, CollectBillResponse collectBillResponse1) {
+    //弹窗直接点击确认
+    //弹窗直接点击确认
+    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap, CollectBillResponse takeLatestOrderBean1) throws IOException {
+        if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
+            clickButton(nodeInfoMap.get("Oke "));
+        }
 
-        if (getCollectBillResponse() == null) {
+        if (nodeInfoMap.containsKey("Autentikasi")) {//登录密码
+            if (nodeInfoMap.containsKey("password_field")) {
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("password_field");
+                if (accessibilityNodeInfo == null) return;
+                AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
+                if (accessibilityNodeInfo1 != null) {
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
+                    if (getCollectBillResponse() != null) {
+                        success(nodeInfoMap, getCollectBillResponse());
+                    }
+                }
+            }
+            if (nodeInfoMap.containsKey("Konfirmasi ")) {
+                clickButton(nodeInfoMap.get("Konfirmasi "));
+            }
+        }
+
+
+        if (this.collectBillResponse == null) {
+            if (nodeInfoMap.containsKey("Search Text Field")) {
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
+                if (accessibilityNodeInfo != null) {
+                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
+                    if (nodeInfo != null) {
+                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(3);
+                        clickButton(nodeInfo1);
+                    }
+                }
+            }
+        }
+
+        //关闭弹窗
+        if (this.collectBillResponse == null) {
+            if (nodeInfoMap.containsKey("Back Button")) {
+                clickButton(nodeInfoMap.get("Back Button"));
+            }
+        }
+
+        if (this.collectBillResponse != null) {
+            //批量处理转账失败
+            for (String error : PayErrors.errors) {
+                if (nodeInfoMap.containsKey(error)) {
+                    error(nodeInfoMap, error, takeLatestOrderBean1);
+                    throw new IOException(error);
+                }
+            }
+        }
+    }
+
+    //转账
+    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo, CollectBillResponse takeLatestOrderBean1) {
+
+        if (this.collectBillResponse == null) {
             //转账成功
             if (nodeInfoMap.containsKey("Selesai")) {
                 clickButton(nodeInfoMap.get("Selesai"));
             }
+
             //确认
             if (nodeInfoMap.containsKey("Oke")) {
                 if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
@@ -317,43 +325,45 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
         //点击转账按钮
-        if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
-                "Transfer")) {
-            clickButton(nodeInfoMap.get("Bank\n" +
-                    "Transfer"));
-            isTransfer = true;
+        if (this.collectBillResponse != null) {
+            if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
+                    "Transfer")) {
+                clickButton(nodeInfoMap.get("Bank\n" +
+                        "Transfer"));
+                isTransfer = true;
+            }
         }
 
-      /*  //等待转账状态
-        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
-            success(nodeInfoMap);
-            return;
+        //等待转账状态
+/*        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
+            success(nodeInfoMap, takeLatestOrderBean1);
         }
-
-        */
+*/
         //转账界面
         if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
-            success(nodeInfoMap);
+            success(nodeInfoMap, takeLatestOrderBean1);
             if (nodeInfoMap.containsKey("Oke")) {
                 clickButton(nodeInfoMap.get("Oke"));
             }
-            return;
         }
 
 
         //选择银行
-        if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
-            //输入银行搜索
-            initCard(nodeInfoMap, collectBillResponse1.getBank());
+        if (getCollectBillResponse() != null) {
+            if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
+                //输入银行搜索
+                initCard(nodeInfoMap, takeLatestOrderBean1.getBank());
+            }
         }
 
         //银行存在
-        if (nodeInfoMap.containsKey(collectBillResponse1.getBank() + "\n" +
-                "BI-FAST")) {
-            clickButton(nodeInfoMap.get(collectBillResponse1.getBank() + "\n" +
-                    "BI-FAST"));
+        if (getCollectBillResponse() != null) {
+            if (nodeInfoMap.containsKey(takeLatestOrderBean1.getBank() + "\n" +
+                    "BI-FAST")) {
+                clickButton(nodeInfoMap.get(takeLatestOrderBean1.getBank() + "\n" +
+                        "BI-FAST"));
+            }
         }
-
 
         //确定转账
         if (nodeInfoMap.containsKey("Cek Ulang Transaksi")) {
@@ -392,7 +402,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo1 = info.getChild(0);
                 if (accessibilityNodeInfo1 != null) {
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(collectBillResponse1.getIdPlgn()));
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(takeLatestOrderBean1.getIdPlgn()));
                 }
 
                 //判断是否输入成功
@@ -407,19 +417,21 @@ public class CollectionAccessibilityService extends AccessibilityService {
             }
         }
 
+        //确认钱包转账
+        if (nodeInfoMap.containsKey("Cek Ulang Transaksi") && nodeInfoMap.containsKey("Top Up Sekarang ")) {
+            clickButton(nodeInfoMap.get("Top Up Sekarang "));
+        }
 
         //输入银行卡号
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse1.getBank())) {
-            initCard(nodeInfoMap, collectBillResponse1.getPhone());
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBank())) {
+            initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
         }
 
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(collectBillResponse1.getBank()) && nodeInfoMap1.containsKey(collectBillResponse1.getPhone())) {
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBank()) && nodeInfoMap1.containsKey(takeLatestOrderBean1.getCardNumber())) {
             clickButton(nodeInfoMap.get("Periksa"));
         }
-
-
     }
 
     //获取账单
@@ -483,20 +495,34 @@ public class CollectionAccessibilityService extends AccessibilityService {
     //底部导航栏处理
     private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (isTransfer) return;
-        if (isBill && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
+
+        if (this.collectBillResponse != null && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
             if (nodeInfoMap.containsKey("Transaksi\n" +
                     "Tab 3 dari 5")) {
                 AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
                         "Tab 3 dari 5");
                 clickButton(Transaksi);
             }
-            isBill = false;
-        } else if (!isBill && nodeInfoMap.containsKey("Bank\n" +
+        }
+
+        if (!isBill && this.collectBillResponse == null && nodeInfoMap.containsKey("Bank\n" +
                 "Transfer")) {//转账页面,点击前往首页
             if (nodeInfoMap.containsKey("Beranda\n" +
                     "Tab 1 dari 5")) {
                 clickButton(nodeInfoMap.get("Beranda\n" +
                         "Tab 1 dari 5"));
+            }
+        }
+
+        if (isBill) {//查看账单
+            if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
+                if (nodeInfoMap.containsKey("Transaksi\n" +
+                        "Tab 3 dari 5")) {
+                    AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
+                            "Tab 3 dari 5");
+                    clickButton(Transaksi);
+                }
+                isBill = false;
             }
         }
     }
