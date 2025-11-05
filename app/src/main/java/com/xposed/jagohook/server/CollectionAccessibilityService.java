@@ -260,7 +260,14 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     //转账
     private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo, CollectBillResponse collectBillResponse1) {
-        if (getCollectBillResponse() == null) return;
+
+        if (getCollectBillResponse() == null) {
+            //转账成功
+            if (nodeInfoMap.containsKey("Selesai")) {
+                clickButton(nodeInfoMap.get("Selesai"));
+            }
+            return;
+        }
 
         //点击转账按钮
         if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +

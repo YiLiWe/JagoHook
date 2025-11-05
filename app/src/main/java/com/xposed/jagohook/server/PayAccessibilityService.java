@@ -175,9 +175,6 @@ public class PayAccessibilityService extends AccessibilityService {
         balance = "0";
         logWindow.printA("转账成功");
         Logs.d("转账成功");
-        if (nodeInfoMap.containsKey("Selesai")) {
-            clickButton(nodeInfoMap.get("Selesai"));
-        }
     }
 
     //归集失败
@@ -305,7 +302,14 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //转账
     private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo, TakeLatestOrderBean takeLatestOrderBean1) {
-        if (this.takeLatestOrderBean == null) return;
+
+        if (this.takeLatestOrderBean == null) {
+            //转账成功
+            if (nodeInfoMap.containsKey("Selesai")) {
+                clickButton(nodeInfoMap.get("Selesai"));
+            }
+            return;
+        }
 
         //点击转账按钮
         if (getTakeLatestOrderBean() != null && !takeLatestOrderBean1.isMoney()) {
