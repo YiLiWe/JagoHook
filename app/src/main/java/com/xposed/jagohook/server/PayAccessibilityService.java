@@ -3,6 +3,7 @@ package com.xposed.jagohook.server;
 import android.accessibilityservice.AccessibilityService;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -227,12 +228,15 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //关闭弹窗
-        if (getTakeLatestOrderBean()==null){
-            if (nodeInfoMap.containsKey("Contact Item")){
+        if (getTakeLatestOrderBean() == null) {
+            if (nodeInfoMap.containsKey("Contact Item")) {
+                Logs.d("存在");
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Contact Item");
                 if (accessibilityNodeInfo != null) {
+                    Logs.d("存在2");
                     AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
                     if (nodeInfo != null) {
+                        Logs.d("存在3");
                         AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(2);
                         clickButton(nodeInfo1);
                     }
