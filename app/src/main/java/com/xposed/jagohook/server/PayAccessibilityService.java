@@ -204,6 +204,9 @@ public class PayAccessibilityService extends AccessibilityService {
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
                     AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, appConfig.getPASS());
+                    if (getTakeLatestOrderBean() != null) {
+                        success(nodeInfoMap, getTakeLatestOrderBean());
+                    }
                 }
             }
             if (nodeInfoMap.containsKey("Konfirmasi ")) {
