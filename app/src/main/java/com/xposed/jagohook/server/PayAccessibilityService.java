@@ -308,6 +308,13 @@ public class PayAccessibilityService extends AccessibilityService {
             if (nodeInfoMap.containsKey("Selesai")) {
                 clickButton(nodeInfoMap.get("Selesai"));
             }
+
+            //确认
+            if (nodeInfoMap.containsKey("Oke")) {
+                if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
+                    clickButton(nodeInfoMap.get("Oke"));
+                }
+            }
             return;
         }
 
