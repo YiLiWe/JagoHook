@@ -84,7 +84,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
 
-        logWindow.printA("2.5代收服务启动成功...");
+        logWindow.printA("2.4代收服务启动成功...");
         handlerAccessibility();
     }
 
@@ -271,7 +271,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
         //等待转账状态
-        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!") || nodeInfoMap.containsKey("Uang kamu sedang dikirim")) {
+        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
             success(nodeInfoMap);
             return;
         }

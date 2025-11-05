@@ -71,7 +71,7 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("2.5代付运行中");
+        logWindow.printA("2.4代付运行中");
 
         scrollDown();
 
@@ -326,7 +326,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
 
         //等待转账状态
-        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")||nodeInfoMap.containsKey("Uang kamu sedang dikirim")) {
+        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
             success(nodeInfoMap, takeLatestOrderBean1);
         }
 
