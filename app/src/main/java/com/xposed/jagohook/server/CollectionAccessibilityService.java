@@ -103,9 +103,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void scrollDown() {
         if (TimeUtils.isNightToMorning()) {
             handler.postDelayed(this::scrollDown, 10_000);
-        }else if (collectBillResponse != null) {
-            handler.postDelayed(this::scrollDown, 10_000);
-        } else if (isBill) {
+            return;
+        }
+        if (collectBillResponse != null) {
             handler.postDelayed(this::scrollDown, 10_000);
         } else {
             AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
@@ -115,12 +115,14 @@ public class CollectionAccessibilityService extends AccessibilityService {
             Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(accessibilityNodeInfos);
             if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页下拉
                 if (scrollView != null) {
-                    AccessibleUtil.performPullDown(this, 300, 1000, 1000);
-                    handler.postDelayed(() -> {
-                        if (collectBillResponse == null) {
-                            isBill = true;
-                        }
-                    }, 5_000);
+                    if (!isBill) {
+                        AccessibleUtil.performPullDown(this, 300, 1000, 1000);
+                        handler.postDelayed(() -> {
+                            if (collectBillResponse == null) {
+                                isBill = true;
+                            }
+                        }, 5_000);
+                    }
                 }
             }
             handler.postDelayed(this::scrollDown, 5_000);
