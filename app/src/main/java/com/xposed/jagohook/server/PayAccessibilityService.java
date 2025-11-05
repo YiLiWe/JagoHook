@@ -3,6 +3,7 @@ package com.xposed.jagohook.server;
 import android.accessibilityservice.AccessibilityService;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -69,7 +70,7 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("1.2代付运行中");
+        logWindow.printA("2.0代付运行中");
 
         scrollDown();
 
@@ -140,13 +141,15 @@ public class PayAccessibilityService extends AccessibilityService {
         AccessibleUtil.getAccessibilityNodeInfoS(nodeInfos, nodeInfo);
         Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(nodeInfos);
         try {
-            Dialogs(nodeInfoMap);
-            ScreenLockPassword(nodeInfoMap );
-            getBalance(nodeInfoMap);
-            BottomNavigationBar(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo);
+            TakeLatestOrderBean takeLatestOrderBean1 = getTakeLatestOrderBean();
+            Dialogs(nodeInfoMap, takeLatestOrderBean1);
+            ScreenLockPassword(nodeInfoMap, takeLatestOrderBean1);
+            getBalance(nodeInfoMap, takeLatestOrderBean1);
+            BottomNavigationBar(nodeInfoMap, takeLatestOrderBean1);
+            Transfer(nodeInfoMap, nodeInfo, takeLatestOrderBean1);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
+            e.printStackTrace();
         }
         handler.postDelayed(this::handlerAccessibility, 2000);
     }
@@ -163,9 +166,8 @@ public class PayAccessibilityService extends AccessibilityService {
     }
 
     //归集成功
-    private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean id) {
         this.orderNo = takeLatestOrderBean.getOrderNo();
-        TakeLatestOrderBean id=getTakeLatestOrderBean();
         PullPost(1, "转账成功", id);
         setTakeLatestOrderBean(null);
         isTransfer = false;
@@ -178,10 +180,9 @@ public class PayAccessibilityService extends AccessibilityService {
     }
 
     //归集失败
-    private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text) {
+    private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text, TakeLatestOrderBean takeLatestOrderBean) {
         this.orderNo = takeLatestOrderBean.getOrderNo();
-        TakeLatestOrderBean id=getTakeLatestOrderBean();
-        PullPost(0, text, id);
+        PullPost(0, text, takeLatestOrderBean);
         setTakeLatestOrderBean(null);
         isTransfer = false;
         balance = "0";
@@ -191,7 +192,7 @@ public class PayAccessibilityService extends AccessibilityService {
     }
 
     //弹窗直接点击确认
-    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap) throws IOException {
+    private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) throws IOException {
         if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
             clickButton(nodeInfoMap.get("Oke "));
         }
@@ -213,7 +214,7 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
 
-        if (getTakeLatestOrderBean() == null) {
+        if (this.takeLatestOrderBean == null) {
             if (nodeInfoMap.containsKey("Search Text Field")) {
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
                 if (accessibilityNodeInfo != null) {
@@ -227,17 +228,19 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //关闭弹窗
-        if (getTakeLatestOrderBean() == null) {
+        if (this.takeLatestOrderBean == null) {
             if (nodeInfoMap.containsKey("Back Button")) {
                 clickButton(nodeInfoMap.get("Back Button"));
             }
         }
 
-        //批量处理转账失败
-        for (String error : PayErrors.errors) {
-            if (nodeInfoMap.containsKey(error)) {
-                error(nodeInfoMap, error);
-                throw new IOException(error);
+        if (this.takeLatestOrderBean != null) {
+            //批量处理转账失败
+            for (String error : PayErrors.errors) {
+                if (nodeInfoMap.containsKey(error)) {
+                    error(nodeInfoMap, error, takeLatestOrderBean1);
+                    throw new IOException(error);
+                }
             }
         }
     }
@@ -299,11 +302,11 @@ public class PayAccessibilityService extends AccessibilityService {
     }
 
     //转账
-    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo) {
-        if (getTakeLatestOrderBean() == null) return;
+    private void Transfer(Map<String, AccessibilityNodeInfo> nodeInfoMap, AccessibilityNodeInfo nodeInfo, TakeLatestOrderBean takeLatestOrderBean1) {
+        if (this.takeLatestOrderBean == null) return;
 
         //点击转账按钮
-        if (getTakeLatestOrderBean()!=null&&getTakeLatestOrderBean().isMoney()) {
+        if (!takeLatestOrderBean1.isMoney()) {
             if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
                     "Transfer")) {
                 clickButton(nodeInfoMap.get("Bank\n" +
@@ -322,27 +325,27 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //等待转账状态
         if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
-            success(nodeInfoMap);
+            success(nodeInfoMap, takeLatestOrderBean1);
         }
 
         //选择银行
-        if (getTakeLatestOrderBean() != null && !getTakeLatestOrderBean().isMoney()) {
+        if (takeLatestOrderBean1.isMoney()) {
             if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
                 //输入银行搜索
-                initCard(nodeInfoMap, getTakeLatestOrderBean().getBankName());
+                initCard(nodeInfoMap, takeLatestOrderBean1.getBankName());
             }
         }
 
         //银行存在
-        if (getTakeLatestOrderBean() != null && !getTakeLatestOrderBean().isMoney()) {
-            if (nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName() + "\n" +
+        if (takeLatestOrderBean1.isMoney()) {
+            if (nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName() + "\n" +
                     "BI-FAST")) {
-                clickButton(nodeInfoMap.get(getTakeLatestOrderBean().getBankName() + "\n" +
+                clickButton(nodeInfoMap.get(takeLatestOrderBean1.getBankName() + "\n" +
                         "BI-FAST"));
             }
         } else {//选择钱包银行
-            if (nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName())) {
-                clickButton(nodeInfoMap.get(getTakeLatestOrderBean().getBankName()));
+            if (nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName())) {
+                clickButton(nodeInfoMap.get(takeLatestOrderBean1.getBankName()));
             }
         }
 
@@ -371,13 +374,13 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         if (nodeInfoMap.containsKey("Keterangan penerima")) {
-            if (nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName() + " • " + getTakeLatestOrderBean().getCardNumber())) {
+            if (nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName() + " • " + takeLatestOrderBean1.getCardNumber())) {
                 //判断是否输入成功
                 if (nodeInfoMap.containsKey("Lanjut ")) {
                     clickButton(nodeInfoMap.get("Lanjut "));
                 }
             } else {
-                error(nodeInfoMap, "付款卡号不匹配");
+                error(nodeInfoMap, "付款卡号不匹配", takeLatestOrderBean1);
             }
         }
 
@@ -388,7 +391,7 @@ public class PayAccessibilityService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo1 = info.getChild(0);
                 if (accessibilityNodeInfo1 != null) {
                     accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(getTakeLatestOrderBean().getAmount()));
+                    AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, String.valueOf(takeLatestOrderBean1.getAmount()));
                 }
 
                 //判断是否输入成功
@@ -409,22 +412,22 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //输入银行卡号
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName())) {
-            initCard(nodeInfoMap, getTakeLatestOrderBean().getCardNumber());
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName())) {
+            initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
         }
 
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName()) && nodeInfoMap1.containsKey(getTakeLatestOrderBean().getCardNumber())) {
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName()) && nodeInfoMap1.containsKey(takeLatestOrderBean1.getCardNumber())) {
             clickButton(nodeInfoMap.get("Periksa"));
         }
     }
 
 
     //底部导航栏处理
-    private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) {
         if (isTransfer) return;
-        if (getTakeLatestOrderBean() != null && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
+        if (this.takeLatestOrderBean != null && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
             if (nodeInfoMap.containsKey("Transaksi\n" +
                     "Tab 3 dari 5")) {
                 AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
@@ -432,7 +435,7 @@ public class PayAccessibilityService extends AccessibilityService {
                 clickButton(Transaksi);
             }
         }
-        if (getTakeLatestOrderBean() == null && nodeInfoMap.containsKey("Bank\n" +
+        if (this.takeLatestOrderBean == null && nodeInfoMap.containsKey("Bank\n" +
                 "Transfer")) {//转账页面,点击前往首页
             if (nodeInfoMap.containsKey("Beranda\n" +
                     "Tab 1 dari 5")) {
@@ -448,7 +451,7 @@ public class PayAccessibilityService extends AccessibilityService {
     }
 
     //获取首页的余额
-    private void getBalance(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void getBalance(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) {
         if (!nodeInfoMap.containsKey("Aktivitas Terakhir")) return;
         AccessibilityNodeInfo nodeInfo = AccessibleUtil.toStateContentDescMap(nodeInfoMap, "Rp");
         if (nodeInfo == null) return;
@@ -460,7 +463,7 @@ public class PayAccessibilityService extends AccessibilityService {
     }
 
     //屏幕输入密码
-    private void ScreenLockPassword(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+    private void ScreenLockPassword(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) {
         if (!nodeInfoMap.containsKey("GUNAKAN PASSWORD")) return;
         String pass = appConfig.getLockPass();
         for (int i = 0; i < pass.length(); i++) {

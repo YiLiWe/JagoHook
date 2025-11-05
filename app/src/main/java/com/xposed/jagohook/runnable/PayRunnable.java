@@ -84,7 +84,7 @@ public class PayRunnable implements Runnable {
             }
             TakeLatestOrderBean takeLatestOrderBean = getOrder();
             if (takeLatestOrderBean != null) {
-                service.getLogWindow().print("1.0获取到订单:" + takeLatestOrderBean.getOrderNo());
+                service.getLogWindow().print("获取到订单:" + takeLatestOrderBean.getOrderNo());
                 service.setTakeLatestOrderBean(takeLatestOrderBean);
             }
             stop();

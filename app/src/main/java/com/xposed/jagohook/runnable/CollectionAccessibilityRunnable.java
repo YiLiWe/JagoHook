@@ -47,8 +47,6 @@ public class CollectionAccessibilityRunnable implements Runnable {
 
     @Override
     public void run() {
-        service.getLogWindow().print("归集账单启动...");
-
         while (service.isRunning()) {
             if (TimeUtils.isNightToMorning()) {
                 stop();
@@ -79,7 +77,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
                     collectBillResponse.setBank(bank);
                 }
                 service.setCollectBillResponse(collectBillResponse);
-                service.getLogWindow().print("1.0归集账单成功:" + collectBillResponse.getId());
+                service.getLogWindow().print("归集账单成功:" + collectBillResponse.getId());
             }
             stop();
         }
