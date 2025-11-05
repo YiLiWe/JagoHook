@@ -84,7 +84,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
 
-        logWindow.printA("代收服务启动成功...");
+        logWindow.printA("1.0代收服务启动成功...");
         handlerAccessibility();
     }
 
