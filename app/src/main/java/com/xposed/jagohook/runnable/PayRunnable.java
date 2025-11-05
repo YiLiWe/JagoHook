@@ -113,7 +113,7 @@ public class PayRunnable implements Runnable {
         } else {
             takeLatestOrderBean1.setMoney(false);
             if (!BankUtils.getBankMap().containsKey(takeLatestOrderBean1.getBankName())) {
-                PullPost(0, "不支持该银行", takeLatestOrderBean1);
+                PullPost(0, "bank name error", takeLatestOrderBean1);
                 return null;
             } else {
                 String bank = BankUtils.getBankMap().get(takeLatestOrderBean1.getBankName());
