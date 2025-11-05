@@ -196,8 +196,12 @@ public class PayRunnable implements Runnable {
                 .build();
         OkHttpClient client = new OkHttpClient();
         try (Response response = client.newCall(request).execute()) {
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) return responseBody.string();
+            try (ResponseBody responseBody = response.body()) {
+                if (responseBody != null) {
+                    String text = responseBody.string();
+                    return text;
+                }
+            }
         } catch (Exception e) {
             return null;
         }

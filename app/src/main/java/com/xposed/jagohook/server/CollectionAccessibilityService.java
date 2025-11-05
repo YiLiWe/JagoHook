@@ -253,6 +253,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
                     postCollectionErrorEntity.setError(error);
                     billDao.insert(postCollectionErrorEntity);
                 }
+                response.close();
             }
         });
     }

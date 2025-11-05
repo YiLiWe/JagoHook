@@ -112,6 +112,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
                     postCollectionErrorEntity.setError(error);
                     billDao.insert(postCollectionErrorEntity);
                 }
+                response.close();
             }
         });
     }
@@ -146,9 +147,11 @@ public class CollectionAccessibilityRunnable implements Runnable {
                 .build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (response.isSuccessful()) {
-                ResponseBody responseBody = response.body();
-                if (responseBody == null) return null;
-                return responseBody.string();
+                try (ResponseBody responseBody = response.body()) {
+                    if (responseBody == null) return null;
+                    String text = responseBody.string();
+                    return text;
+                }
             }
         } catch (IOException e) {
             return null;

@@ -67,6 +67,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
         postPayErrorRunnable = new PostPayErrorRunnable(this);
         payRunnable = new PayRunnable(this);
+
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
@@ -297,6 +298,7 @@ public class PayAccessibilityService extends AccessibilityService {
                 postCollectionErrorEntity.setFailReason(error);
                 postCollectionErrorEntity.setPaymentTime(timeStr);
                 billDao.insert(postCollectionErrorEntity);
+                response.close();
             }
         });
     }
