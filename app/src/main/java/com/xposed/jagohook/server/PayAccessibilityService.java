@@ -71,7 +71,7 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("2.4代付运行中");
+        logWindow.printA("2.6代付运行中");
 
         scrollDown();
 
@@ -326,9 +326,18 @@ public class PayAccessibilityService extends AccessibilityService {
 
 
         //等待转账状态
-        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
+/*        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
             success(nodeInfoMap, takeLatestOrderBean1);
         }
+*/
+        //转账界面
+        if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
+            success(nodeInfoMap, takeLatestOrderBean1);
+            if (nodeInfoMap.containsKey("Oke")) {
+                clickButton(nodeInfoMap.get("Oke"));
+            }
+        }
+
 
         //选择银行
         if (getTakeLatestOrderBean() != null && !takeLatestOrderBean1.isMoney()) {

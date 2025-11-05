@@ -84,7 +84,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
 
-        logWindow.printA("2.4代收服务启动成功...");
+        logWindow.printA("2.6代收服务启动成功...");
         handlerAccessibility();
     }
 
@@ -270,11 +270,22 @@ public class CollectionAccessibilityService extends AccessibilityService {
             isTransfer = true;
         }
 
-        //等待转账状态
+      /*  //等待转账状态
         if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
             success(nodeInfoMap);
             return;
         }
+
+        */
+        //转账界面
+        if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
+            success(nodeInfoMap);
+            if (nodeInfoMap.containsKey("Oke")) {
+                clickButton(nodeInfoMap.get("Oke"));
+            }
+            return;
+        }
+
 
         //选择银行
         if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
