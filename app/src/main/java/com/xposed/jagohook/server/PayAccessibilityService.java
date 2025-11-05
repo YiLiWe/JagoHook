@@ -212,13 +212,6 @@ public class PayAccessibilityService extends AccessibilityService {
             }
         }
 
-        //批量处理转账失败
-        for (String error : PayErrors.errors) {
-            if (nodeInfoMap.containsKey(error)) {
-                error(nodeInfoMap, error);
-                throw new IOException(error);
-            }
-        }
 
         if (getTakeLatestOrderBean() == null) {
             if (nodeInfoMap.containsKey("Search Text Field")) {
@@ -230,6 +223,14 @@ public class PayAccessibilityService extends AccessibilityService {
                         clickButton(nodeInfo1);
                     }
                 }
+            }
+        }
+
+        //批量处理转账失败
+        for (String error : PayErrors.errors) {
+            if (nodeInfoMap.containsKey(error)) {
+                error(nodeInfoMap, error);
+                throw new IOException(error);
             }
         }
     }

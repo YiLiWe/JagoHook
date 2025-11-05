@@ -194,14 +194,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
             }
         }
 
-        //批量处理转账失败
-        for (String error : PayErrors.errors) {
-            if (nodeInfoMap.containsKey(error)) {
-                error(nodeInfoMap, error);
-                throw new IOException(error);
-            }
-        }
-
         if (getCollectBillResponse() == null) {
             if (nodeInfoMap.containsKey("Search Text Field")) {
                 AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Search Text Field");
@@ -212,6 +204,28 @@ public class CollectionAccessibilityService extends AccessibilityService {
                         clickButton(nodeInfo1);
                     }
                 }
+            }
+        }
+
+        //关闭弹窗
+        if (getCollectBillResponse()==null){
+            if (nodeInfoMap.containsKey("Contact Item")){
+                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Contact Item");
+                if (accessibilityNodeInfo != null) {
+                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
+                    if (nodeInfo != null) {
+                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(2);
+                        clickButton(nodeInfo1);
+                    }
+                }
+            }
+        }
+
+        //批量处理转账失败
+        for (String error : PayErrors.errors) {
+            if (nodeInfoMap.containsKey(error)) {
+                error(nodeInfoMap, error);
+                throw new IOException(error);
             }
         }
     }
