@@ -12,6 +12,7 @@ public class PayErrors {
             add("Saldo kamu tidak mencukupi");//余额不足
             add("Ada yang salah.");
             add("Ups! Koneksi Internet Hilang");
+            add("Uang Gagal Dikirim");
         }
     };
 }
