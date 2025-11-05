@@ -304,7 +304,7 @@ public class PayAccessibilityService extends AccessibilityService {
         if (getTakeLatestOrderBean() == null) return;
 
         //点击转账按钮
-        if (!getTakeLatestOrderBean().isMoney()) {
+        if (getTakeLatestOrderBean() != null && !getTakeLatestOrderBean().isMoney()) {
             if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
                     "Transfer")) {
                 clickButton(nodeInfoMap.get("Bank\n" +
@@ -327,7 +327,7 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //选择银行
-        if (!getTakeLatestOrderBean().isMoney()) {
+        if (getTakeLatestOrderBean() != null && !getTakeLatestOrderBean().isMoney()) {
             if (nodeInfoMap.containsKey("Title Transfer ke Bank")) {
                 //输入银行搜索
                 initCard(nodeInfoMap, getTakeLatestOrderBean().getBankName());
@@ -335,7 +335,7 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //银行存在
-        if (!getTakeLatestOrderBean().isMoney()) {
+        if (getTakeLatestOrderBean()!=null&&!getTakeLatestOrderBean().isMoney()) {
             if (nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName() + "\n" +
                     "BI-FAST")) {
                 clickButton(nodeInfoMap.get(getTakeLatestOrderBean().getBankName() + "\n" +
