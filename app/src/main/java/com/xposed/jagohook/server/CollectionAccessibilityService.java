@@ -84,7 +84,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
         new Thread(collectionAccessibilityRunnable).start();
         new Thread(postCollectionErrorRunnable).start();
 
-        logWindow.printA("2.7代收服务启动成功...");
+        scrollDown();
+
+        logWindow.printA("2.8代收服务启动成功...");
         handlerAccessibility();
     }
 
@@ -94,6 +96,41 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
     public synchronized CollectBillResponse getCollectBillResponse() {
         return collectBillResponse;
+    }
+
+    //下拉
+    private void scrollDown() {
+        if (TimeUtils.isNightToMorning()) {
+            handler.postDelayed(this::scrollDown, 10_000);
+            return;
+        }
+        if (collectBillResponse != null) {
+            handler.postDelayed(this::scrollDown, 10_000);
+        } else {
+            AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+            List<AccessibilityNodeInfo> accessibilityNodeInfos = new ArrayList<>();
+            AccessibleUtil.getAccessibilityNodeInfoS(accessibilityNodeInfos, nodeInfo);
+            AccessibilityNodeInfo scrollView = handlerScrollView(accessibilityNodeInfos);
+            Map<String, AccessibilityNodeInfo> nodeInfoMap = AccessibleUtil.toContentDescMap(accessibilityNodeInfos);
+            if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页下拉
+                if (scrollView != null) {
+                    AccessibleUtil.performPullDown(this, 300, 1000, 1000);
+                    isBill = true;
+                    Logs.d("下拉");
+                }
+            }
+            handler.postDelayed(this::scrollDown, 5_000);
+        }
+    }
+
+    //处理滑动
+    private AccessibilityNodeInfo handlerScrollView(List<AccessibilityNodeInfo> accessibilityNodeInfos) {
+        for (AccessibilityNodeInfo accessibilityNodeInfo : accessibilityNodeInfos) {
+            if (accessibilityNodeInfo.isScrollable()) {
+                return accessibilityNodeInfo;
+            }
+        }
+        return null;
     }
 
     //执行界面点击事件
@@ -207,8 +244,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
                 if (accessibilityNodeInfo != null) {
                     AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
                     if (nodeInfo != null) {
-                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(3);
-                        clickButton(nodeInfo1);
+                        clickButton(nodeInfo.getChild(3));
                     }
                 }
             }
@@ -480,7 +516,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
         if (!numbersOnly.isEmpty()) {
             this.balance = numbersOnly;
         }
-        isBill = true;
     }
 
     //屏幕输入密码
