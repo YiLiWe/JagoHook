@@ -122,9 +122,10 @@ public class CollectionAccessibilityService extends AccessibilityService {
             BottomNavigationBar(nodeInfoMap);
             clickBill(nodeInfoMap);
             getBill(nodeInfoMap);
-            Transfer(nodeInfoMap, nodeInfo,collectBillResponse1);
+            Transfer(nodeInfoMap, nodeInfo, collectBillResponse1);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
+            e.printStackTrace();
         }
         handler.postDelayed(this::handlerAccessibility, 5_000);
     }

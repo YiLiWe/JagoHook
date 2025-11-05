@@ -3,6 +3,7 @@ package com.xposed.jagohook.server;
 import android.accessibilityservice.AccessibilityService;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -148,6 +149,7 @@ public class PayAccessibilityService extends AccessibilityService {
             Transfer(nodeInfoMap, nodeInfo, takeLatestOrderBean1);
         } catch (Throwable e) {
             Logs.d("异常:" + e.getMessage());
+            e.printStackTrace();
         }
         handler.postDelayed(this::handlerAccessibility, 2000);
     }
