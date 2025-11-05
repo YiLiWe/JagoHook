@@ -208,16 +208,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
         //关闭弹窗
-        if (getCollectBillResponse()==null){
-            if (nodeInfoMap.containsKey("Contact Item")){
-                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Contact Item");
-                if (accessibilityNodeInfo != null) {
-                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
-                    if (nodeInfo != null) {
-                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(2);
-                        clickButton(nodeInfo1);
-                    }
-                }
+        if (getCollectBillResponse() == null) {
+            if (nodeInfoMap.containsKey("Back Button")) {
+                clickButton(nodeInfoMap.get("Back Button"));
             }
         }
 
@@ -318,9 +311,13 @@ public class CollectionAccessibilityService extends AccessibilityService {
         }
 
         if (nodeInfoMap.containsKey("Keterangan penerima")) {
-            //判断是否输入成功
-            if (nodeInfoMap.containsKey("Lanjut ")) {
-                clickButton(nodeInfoMap.get("Lanjut "));
+            if (nodeInfoMap.containsKey(getCollectBillResponse().getBank() + " • " + getCollectBillResponse().getCardNumber())) {
+                //判断是否输入成功
+                if (nodeInfoMap.containsKey("Lanjut ")) {
+                    clickButton(nodeInfoMap.get("Lanjut "));
+                }
+            } else {
+                error(nodeInfoMap, "付款卡号不匹配");
             }
         }
 

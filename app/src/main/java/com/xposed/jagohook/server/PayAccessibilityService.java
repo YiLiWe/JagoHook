@@ -229,18 +229,8 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //关闭弹窗
         if (getTakeLatestOrderBean() == null) {
-            if (nodeInfoMap.containsKey("Contact Item")) {
-                Logs.d("存在");
-                AccessibilityNodeInfo accessibilityNodeInfo = nodeInfoMap.get("Contact Item");
-                if (accessibilityNodeInfo != null) {
-                    Logs.d("存在2");
-                    AccessibilityNodeInfo nodeInfo = accessibilityNodeInfo.getParent();
-                    if (nodeInfo != null) {
-                        Logs.d("存在3");
-                        AccessibilityNodeInfo nodeInfo1 = nodeInfo.getChild(2);
-                        clickButton(nodeInfo1);
-                    }
-                }
+            if (nodeInfoMap.containsKey("Back Button")) {
+                clickButton(nodeInfoMap.get("Back Button"));
             }
         }
 
@@ -382,9 +372,13 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         if (nodeInfoMap.containsKey("Keterangan penerima")) {
-            //判断是否输入成功
-            if (nodeInfoMap.containsKey("Lanjut ")) {
-                clickButton(nodeInfoMap.get("Lanjut "));
+            if (nodeInfoMap.containsKey(getTakeLatestOrderBean().getBankName() + " • " + getTakeLatestOrderBean().getCardNumber())) {
+                //判断是否输入成功
+                if (nodeInfoMap.containsKey("Lanjut ")) {
+                    clickButton(nodeInfoMap.get("Lanjut "));
+                }
+            } else {
+                error(nodeInfoMap, "付款卡号不匹配");
             }
         }
 
