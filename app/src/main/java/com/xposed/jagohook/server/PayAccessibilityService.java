@@ -374,13 +374,9 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         if (nodeInfoMap.containsKey("Keterangan penerima")) {
-            if (nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName() + " • " + takeLatestOrderBean1.getCardNumber())) {
-                //判断是否输入成功
-                if (nodeInfoMap.containsKey("Lanjut ")) {
-                    clickButton(nodeInfoMap.get("Lanjut "));
-                }
-            } else {
-                error(nodeInfoMap, "付款卡号不匹配", takeLatestOrderBean1);
+            //判断是否输入成功
+            if (nodeInfoMap.containsKey("Lanjut ")) {
+                clickButton(nodeInfoMap.get("Lanjut "));
             }
         }
 
