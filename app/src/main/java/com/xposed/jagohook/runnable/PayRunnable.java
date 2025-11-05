@@ -103,6 +103,7 @@ public class PayRunnable implements Runnable {
         String text = takeLatestPayoutOrder();
         if (text == null) return null;
         Logs.d("代付订单:" + text);
+        if (!text.startsWith("{")) return null;
         MessageBean messageBean = JSON.to(MessageBean.class, text);
         if (messageBean == null) return null;
         if (messageBean.getData() == null) return null;
@@ -163,7 +164,10 @@ public class PayRunnable implements Runnable {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) return;
+                if (response.isSuccessful()) {
+                    response.close();
+                    return;
+                }
                 AppDatabase appDatabase = AppDatabase.getInstance(service);
                 PostPayErrorDao billDao = appDatabase.postPayErrorDao();
                 PostPayErrorEntity postCollectionErrorEntity = new PostPayErrorEntity();
@@ -173,6 +177,7 @@ public class PayRunnable implements Runnable {
                 postCollectionErrorEntity.setFailReason(error);
                 postCollectionErrorEntity.setPaymentTime(timeStr);
                 billDao.insert(postCollectionErrorEntity);
+                response.close();
             }
         });
     }
