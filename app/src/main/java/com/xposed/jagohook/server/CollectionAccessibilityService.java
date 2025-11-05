@@ -290,12 +290,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
             }
         }
 
-        //关闭弹窗
-        if (this.collectBillResponse == null) {
-            if (nodeInfoMap.containsKey("Back Button")) {
-                clickButton(nodeInfoMap.get("Back Button"));
-            }
-        }
 
         if (this.collectBillResponse != null) {
             //批量处理转账失败
@@ -443,9 +437,12 @@ public class CollectionAccessibilityService extends AccessibilityService {
             Logs.d("获取账单总数:" + nodeInfoMap1.size());
             handlerData(nodeInfoMap1);
             //Transaction Item : +Rp10.000 : 23 Okt 2025 : Uang keluar
+        }
+
+        //关闭弹窗
+        if (this.collectBillResponse == null) {
             if (nodeInfoMap.containsKey("Back Button")) {
-                AccessibilityNodeInfo BackButton = nodeInfoMap.get("Back Button");
-                clickButton(BackButton);
+                clickButton(nodeInfoMap.get("Back Button"));
             }
         }
     }
