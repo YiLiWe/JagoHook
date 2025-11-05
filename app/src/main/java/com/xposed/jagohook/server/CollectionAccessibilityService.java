@@ -103,9 +103,9 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void scrollDown() {
         if (TimeUtils.isNightToMorning()) {
             handler.postDelayed(this::scrollDown, 10_000);
-            return;
-        }
-        if (collectBillResponse != null) {
+        }else if (collectBillResponse != null) {
+            handler.postDelayed(this::scrollDown, 10_000);
+        } else if (isBill) {
             handler.postDelayed(this::scrollDown, 10_000);
         } else {
             AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
