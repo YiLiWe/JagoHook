@@ -127,7 +127,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
             Logs.d("异常:" + e.getMessage());
             e.printStackTrace();
         }
-        handler.postDelayed(this::handlerAccessibility, 10_000);
+        handler.postDelayed(this::handlerAccessibility, 5_000);
     }
 
     public void initData() {
