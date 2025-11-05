@@ -79,7 +79,7 @@ public class CollectionAccessibilityRunnable implements Runnable {
                     collectBillResponse.setBank(bank);
                 }
                 service.setCollectBillResponse(collectBillResponse);
-                service.getLogWindow().print("归集账单成功:" + collectBillResponse.getId());
+                service.getLogWindow().print("1.0归集账单成功:" + collectBillResponse.getId());
             }
             stop();
         }
