@@ -11,7 +11,7 @@ public class PayErrors {
             add("Akun tidak ditemukan");
             add("Saldo kamu tidak mencukupi");//余额不足
             add("Ada yang salah.");
-            add("Ups! Koneksi Internet Hilang");
+          //  add("Ups! Koneksi Internet Hilang");w网络异常
             add("Uang Gagal Dikirim");
         }
     };
