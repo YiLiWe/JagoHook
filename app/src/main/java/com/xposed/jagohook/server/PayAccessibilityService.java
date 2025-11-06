@@ -97,7 +97,6 @@ public class PayAccessibilityService extends AccessibilityService {
             if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页下拉
                 if (scrollView != null) {
                     AccessibleUtil.performPullDown(this, 300, 1000, 1000);
-                    Logs.d("下拉");
                 }
             }
             handler.postDelayed(this::scrollDown, 10_000);

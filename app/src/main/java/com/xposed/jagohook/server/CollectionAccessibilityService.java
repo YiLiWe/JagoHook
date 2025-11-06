@@ -420,7 +420,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBank())) {
-            initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
+            initCard(nodeInfoMap, takeLatestOrderBean1.getPhone());
         }
 
         //输入卡号成功后
