@@ -87,7 +87,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         scrollDown();
 
-        logWindow.printA("2.9代收服务启动成功...");
+        logWindow.printA("3.0代收服务启动成功...");
         handlerAccessibility();
     }
 
@@ -425,7 +425,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         //输入卡号成功后
         Map<String, AccessibilityNodeInfo> nodeInfoMap1 = AccessibleUtil.toTextMap(nodeInfo);
-        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBank()) && nodeInfoMap1.containsKey(takeLatestOrderBean1.getCardNumber())) {
+        if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBank()) && nodeInfoMap1.containsKey(takeLatestOrderBean1.getPhone())) {
             clickButton(nodeInfoMap.get("Periksa"));
         }
     }
