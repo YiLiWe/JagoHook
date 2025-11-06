@@ -37,7 +37,6 @@ public class BillRunnable implements Runnable {
 
     @Override
     public void run() {
-        accessibilityService.getLogWindow().print("上传代收账单启动...");
         AppDatabase appDatabase = AppDatabase.getInstance(accessibilityService);
         while (accessibilityService.isRunning()) {
             BillDao billDao = appDatabase.billDao();
