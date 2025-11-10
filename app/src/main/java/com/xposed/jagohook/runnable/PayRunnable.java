@@ -37,7 +37,9 @@ public class PayRunnable implements Runnable {
     private final PayAccessibilityService service;
     private String cardNumber;
     private String collectUrl;
-    private final List<String> Banks = List.of("GOPAY", "OVO", "SHOPEEPAY", "DANA", "LINKAJA");
+
+    private final List<String> Banks = List.of("GoPay", "OVO", "ShopeePay", "DANA", "LinkAja");
+
     private final Map<String, String> Banks2 = new HashMap<>() {
         {
             put("OVO", "OVO");
