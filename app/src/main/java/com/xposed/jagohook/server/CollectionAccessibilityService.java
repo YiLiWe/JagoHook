@@ -87,7 +87,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
 
         scrollDown();
 
-        logWindow.printA("3.0代收服务启动成功...");
+        logWindow.printA("3.1代收服务启动成功...");
         handlerAccessibility();
     }
 

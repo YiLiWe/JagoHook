@@ -67,7 +67,6 @@ public class AppConfig {
     }
 
     // ========== 验证方法 ==========
-
     public boolean isConfigValid() {
         String cardNumber = getCardNumber();
         String collectUrl = getCollectUrl();
