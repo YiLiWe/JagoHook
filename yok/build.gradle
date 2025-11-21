@@ -1,0 +1,43 @@
+plugins {
+    alias(libs.plugins.android.library)
+}
+
+android {
+    namespace 'com.xposed.yok'
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 28
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation libs.refresh.layout.kernel      //核心必须依赖
+    implementation libs.refresh.header.classics    //经典刷新头
+    implementation libs.refresh.footer.classics    //经典加载
+
+    implementation libs.appcompat
+    implementation libs.material
+
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+    implementation libs.okhttp
+    implementation libs.fastjson
+}

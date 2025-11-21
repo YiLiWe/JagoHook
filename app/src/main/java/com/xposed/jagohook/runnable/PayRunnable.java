@@ -2,6 +2,7 @@ package com.xposed.jagohook.runnable;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
@@ -35,6 +36,7 @@ import okhttp3.ResponseBody;
 @Getter
 public class PayRunnable implements Runnable {
     private final PayAccessibilityService service;
+    private final Handler handler;
     private String cardNumber;
     private String collectUrl;
 
@@ -50,8 +52,9 @@ public class PayRunnable implements Runnable {
         }
     };
 
-    public PayRunnable(PayAccessibilityService suShellService) {
+    public PayRunnable(PayAccessibilityService suShellService, Handler handler) {
         this.service = suShellService;
+        this.handler = handler;
         initData();
     }
 
@@ -87,7 +90,7 @@ public class PayRunnable implements Runnable {
             TakeLatestOrderBean takeLatestOrderBean = getOrder();
             if (takeLatestOrderBean != null) {
                 service.getLogWindow().print("获取到订单:" + takeLatestOrderBean.getOrderNo());
-                service.setTakeLatestOrderBean(takeLatestOrderBean);
+                handler.post(() -> service.setTakeLatestOrderBean(takeLatestOrderBean));
             }
             stop();
         }
@@ -104,7 +107,6 @@ public class PayRunnable implements Runnable {
     public TakeLatestOrderBean getOrder() {
         String text = takeLatestPayoutOrder();
         if (text == null) return null;
-        Logs.d("代付订单:" + text);
         if (!text.startsWith("{")) return null;
         MessageBean messageBean = JSON.to(MessageBean.class, text);
         if (messageBean == null) return null;

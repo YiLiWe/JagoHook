@@ -10,8 +10,8 @@ android {
         applicationId "com.xposed.jagohook"
         minSdk 28
         targetSdk 35
-        versionCode 3
-        versionName "1.2"
+        versionCode 5
+        versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-
+    implementation project(":yok")
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor "androidx.room:room-compiler:2.6.1"
     implementation 'com.github.getActivity:XXPermissions:26.5'

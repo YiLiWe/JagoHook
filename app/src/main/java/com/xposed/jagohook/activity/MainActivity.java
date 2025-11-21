@@ -10,10 +10,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.xposed.jagohook.R;
 import com.xposed.jagohook.activity.base.BaseActivity;
 import com.xposed.jagohook.config.AppConfig;
 import com.xposed.jagohook.databinding.ActivityMainBinding;
 import com.xposed.jagohook.utils.PermissionManager;
+import com.xposed.yok.utils.DeviceUtils;
 
 public class MainActivity extends BaseActivity<ActivityMainBinding> {
     private AppConfig appConfig;
@@ -26,6 +28,12 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         initViewClick();
         initData();
         checkPermissions();
+        initToolbar();
+    }
+
+    private void initToolbar() {
+        String name = DeviceUtils.getVerName(this);
+        binding.toolbar.setTitle(getString(R.string.app_name) + " V" + name);
     }
 
     /**
@@ -126,7 +134,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         String lockPass = LockPass.toString();
         String passStr = pass.toString();
 
-        appConfig.setAllConfig(cardNumber, collectUrl, payUrl, lockPass,passStr);
+        appConfig.setAllConfig(cardNumber, collectUrl, payUrl, lockPass, passStr);
         Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
     }
 

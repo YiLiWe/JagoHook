@@ -19,6 +19,7 @@ import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
+import com.xposed.yok.utils.DeviceUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,12 +67,13 @@ public class PayAccessibilityService extends AccessibilityService {
         logWindow = new LogWindow(this);
 
         postPayErrorRunnable = new PostPayErrorRunnable(this);
-        payRunnable = new PayRunnable(this);
+        payRunnable = new PayRunnable(this, handler);
 
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("3.1代付运行中");
+        String name = DeviceUtils.getVerName(this);
+        logWindow.printA(name + "代付运行中");
 
         scrollDown();
 
@@ -108,14 +110,6 @@ public class PayAccessibilityService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
     }
 
-    public synchronized void setTakeLatestOrderBean(TakeLatestOrderBean takeLatestOrderBean) {
-        this.takeLatestOrderBean = takeLatestOrderBean;
-    }
-
-    public synchronized TakeLatestOrderBean getTakeLatestOrderBean() {
-        return takeLatestOrderBean;
-    }
-
     //执行界面点击事件
     private void handlerAccessibility() {
         if (this.orderNo != null && this.getTakeLatestOrderBean() != null) {
@@ -145,9 +139,10 @@ public class PayAccessibilityService extends AccessibilityService {
             Dialogs(nodeInfoMap, takeLatestOrderBean1);
             ScreenLockPassword(nodeInfoMap, takeLatestOrderBean1);
             getBalance(nodeInfoMap, takeLatestOrderBean1);
-            BottomNavigationBar(nodeInfoMap, takeLatestOrderBean1);
+            BottomNavigationBar(nodeInfoMap);
             Transfer(nodeInfoMap, nodeInfo, takeLatestOrderBean1);
         } catch (Throwable e) {
+            logWindow.printA("异常：" + e.getMessage());
             Logs.d("异常:" + e.getMessage());
             e.printStackTrace();
         }
@@ -322,17 +317,13 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //点击转账按钮
         if (getTakeLatestOrderBean() != null && !takeLatestOrderBean1.isMoney()) {
-            if (!isTransfer && nodeInfoMap.containsKey("Bank\n" +
-                    "Transfer")) {
-                clickButton(nodeInfoMap.get("Bank\n" +
-                        "Transfer"));
+            if (!isTransfer && nodeInfoMap.containsKey("Bank\n" + "Transfer")) {
+                clickButton(nodeInfoMap.get("Bank\n" + "Transfer"));
                 isTransfer = true;
             }
         } else {//进行钱包转账
-            if (!isTransfer && nodeInfoMap.containsKey("Topup\n" +
-                    "e-Wallet")) {
-                clickButton(nodeInfoMap.get("Topup\n" +
-                        "e-Wallet"));
+            if (!isTransfer && nodeInfoMap.containsKey("Topup\n" + "e-Wallet")) {
+                clickButton(nodeInfoMap.get("Topup\n" + "e-Wallet"));
                 isTransfer = true;
             }
         }
@@ -445,22 +436,27 @@ public class PayAccessibilityService extends AccessibilityService {
 
 
     //底部导航栏处理
-    private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) {
+    private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (isTransfer) return;
-        if (this.takeLatestOrderBean != null && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
-            if (nodeInfoMap.containsKey("Transaksi\n" +
-                    "Tab 3 dari 5")) {
-                AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
-                        "Tab 3 dari 5");
-                clickButton(Transaksi);
+        if (this.takeLatestOrderBean != null) {//首页特征码,前往转账
+            if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
+                AccessibilityNodeInfo tab1 = nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5");
+                if (tab1 != null && tab1.isSelected()) {
+                    if (nodeInfoMap.containsKey("Transaksi\n" + "Tab 3 dari 5")) {
+                        AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" + "Tab 3 dari 5");
+                        clickButton(Transaksi);
+                    }
+                }
             }
         }
-        if (this.takeLatestOrderBean == null && nodeInfoMap.containsKey("Bank\n" +
-                "Transfer")) {//转账页面,点击前往首页
-            if (nodeInfoMap.containsKey("Beranda\n" +
-                    "Tab 1 dari 5")) {
-                clickButton(nodeInfoMap.get("Beranda\n" +
-                        "Tab 1 dari 5"));
+        if (this.takeLatestOrderBean == null) {//转账页面,点击前往首页
+            if (nodeInfoMap.containsKey("Beranda\n" + "Tab 3 dari 5")) {
+                AccessibilityNodeInfo tab3 = nodeInfoMap.get("Beranda\n" + "Tab 3 dari 5");
+                if (tab3 != null && tab3.isSelected()) {
+                    if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
+                        clickButton(nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5"));
+                    }
+                }
             }
         }
     }
