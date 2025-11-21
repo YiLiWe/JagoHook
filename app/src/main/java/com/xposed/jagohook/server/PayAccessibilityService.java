@@ -419,6 +419,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName())) {
+            Logs.d("输入卡号:"+takeLatestOrderBean1.getCardNumber());
             initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
         }
 
