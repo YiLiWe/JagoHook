@@ -165,7 +165,7 @@ public class PayAccessibilityService extends AccessibilityService {
     //归集成功
     private void success(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean id) {
         this.orderNo = takeLatestOrderBean.getOrderNo();
-        PullPost(1, "转账成功", id);
+        //PullPost(1, "转账成功", id);
         setTakeLatestOrderBean(null);
         isTransfer = false;
         balance = "0";
@@ -176,7 +176,7 @@ public class PayAccessibilityService extends AccessibilityService {
     //归集失败
     private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text, TakeLatestOrderBean takeLatestOrderBean) {
         this.orderNo = takeLatestOrderBean.getOrderNo();
-        PullPost(0, text, takeLatestOrderBean);
+       // PullPost(0, text, takeLatestOrderBean);
         setTakeLatestOrderBean(null);
         isTransfer = false;
         balance = "0";
