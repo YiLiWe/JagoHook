@@ -341,17 +341,17 @@ public class PayAccessibilityService extends AccessibilityService {
 
 
         //等待转账状态
-/*        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
+        if (nodeInfoMap.containsKey("Uang Berhasil Dikirim!")) {
             success(nodeInfoMap, takeLatestOrderBean1);
         }
-*/
+
         //转账界面
-        if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
+/*        if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
             success(nodeInfoMap, takeLatestOrderBean1);
             if (nodeInfoMap.containsKey("Oke")) {
                 clickButton(nodeInfoMap.get("Oke"));
             }
-        }
+        }*/
 
 
         //选择银行
