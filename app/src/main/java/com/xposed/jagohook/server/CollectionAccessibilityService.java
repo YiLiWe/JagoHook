@@ -299,7 +299,6 @@ public class CollectionAccessibilityService extends AccessibilityService {
             for (String error : PayErrors.errors) {
                 if (nodeInfoMap.containsKey(error)) {
                     error(nodeInfoMap, error, takeLatestOrderBean1);
-                    throw new IOException(error);
                 }
             }
         }
