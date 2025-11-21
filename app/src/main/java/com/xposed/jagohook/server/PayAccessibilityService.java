@@ -114,12 +114,12 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //执行界面点击事件
     private void handlerAccessibility() {
-        if (this.orderNo != null && this.getTakeLatestOrderBean() != null) {
+       /* if (this.orderNo != null && this.getTakeLatestOrderBean() != null) {
             if (this.orderNo.equals(getTakeLatestOrderBean().getOrderNo())) {
                 logWindow.printA("订单号重复异常，停止执行");
                 return;
             }
-        }
+        }*/
         if (TimeUtils.isNightToMorning()) {
             handler.postDelayed(this::handlerAccessibility, 10_000);
             return;
@@ -187,6 +187,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //弹窗直接点击确认
     private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) throws IOException {
+
         if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
             clickButton(nodeInfoMap.get("Oke "));
         }
@@ -238,6 +239,13 @@ public class PayAccessibilityService extends AccessibilityService {
                     error(nodeInfoMap, error, takeLatestOrderBean1);
                     throw new IOException(error);
                 }
+            }
+        }
+
+        //异常弹窗
+        if (this.takeLatestOrderBean == null) {
+            if (nodeInfoMap.containsKey("Oke ")) {
+                clickButton(nodeInfoMap.get("Oke "));
             }
         }
     }
