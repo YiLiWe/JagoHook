@@ -217,7 +217,12 @@ public class CollectionAccessibilityService extends AccessibilityService {
         balance = "0";
         Logs.d("转账失败");
         logWindow.printA("归集失败");
-        clickButton(nodeInfoMap.get("Oke "));
+        if (nodeInfoMap.containsKey("Oke")) {
+            clickButton(nodeInfoMap.get("Oke"));
+        }
+        if (nodeInfoMap.containsKey("Oke ")) {
+            clickButton(nodeInfoMap.get("Oke "));
+        }
     }
 
     private void postCollectStatus(int state, String error, long id) {

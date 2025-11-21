@@ -187,11 +187,18 @@ public class PayAccessibilityService extends AccessibilityService {
         balance = "0";
         Logs.d("转账失败");
         logWindow.printA("转账失败");
-        clickButton(nodeInfoMap.get("Oke "));
+        if (nodeInfoMap.containsKey("Oke")) {
+            clickButton(nodeInfoMap.get("Oke"));
+        }
+        if (nodeInfoMap.containsKey("Oke ")) {
+            clickButton(nodeInfoMap.get("Oke "));
+        }
     }
 
     //弹窗直接点击确认
     private void Dialogs(Map<String, AccessibilityNodeInfo> nodeInfoMap, TakeLatestOrderBean takeLatestOrderBean1) throws IOException {
+
+
         if (nodeInfoMap.containsKey("Sesi berakhir")) {//登录失效
             clickButton(nodeInfoMap.get("Oke "));
         }
