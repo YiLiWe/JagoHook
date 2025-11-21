@@ -36,7 +36,6 @@ import okhttp3.ResponseBody;
 @Getter
 public class PayRunnable implements Runnable {
     private final PayAccessibilityService service;
-    private final Handler handler;
     private String cardNumber;
     private String collectUrl;
 
@@ -52,9 +51,8 @@ public class PayRunnable implements Runnable {
         }
     };
 
-    public PayRunnable(PayAccessibilityService suShellService, Handler handler) {
+    public PayRunnable(PayAccessibilityService suShellService) {
         this.service = suShellService;
-        this.handler = handler;
         initData();
     }
 
@@ -88,10 +86,10 @@ public class PayRunnable implements Runnable {
                 continue;
             }
 
-            TakeLatestOrderBean takeLatestOrderBean = getTest();
+            TakeLatestOrderBean takeLatestOrderBean = getOrder();
             if (takeLatestOrderBean != null) {
                 service.getLogWindow().print("获取到订单:" + takeLatestOrderBean.getOrderNo());
-                handler.post(() -> service.setTakeLatestOrderBean(takeLatestOrderBean));
+                    service.setTakeLatestOrderBean(takeLatestOrderBean);
             }
             stop();
         }
