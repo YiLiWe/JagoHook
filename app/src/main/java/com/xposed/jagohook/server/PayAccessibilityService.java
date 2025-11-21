@@ -446,6 +446,7 @@ public class PayAccessibilityService extends AccessibilityService {
         if (this.takeLatestOrderBean == null) {//转账页面,点击前往首页
             if (nodeInfoMap.containsKey("Beranda\n" + "Tab 3 dari 5")) {
                 AccessibilityNodeInfo tab3 = nodeInfoMap.get("Beranda\n" + "Tab 3 dari 5");
+                Logs.d(tab3.toString());
                 if (tab3 != null && tab3.isSelected()) {
                     if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
                         clickButton(nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5"));
