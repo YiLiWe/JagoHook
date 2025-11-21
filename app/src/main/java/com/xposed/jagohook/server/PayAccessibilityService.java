@@ -53,6 +53,9 @@ public class PayAccessibilityService extends AccessibilityService {
     // ========== ui操作 ==========
     private LogWindow logWindow;
     private AccessibilityNodeInfo scrollView;
+    //转账中，避免二次点击
+    private boolean isTransfer = false;
+
     // ========== 配置 ==========
     private AppConfig appConfig;
 
@@ -164,6 +167,7 @@ public class PayAccessibilityService extends AccessibilityService {
         this.orderNo = takeLatestOrderBean.getOrderNo();
         PullPost(1, "转账成功", id);
         setTakeLatestOrderBean(null);
+        isTransfer = false;
         balance = "0";
         logWindow.printA("转账成功");
         Logs.d("转账成功");
@@ -174,6 +178,7 @@ public class PayAccessibilityService extends AccessibilityService {
         this.orderNo = takeLatestOrderBean.getOrderNo();
         PullPost(0, text, takeLatestOrderBean);
         setTakeLatestOrderBean(null);
+        isTransfer = false;
         balance = "0";
         Logs.d("转账失败");
         logWindow.printA("转账失败");
@@ -313,13 +318,17 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //点击转账按钮
-        if (getTakeLatestOrderBean() != null && !takeLatestOrderBean1.isMoney()) {
-            if (nodeInfoMap.containsKey("Bank\n" + "Transfer")) {
-                clickButton(nodeInfoMap.get("Bank\n" + "Transfer"));
-            }
-        } else {//进行钱包转账
-            if (nodeInfoMap.containsKey("Topup\n" + "e-Wallet")) {
-                clickButton(nodeInfoMap.get("Topup\n" + "e-Wallet"));
+        if (!isTransfer) {
+            if (getTakeLatestOrderBean() != null && !takeLatestOrderBean1.isMoney()) {
+                if (nodeInfoMap.containsKey("Bank\n" + "Transfer")) {
+                    clickButton(nodeInfoMap.get("Bank\n" + "Transfer"));
+                    isTransfer = true;
+                }
+            } else {//进行钱包转账
+                if (nodeInfoMap.containsKey("Topup\n" + "e-Wallet")) {
+                    clickButton(nodeInfoMap.get("Topup\n" + "e-Wallet"));
+                    isTransfer = true;
+                }
             }
         }
 
@@ -419,7 +428,7 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName())) {
-            Logs.d("输入卡号:"+takeLatestOrderBean1.getCardNumber());
+            Logs.d("输入卡号:" + takeLatestOrderBean1.getCardNumber());
             initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
         }
 
@@ -433,6 +442,8 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //底部导航栏处理
     private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
+        if (isTransfer) return;
+
         if (this.takeLatestOrderBean != null) {//首页特征码,前往转账
             if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
                 AccessibilityNodeInfo tab1 = nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5");
