@@ -506,6 +506,8 @@ public class PayAccessibilityService extends AccessibilityService {
             if (accessibilityNodeInfo == null) return;
             AccessibilityNodeInfo accessibilityNodeInfo1 = accessibilityNodeInfo.getChild(0);
             if (accessibilityNodeInfo1 != null) {
+                accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                accessibilityNodeInfo1.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
                 AccessibleUtil.inputTextByAccessibility(accessibilityNodeInfo1, text);
             }
         }
