@@ -437,7 +437,6 @@ public class PayAccessibilityService extends AccessibilityService {
 
     //底部导航栏处理
     private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
-        if (isTransfer) return;
         if (this.takeLatestOrderBean != null) {//首页特征码,前往转账
             if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
                 AccessibilityNodeInfo tab1 = nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5");
