@@ -176,7 +176,7 @@ public class PayAccessibilityService extends AccessibilityService {
     //归集失败
     private void error(Map<String, AccessibilityNodeInfo> nodeInfoMap, String text, TakeLatestOrderBean takeLatestOrderBean) {
         this.orderNo = takeLatestOrderBean.getOrderNo();
-       // PullPost(0, text, takeLatestOrderBean);
+        // PullPost(0, text, takeLatestOrderBean);
         setTakeLatestOrderBean(null);
         isTransfer = false;
         balance = "0";
@@ -436,8 +436,8 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //输入银行卡号
         if (nodeInfoMap.containsKey("Periksa") && nodeInfoMap.containsKey(takeLatestOrderBean1.getBankName())) {
-            Logs.d("输入卡号:" + takeLatestOrderBean1.getCardNumber());
-            initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
+            error(nodeInfoMap, "结束测试", takeLatestOrderBean1);
+//            initCard(nodeInfoMap, takeLatestOrderBean1.getCardNumber());
         }
 
         //输入卡号成功后
