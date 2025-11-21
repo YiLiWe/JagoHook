@@ -87,13 +87,22 @@ public class PayRunnable implements Runnable {
                 stop();
                 continue;
             }
-            TakeLatestOrderBean takeLatestOrderBean = getOrder();
+
+            TakeLatestOrderBean takeLatestOrderBean = getTest();
             if (takeLatestOrderBean != null) {
                 service.getLogWindow().print("获取到订单:" + takeLatestOrderBean.getOrderNo());
                 handler.post(() -> service.setTakeLatestOrderBean(takeLatestOrderBean));
             }
             stop();
         }
+    }
+
+    public TakeLatestOrderBean getTest() {
+        TakeLatestOrderBean takeLatestOrderBean = new TakeLatestOrderBean();
+        takeLatestOrderBean.setBankName("BRI");
+        takeLatestOrderBean.setOrderNo("6666666666");
+        takeLatestOrderBean.setAmount(666666);
+        return takeLatestOrderBean;
     }
 
     private void stop() {
