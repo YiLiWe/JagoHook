@@ -52,7 +52,6 @@ public class PayAccessibilityService extends AccessibilityService {
 
     // ========== ui操作 ==========
     private LogWindow logWindow;
-    private boolean isTransfer = false;
     private AccessibilityNodeInfo scrollView;
     // ========== 配置 ==========
     private AppConfig appConfig;
@@ -165,7 +164,6 @@ public class PayAccessibilityService extends AccessibilityService {
         this.orderNo = takeLatestOrderBean.getOrderNo();
         PullPost(1, "转账成功", id);
         setTakeLatestOrderBean(null);
-        isTransfer = false;
         balance = "0";
         logWindow.printA("转账成功");
         Logs.d("转账成功");
@@ -176,7 +174,6 @@ public class PayAccessibilityService extends AccessibilityService {
         this.orderNo = takeLatestOrderBean.getOrderNo();
         PullPost(0, text, takeLatestOrderBean);
         setTakeLatestOrderBean(null);
-        isTransfer = false;
         balance = "0";
         Logs.d("转账失败");
         logWindow.printA("转账失败");
@@ -317,14 +314,12 @@ public class PayAccessibilityService extends AccessibilityService {
 
         //点击转账按钮
         if (getTakeLatestOrderBean() != null && !takeLatestOrderBean1.isMoney()) {
-            if (!isTransfer && nodeInfoMap.containsKey("Bank\n" + "Transfer")) {
+            if (nodeInfoMap.containsKey("Bank\n" + "Transfer")) {
                 clickButton(nodeInfoMap.get("Bank\n" + "Transfer"));
-                isTransfer = true;
             }
         } else {//进行钱包转账
-            if (!isTransfer && nodeInfoMap.containsKey("Topup\n" + "e-Wallet")) {
+            if (nodeInfoMap.containsKey("Topup\n" + "e-Wallet")) {
                 clickButton(nodeInfoMap.get("Topup\n" + "e-Wallet"));
-                isTransfer = true;
             }
         }
 
