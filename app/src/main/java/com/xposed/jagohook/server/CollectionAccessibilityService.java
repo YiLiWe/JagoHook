@@ -498,45 +498,33 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void BottomNavigationBar(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (isTransfer) return;
 
-        if (this.collectBillResponse != null) {//首页特征码
-            if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
-                AccessibilityNodeInfo tab1 = nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5");
-                if (tab1 != null && tab1.isSelected()) {
-                    if (nodeInfoMap.containsKey("Transaksi\n" +
-                            "Tab 3 dari 5")) {
-                        AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
-                                "Tab 3 dari 5");
-                        clickButton(Transaksi);
-                    }
-                }
+        if (this.collectBillResponse != null && nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
+            if (nodeInfoMap.containsKey("Transaksi\n" +
+                    "Tab 3 dari 5")) {
+                AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
+                        "Tab 3 dari 5");
+                clickButton(Transaksi);
             }
         }
 
-        if (!isBill && this.collectBillResponse == null) {//转账页面,点击前往首页
-            if (nodeInfoMap.containsKey("Beranda\n" + "Tab 3 dari 5")) {
-                AccessibilityNodeInfo tab3 = nodeInfoMap.get("Beranda\n" + "Tab 3 dari 5");
-                if (tab3 != null && tab3.isSelected()) {
-                    if (nodeInfoMap.containsKey("Beranda\n" +
-                            "Tab 1 dari 5")) {
-                        clickButton(nodeInfoMap.get("Beranda\n" +
-                                "Tab 1 dari 5"));
-                    }
-                }
+        if (!isBill && this.collectBillResponse == null && nodeInfoMap.containsKey("Bank\n" +
+                "Transfer")) {//转账页面,点击前往首页
+            if (nodeInfoMap.containsKey("Beranda\n" +
+                    "Tab 1 dari 5")) {
+                clickButton(nodeInfoMap.get("Beranda\n" +
+                        "Tab 1 dari 5"));
             }
         }
 
         if (isBill) {//查看账单
-            if (nodeInfoMap.containsKey("Beranda\n" + "Tab 1 dari 5")) {
-                AccessibilityNodeInfo tab1 = nodeInfoMap.get("Beranda\n" + "Tab 1 dari 5");
-                if (tab1 != null && tab1.isSelected()) {
-                    if (nodeInfoMap.containsKey("Transaksi\n" +
-                            "Tab 3 dari 5")) {
-                        AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
-                                "Tab 3 dari 5");
-                        clickButton(Transaksi);
-                    }
-                    isBill = false;
+            if (nodeInfoMap.containsKey("Aktivitas Terakhir")) {//首页特征码
+                if (nodeInfoMap.containsKey("Transaksi\n" +
+                        "Tab 3 dari 5")) {
+                    AccessibilityNodeInfo Transaksi = nodeInfoMap.get("Transaksi\n" +
+                            "Tab 3 dari 5");
+                    clickButton(Transaksi);
                 }
+                isBill = false;
             }
         }
     }
