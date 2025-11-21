@@ -550,6 +550,7 @@ public class CollectionAccessibilityService extends AccessibilityService {
     private void ScreenLockPassword(Map<String, AccessibilityNodeInfo> nodeInfoMap) {
         if (!nodeInfoMap.containsKey("GUNAKAN PASSWORD")) return;
         String pass = appConfig.getLockPass();
+        isTransfer = false;
         Logs.d("输入密码：" + pass);
         for (int i = 0; i < pass.length(); i++) {
             String key = String.valueOf(pass.charAt(i));
