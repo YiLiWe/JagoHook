@@ -19,6 +19,7 @@ import com.xposed.jagohook.runnable.response.TakeLatestOrderBean;
 import com.xposed.jagohook.utils.AccessibleUtil;
 import com.xposed.jagohook.utils.Logs;
 import com.xposed.jagohook.utils.TimeUtils;
+import com.xposed.yok.utils.DeviceUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +72,8 @@ public class PayAccessibilityService extends AccessibilityService {
         new Thread(postPayErrorRunnable).start();
         new Thread(payRunnable).start();
 
-        logWindow.printA("3.1代付运行中");
+        String name = DeviceUtils.getVerName(this);
+        logWindow.printA(name + "代付运行中");
 
         scrollDown();
 
