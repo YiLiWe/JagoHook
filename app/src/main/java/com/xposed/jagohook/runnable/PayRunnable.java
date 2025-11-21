@@ -99,7 +99,7 @@ public class PayRunnable implements Runnable {
 
     public TakeLatestOrderBean getTest() {
         TakeLatestOrderBean takeLatestOrderBean = new TakeLatestOrderBean();
-        takeLatestOrderBean.setBankName("BRI");
+        takeLatestOrderBean.setBankName("Bank NTT");
         takeLatestOrderBean.setOrderNo("6666666666");
         takeLatestOrderBean.setCardNumber("66666666");
         takeLatestOrderBean.setAmount(666666);
