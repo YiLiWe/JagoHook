@@ -351,6 +351,11 @@ public class PayAccessibilityService extends AccessibilityService {
             success(nodeInfoMap, takeLatestOrderBean1);
         }
 
+        //支付成功
+        if (nodeInfoMap.containsKey("Berhasil")){
+            success(nodeInfoMap, takeLatestOrderBean1);
+        }
+
         //转账界面
 /*        if (nodeInfoMap.containsKey("Memilih \"Oke\" di perangkat tidak akan membatalkan transaksi kamu. Notifikasi akan kamu terima, setelah uang berhasil dikirim.")) {
             success(nodeInfoMap, takeLatestOrderBean1);
