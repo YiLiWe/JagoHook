@@ -352,8 +352,19 @@ public class PayAccessibilityService extends AccessibilityService {
         }
 
         //支付成功
-        if (nodeInfoMap.containsKey("Berhasil")){
+        if (nodeInfoMap.containsKey("Berhasil")) {
             success(nodeInfoMap, takeLatestOrderBean1);
+        }
+
+        //支付成功
+        if (nodeInfoMap.containsKey("Ulang transaksi?\n") || nodeInfoMap.containsKey("Ulang transaksi?")) {
+            success(nodeInfoMap, takeLatestOrderBean1);
+            if (nodeInfoMap.containsKey("Lanjut")) {
+                clickButton(nodeInfoMap.get("Lanjut"));
+            }
+            if (nodeInfoMap.containsKey("Lanjut ")) {
+                clickButton(nodeInfoMap.get("Lanjut "));
+            }
         }
 
         //转账界面
